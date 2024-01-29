@@ -8,6 +8,7 @@ import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class ChallengeService {
 
     /**
      * 챌린지를 생성하는 서비스 메서드
-     * @param requestDto
+     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 성공여부 message, httpStatus
      */
     public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto) {
@@ -70,6 +71,26 @@ public class ChallengeService {
             }
         } catch (Exception e) {
             return new ChallengeAllResponseDto(null, "An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 챌린지 수정하는 서비스 메서드
+     * @param challengeId 수정을 할 챌린지 id
+     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
+     * @return 수정한 챌린지 data, 수정 성공여부 message, httpStatus
+     */
+    @Transactional
+    public ChallengeResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto) {
+        try {
+            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                    ()-> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
+            );
+            challenge.update(requestDto);
+            return new ChallengeResponseDto(challenge,"챌린지 수정 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ChallengeResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

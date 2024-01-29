@@ -47,4 +47,14 @@ public class Challenge {
         this.limitation = requestDto.getLimitation();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
+
+    public void update(ChallengeRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.startDate = LocalDate.parse(requestDto.getStartDate());
+        this.dueDate = LocalDate.parse(requestDto.getDueDate());
+        this.frequency = requestDto.getFrequency();
+        this.limitation = requestDto.getLimitation();
+        this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
+    }
 }

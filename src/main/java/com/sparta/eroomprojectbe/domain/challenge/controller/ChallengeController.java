@@ -23,7 +23,7 @@ public class ChallengeController {
     }
 
     /**
-     * 챌린지 생성 메서드
+     * 챌린지 생성하는 컨트롤러 메서드
      * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return message, HttpStatus
      */
@@ -40,9 +40,9 @@ public class ChallengeController {
     }
 
     /**
-     * 선택한 챌린지 조회하기
+     * 선택한 챌린지 조회하는 컨트롤러 메서드
      * @param challengeId
-     * @return 조회한 챌린지 data, message, httpStatus
+     * @return 조회한 챌린지 data, 선택한 챌린지 조회 성공 여부 message, httpStatus
      */
     @GetMapping("/challenge/{challengeId}")
     public ResponseEntity<ChallengeResponseDto> getChallenge(@PathVariable Long challengeId){
@@ -59,6 +59,10 @@ public class ChallengeController {
         }
     }
 
+    /**
+     * 전체 챌린지를 조회하는 컨트롤러 메서드
+     * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
+     */
     @GetMapping("/challenge")
     public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(){
         try {
@@ -66,7 +70,26 @@ public class ChallengeController {
             return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ChallengeAllResponseDto(null, "An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+                    .body(new ChallengeAllResponseDto(null, "발생된 오류: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    /**
+     * 챌린지 수정을 하는 컨트롤러 메서드
+     * @param challengeId 수정하려는 챌린지 id
+     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
+     * @return 수정한 챌린지 내용, 수정 성공 여부 메세지, httpStatus
+     */
+    @PutMapping("/challenge/{challengeId}")
+    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable Long challengeId,
+                                                                      @RequestBody ChallengeRequestDto requestDto){
+        try {
+            ChallengeResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto);
+            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ChallengeResponseDto(null, "수정 중 오류가 발생했습니다.",
+                            HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
