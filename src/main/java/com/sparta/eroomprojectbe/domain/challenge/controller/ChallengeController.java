@@ -1,12 +1,16 @@
 package com.sparta.eroomprojectbe.domain.challenge.controller;
 
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeAllResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeCreateResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -52,6 +56,17 @@ public class ChallengeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ChallengeResponseDto(null, "오류 발생: " + e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/challenge")
+    public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(){
+        try {
+            ChallengeAllResponseDto responseDto = challengeService.getAllChallenges();
+            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ChallengeAllResponseDto(null, "An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
