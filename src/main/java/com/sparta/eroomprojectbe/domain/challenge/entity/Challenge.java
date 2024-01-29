@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.challenge.entity;
 
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,16 @@ public class Challenge {
     private int limitation;
 
     @Column(nullable = false)
-    private String thumbnailImageURL;
+    private String thumbnailImageUrl;
 
 
+    public Challenge(ChallengeRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.startDate = LocalDate.parse(requestDto.getStartDate());
+        this.dueDate = LocalDate.parse(requestDto.getDueDate());
+        this.frequency = requestDto.getFrequency();
+        this.limitation = requestDto.getLimitation();
+        this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
+    }
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Character {
+public class MemberCharacter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
