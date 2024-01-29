@@ -2,8 +2,6 @@ package com.sparta.eroomprojectbe.domain.challenge.dto;
 
 import lombok.Getter;
 
-import java.time.LocalDate;
-
 @Getter
 public class ChallengeRequestDto {
     private String title;
