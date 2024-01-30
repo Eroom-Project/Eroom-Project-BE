@@ -79,7 +79,8 @@ public class ChallengeController {
             return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ChallengeAllResponseDto(null, "발생된 오류: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+                    .body(new ChallengeAllResponseDto(null, "발생된 오류: " + e.getMessage(),
+                            HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -89,18 +90,18 @@ public class ChallengeController {
 //     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 수정한 챌린지 내용, 수정 성공 여부 메세지, httpStatus
      */
-//    @PutMapping("/challenge/{challengeId}")
-//    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable Long challengeId,
-//                                                                      @RequestBody ChallengeRequestDto requestDto){
-//        try {
-//            ChallengeResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto);
-//            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
-//        } catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ChallengeResponseDto(null, "수정 중 오류가 발생했습니다.",
-//                            HttpStatus.INTERNAL_SERVER_ERROR));
-//        }
-//    }
+    @PutMapping("/challenge/{challengeId}")
+    public ResponseEntity<ChallengeDataResponseDto> updateChallenge(@PathVariable Long challengeId,
+                                                                      @RequestBody ChallengeRequestDto requestDto){
+        try {
+            ChallengeDataResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto);
+            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ChallengeDataResponseDto(null, "수정 중 오류가 발생했습니다.",
+                            HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 
     @DeleteMapping("/challenge/{challengeId}")
     public ResponseEntity<ChallengeCreateResponseDto> deleteChallenge(@PathVariable Long challengeId){
