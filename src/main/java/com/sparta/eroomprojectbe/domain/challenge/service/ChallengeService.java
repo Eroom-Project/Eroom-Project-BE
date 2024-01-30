@@ -62,6 +62,10 @@ public class ChallengeService {
         return responseDto;
     }
 
+    /**
+     * 인기순으로 조회하는 서비스 명령어
+     * @return 인기순으로 정렬된 챌린지 리스트, 조회성공여부 메세지, httpStatus
+     */
     public ChallengeAllResponseDto getPopularChallenge() {
         try {
             List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
@@ -74,7 +78,11 @@ public class ChallengeService {
         }
     }
 
-
+    /**
+     * 카테고리별로 조회하는 서비스 메서드
+     * @param category IT, 외국어, 수학, 과학, 인문, 예체능
+     * @return param값과 일치하는 카테고리를 가진 챌린지 리스트, 조회 성공 여부 메세지, httpStatus
+     */
     public ChallengeAllResponseDto getCategoryChallenge(String category) {
         try {
             List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
@@ -87,6 +95,11 @@ public class ChallengeService {
         }
     }
 
+    /**
+     * 검색어로 조회하는 서비스 명령어
+     * @param query 검색하려는 키워드
+     * @return title,category,description에 query값을 포함하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
+     */
     public ChallengeAllResponseDto getQueryChallenge(String query) {
         try {
             List<Challenge> queryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query);
@@ -99,6 +112,10 @@ public class ChallengeService {
         }
     }
 
+    /**
+     * 최신순으로 조회하는 서비스 메서드
+     * @return 최신순을 기준으로 하여 정렬하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
+     */
     public ChallengeAllResponseDto getLatestChallenge() {
         try {
             List<Challenge> latestChallenges = challengeRepository.findByOrderByCreatedAtDesc();
@@ -111,10 +128,14 @@ public class ChallengeService {
         }
     }
 
+    /**
+     * 현재참여인원을 계산해 주는 메서드
+     * @param challenge 현재 챌린지
+     * @return 현재 참여중인 참여자 수
+     */
     private Long calculateCurrentAttendance(Challenge challenge) {
         return challengerRepository.countByChallenge(challenge);
     }
-
 
     /**
      * 챌린지 수정하는 서비스 메서드
@@ -139,6 +160,11 @@ public class ChallengeService {
         }
     }
 
+    /**
+     * 선택한 챌린지를 삭제하는 서비스 메서드
+     * @param challengeId 삭제하려는 챌린지 id
+     * @return 삭제 성공여부 메세지, httpStatus
+     */
     public ChallengeCreateResponseDto deleteChallenge(Long challengeId) {
         try {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(

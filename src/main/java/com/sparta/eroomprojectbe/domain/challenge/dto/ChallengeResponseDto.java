@@ -2,7 +2,6 @@ package com.sparta.eroomprojectbe.domain.challenge.dto;
 
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 

@@ -1,6 +1,9 @@
 package com.sparta.eroomprojectbe.domain.challenge.controller;
 
-import com.sparta.eroomprojectbe.domain.challenge.dto.*;
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeAllResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeCreateResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeDataResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,6 +106,11 @@ public class ChallengeController {
         }
     }
 
+    /**
+     * 챌린지 삭제하는 컨트롤러 메서드
+     * @param challengeId 삭제하려는 챌린지 id
+     * @return 삭제 성공 여부 메세지, httpStatus
+     */
     @DeleteMapping("/challenge/{challengeId}")
     public ResponseEntity<ChallengeCreateResponseDto> deleteChallenge(@PathVariable Long challengeId){
         ChallengeCreateResponseDto responseDto = challengeService.deleteChallenge(challengeId);
