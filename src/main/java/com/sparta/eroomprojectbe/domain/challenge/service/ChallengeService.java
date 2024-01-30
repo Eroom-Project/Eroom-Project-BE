@@ -6,6 +6,7 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,6 +92,18 @@ public class ChallengeService {
         } catch (Exception e) {
             return new ChallengeResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ChallengeCreateResponseDto deleteChallenge(Long challengeId) {
+        try {
+            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                    ()-> new IllegalArgumentException("선택한 챌린지가 존재하지 않습니다.")
+            );
+            challengeRepository.delete(challenge);
+            return new ChallengeCreateResponseDto("챌린지 이룸 삭제 성공", HttpStatus.OK);
+        } catch (DataAccessException e){
+            return new ChallengeCreateResponseDto("오류: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
