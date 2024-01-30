@@ -3,14 +3,14 @@ package com.sparta.eroomprojectbe.domain.challenge.service;
 import com.sparta.eroomprojectbe.domain.challenge.dto.*;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
-import com.sparta.eroomprojectbe.domain.challenger.entity.repository.ChallengerRepository;
+import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChallengeService {
@@ -58,45 +58,95 @@ public class ChallengeService {
         ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
     }
-
+    //인기순으로 조회
+//    public ChallengeAllResponseDto getPopularChallenge() {
+//        try {
+//            List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
+//            return new ChallengeAllResponseDto(popularChallenges, "인기순으로 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+//            return new ChallengeAllResponseDto(null, "인기순으로 조히 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     public ChallengeAllResponseDto getPopularChallenge() {
         try {
             List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
-            return new ChallengeAllResponseDto(popularChallenges, "인기순으로 조회 성공", HttpStatus.OK);
+            List<ChallengeResponseDto> popularChallengeResponseDtoList = popularChallenges.stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge)))
+                    .collect(Collectors.toList());
+            return new ChallengeAllResponseDto(popularChallengeResponseDtoList, "인기순으로 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
-            // Handle exceptions and return an appropriate ChallengeAllResponseDto
-            return new ChallengeAllResponseDto(null, "인기순으로 조히 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ChallengeAllResponseDto(null, "인기순으로 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ChallengeAllResponseDto getCategoryChallenge(String category) {
-        try {
-            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
-            return new ChallengeAllResponseDto(categoryChallenges, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            // Handle exceptions and return an appropriate ChallengeAllResponseDto
-            return new ChallengeAllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//    public ChallengeAllResponseDto getCategoryChallenge(String category) {
+//        try {
+//            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
+//            return new ChallengeAllResponseDto(categoryChallenges, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+//            return new ChallengeAllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    public ChallengeAllResponseDto getQueryChallenge(String query) {
+//        try {
+//            List<Challenge> categoryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query,query,query);
+//            return new ChallengeAllResponseDto(categoryChallenges, "키워드로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+//            return new ChallengeAllResponseDto(null, "키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    public ChallengeAllResponseDto getLatestChallenge() {
+//        try {
+//            List<Challenge> categoryChallenges = challengeRepository.findByOrderByCreatedAtDesc();
+//            return new ChallengeAllResponseDto(categoryChallenges, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+//            return new ChallengeAllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+public ChallengeAllResponseDto getCategoryChallenge(String category) {
+    try {
+        List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
+        List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallenges.stream()
+                .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge)))
+                .collect(Collectors.toList());
+        return new ChallengeAllResponseDto(categoryChallengeResponseDtoList, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
+    } catch (Exception e) {
+        return new ChallengeAllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
 
     public ChallengeAllResponseDto getQueryChallenge(String query) {
         try {
-            List<Challenge> categoryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query,query,query);
-            return new ChallengeAllResponseDto(categoryChallenges, "키워드로 챌린지 조회 성공", HttpStatus.OK);
+            List<Challenge> queryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query);
+            List<ChallengeResponseDto> queryChallengeResponseDtoList = queryChallenges.stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge)))
+                    .collect(Collectors.toList());
+            return new ChallengeAllResponseDto(queryChallengeResponseDtoList, "키워드로 챌린지 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
-            // Handle exceptions and return an appropriate ChallengeAllResponseDto
             return new ChallengeAllResponseDto(null, "키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public ChallengeAllResponseDto getLatestChallenge() {
         try {
-            List<Challenge> categoryChallenges = challengeRepository.findByOrderByCreatedAtDesc();
-            return new ChallengeAllResponseDto(categoryChallenges, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
+            List<Challenge> latestChallenges = challengeRepository.findByOrderByCreatedAtDesc();
+            List<ChallengeResponseDto> latestChallengeResponseDtoList = latestChallenges.stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge)))
+                    .collect(Collectors.toList());
+            return new ChallengeAllResponseDto(latestChallengeResponseDtoList, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
-            // Handle exceptions and return an appropriate ChallengeAllResponseDto
             return new ChallengeAllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private Long calculateCurrentAttendance(Challenge challenge) {
+        return challengerRepository.countByChallenge(challenge);
     }
 
 

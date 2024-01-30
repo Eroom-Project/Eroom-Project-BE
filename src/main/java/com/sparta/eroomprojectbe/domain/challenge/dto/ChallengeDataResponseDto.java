@@ -3,8 +3,6 @@ package com.sparta.eroomprojectbe.domain.challenge.dto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 @Getter
 public class ChallengeDataResponseDto {
     private ChallengeResponseDto data;

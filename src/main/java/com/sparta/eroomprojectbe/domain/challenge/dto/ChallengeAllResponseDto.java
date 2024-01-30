@@ -11,12 +11,12 @@ import java.util.List;
  */
 @Getter
 public class ChallengeAllResponseDto {
-    private List<Challenge> data;
+    private List<ChallengeResponseDto> data;
     private String message;
     private HttpStatus status;
 
-    public ChallengeAllResponseDto(List<Challenge> allChallenges, String message, HttpStatus status) {
-        this.data = allChallenges;
+    public ChallengeAllResponseDto(List<ChallengeResponseDto> challengeResponseDtoList, String message, HttpStatus status) {
+        this.data = challengeResponseDtoList;
         this.message = message;
         this.status = status;
     }

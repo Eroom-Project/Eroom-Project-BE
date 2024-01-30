@@ -14,6 +14,7 @@ public class ChallengeResponseDto {
 
     private Long challengeId;
     private Long memberId;
+    private String category;
     private String title;
     private String description;
     private LocalDate startDate;
@@ -27,6 +28,7 @@ public class ChallengeResponseDto {
     public ChallengeResponseDto(Challenge challenge, Long currentAttendance) {
         this.challengeId = challenge.getChallengeId();
         this.title = challenge.getTitle();
+        this.category = challenge.getCategory();
         this.description = challenge.getDescription();
         this.startDate = challenge.getStartDate();
         this.dueDate = challenge.getDueDate();
