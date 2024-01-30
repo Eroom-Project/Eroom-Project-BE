@@ -1,9 +1,6 @@
 package com.sparta.eroomprojectbe.domain.challenge.service;
 
-import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeAllResponseDto;
-import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeCreateResponseDto;
-import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
-import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.dto.*;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.repository.ChallengerRepository;
@@ -46,6 +43,22 @@ public class ChallengeService {
         }
     }
 
+    /**
+     * 선택한 챌린지 조회하는 서비스 메서드
+     * @param challengeId 선택한 challenge 아이디
+     * @return 선택한 챌린지 data, 성공여부 message, httpStatus
+     */
+    public ChallengeDataResponseDto getChallenge(Long challengeId) {
+        Optional<Challenge> optionalChallenge = challengeRepository.findById(challengeId);
+        Challenge challenge = optionalChallenge.orElseThrow(
+                ()-> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
+        );
+        Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
+        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance);
+        ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
+        return responseDto;
+    }
+
     public ChallengeAllResponseDto getPopularChallenge() {
         try {
             List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
@@ -86,42 +99,27 @@ public class ChallengeService {
         }
     }
 
-    /**
-     * 선택한 챌린지 조회하는 서비스 메서드
-     * @param challengeId
-     * @return 선택한 챌린지 data, 성공여부 message, httpStatus
-     */
-    public ChallengeResponseDto getChallenge(Long challengeId) {
-        Optional<Challenge> optionalChallenge = challengeRepository.findById(challengeId);
-        Challenge challenge = optionalChallenge.orElseThrow(
-                ()-> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
-        );
-        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, "해당 챌린지 조회 성공",
-                HttpStatus.OK);
-        return challengeResponseDto;
-    }
-
 
 
     /**
      * 챌린지 수정하는 서비스 메서드
      * @param challengeId 수정을 할 챌린지 id
-     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
+//     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 수정한 챌린지 data, 수정 성공여부 message, httpStatus
      */
-    @Transactional
-    public ChallengeResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto) {
-        try {
-            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-                    ()-> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
-            );
-            challenge.update(requestDto);
-            return new ChallengeResponseDto(challenge,"챌린지 수정 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ChallengeResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @Transactional
+//    public ChallengeResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto) {
+//        try {
+//            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+//                    ()-> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
+//            );
+//            challenge.update(requestDto);
+//            return new ChallengeResponseDto(challenge,"챌린지 수정 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ChallengeResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
+//                    HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     public ChallengeCreateResponseDto deleteChallenge(Long challengeId) {
         try {

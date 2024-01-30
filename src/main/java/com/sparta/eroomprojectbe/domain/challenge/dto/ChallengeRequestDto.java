@@ -14,6 +14,7 @@ public class ChallengeRequestDto {
     private String dueDate;
     private String frequency;
     private int limitAttendance;
+    private String authExplanation;
     private String thumbnailImageUrl;
 
 }

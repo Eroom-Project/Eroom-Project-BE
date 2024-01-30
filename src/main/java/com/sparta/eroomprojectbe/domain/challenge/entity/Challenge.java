@@ -38,6 +38,9 @@ public class Challenge extends Timestamped{
     private String frequency;
 
     @Column(nullable = false)
+    private String authExplanation;
+
+    @Column(nullable = false)
     private int limitAttendance;
 
     @Column(nullable = false)
@@ -55,6 +58,7 @@ public class Challenge extends Timestamped{
         this.startDate = LocalDate.parse(requestDto.getStartDate());
         this.dueDate = LocalDate.parse(requestDto.getDueDate());
         this.frequency = requestDto.getFrequency();
+        this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
@@ -66,6 +70,7 @@ public class Challenge extends Timestamped{
         this.startDate = LocalDate.parse(requestDto.getStartDate());
         this.dueDate = LocalDate.parse(requestDto.getDueDate());
         this.frequency = requestDto.getFrequency();
+        this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
