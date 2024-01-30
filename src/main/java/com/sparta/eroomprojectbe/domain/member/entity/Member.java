@@ -1,9 +1,13 @@
 package com.sparta.eroomprojectbe.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +32,7 @@ public class Member {
 
     @Column
     private String profileImageURL;
+
 
 
 }

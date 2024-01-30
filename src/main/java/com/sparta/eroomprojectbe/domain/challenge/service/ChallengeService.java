@@ -6,6 +6,7 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
+import com.sparta.eroomprojectbe.domain.challenger.entity.repository.ChallengerRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.Optional;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
+    private final ChallengerRepository challengerRepository;
 
-    public ChallengeService(ChallengeRepository challengeRepository) {
+    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository) {
         this.challengeRepository = challengeRepository;
+        this.challengerRepository = challengerRepository;
     }
 
     /**
@@ -43,6 +46,46 @@ public class ChallengeService {
         }
     }
 
+    public ChallengeAllResponseDto getPopularChallenge() {
+        try {
+            List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
+            return new ChallengeAllResponseDto(popularChallenges, "인기순으로 조회 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+            return new ChallengeAllResponseDto(null, "인기순으로 조히 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ChallengeAllResponseDto getCategoryChallenge(String category) {
+        try {
+            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
+            return new ChallengeAllResponseDto(categoryChallenges, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+            return new ChallengeAllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ChallengeAllResponseDto getQueryChallenge(String query) {
+        try {
+            List<Challenge> categoryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query,query,query);
+            return new ChallengeAllResponseDto(categoryChallenges, "키워드로 챌린지 조회 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+            return new ChallengeAllResponseDto(null, "키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ChallengeAllResponseDto getLatestChallenge() {
+        try {
+            List<Challenge> categoryChallenges = challengeRepository.findByOrderByCreatedAtDesc();
+            return new ChallengeAllResponseDto(categoryChallenges, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate ChallengeAllResponseDto
+            return new ChallengeAllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * 선택한 챌린지 조회하는 서비스 메서드
      * @param challengeId
@@ -58,22 +101,7 @@ public class ChallengeService {
         return challengeResponseDto;
     }
 
-    /**
-     * 전체 챌린지 조회하는 서비스 메서드
-     * @return 전체 챌리지 list, 조회 성공여부 message, httpStatus
-     */
-    public ChallengeAllResponseDto  getAllChallenges() {
-        try {
-            List<Challenge> allChallenges = challengeRepository.findAll();
-            if (allChallenges != null) {
-                return new ChallengeAllResponseDto(allChallenges, "모든 챌린지 조회 성공", HttpStatus.OK);
-            } else {
-                return new ChallengeAllResponseDto(null, "null값이 있습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            return new ChallengeAllResponseDto(null, "An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+
 
     /**
      * 챌린지 수정하는 서비스 메서드

@@ -8,11 +8,12 @@ import lombok.Getter;
 @Getter
 public class ChallengeRequestDto {
     private String title;
+    private String category;
     private String description;
     private String startDate;
     private String dueDate;
     private String frequency;
-    private int limitation;
+    private int limitAttendance;
     private String thumbnailImageUrl;
 
 }

@@ -64,9 +64,25 @@ public class ChallengeController {
      * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
      */
     @GetMapping("/challenge")
-    public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(){
+    public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(@RequestParam(required = false) String sortBy,
+                                                                   @RequestParam(required = false) String category,
+                                                                   @RequestParam(required = false) String query){
+
+        ChallengeAllResponseDto responseDto;
         try {
-            ChallengeAllResponseDto responseDto = challengeService.getAllChallenges();
+            if (sortBy != null && !sortBy.isEmpty()) {
+                if ("popular".equals(sortBy)) {
+                    responseDto = challengeService.getPopularChallenge();
+                } else {
+                    responseDto = challengeService.getLatestChallenge();
+                }
+            } else if (category != null && !category.isEmpty()) {
+                responseDto = challengeService.getCategoryChallenge(category);
+            } else if (query != null && !query.isEmpty()) {
+                responseDto = challengeService.getQueryChallenge(query);
+            } else {
+                responseDto = challengeService.getLatestChallenge();
+            }
             return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

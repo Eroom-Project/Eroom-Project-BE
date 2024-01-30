@@ -1,16 +1,19 @@
 package com.sparta.eroomprojectbe.domain.challenge.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
+import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Challenge {
+public class Challenge extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,9 @@ public class Challenge {
 
     @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
+    private String category;
 
     @Column(nullable = false)
     private String description;
@@ -32,29 +38,35 @@ public class Challenge {
     private String frequency;
 
     @Column(nullable = false)
-    private int limitation;
+    private int limitAttendance;
 
     @Column(nullable = false)
     private String thumbnailImageUrl;
 
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Challenger> challengers;
+
 
     public Challenge(ChallengeRequestDto requestDto) {
         this.title = requestDto.getTitle();
+        this.category = requestDto.getCategory();
         this.description = requestDto.getDescription();
         this.startDate = LocalDate.parse(requestDto.getStartDate());
         this.dueDate = LocalDate.parse(requestDto.getDueDate());
         this.frequency = requestDto.getFrequency();
-        this.limitation = requestDto.getLimitation();
+        this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
 
     public void update(ChallengeRequestDto requestDto) {
         this.title = requestDto.getTitle();
+        this.category = requestDto.getCategory();
         this.description = requestDto.getDescription();
         this.startDate = LocalDate.parse(requestDto.getStartDate());
         this.dueDate = LocalDate.parse(requestDto.getDueDate());
         this.frequency = requestDto.getFrequency();
-        this.limitation = requestDto.getLimitation();
+        this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
 }
