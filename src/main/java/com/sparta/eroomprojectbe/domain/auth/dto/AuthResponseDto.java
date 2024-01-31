@@ -15,5 +15,12 @@ public class AuthResponseDto {
     private String authStatus;
     private LocalDateTime createdAt;
 
-
+    public AuthResponseDto(Auth auth){
+        this.authId = auth.getAuthId();
+        this.authContents = auth.getAuthContents();
+        this.authImageUrl = auth.getAuthImageUrl();
+        this.authVideoUrl = auth.getAuthVideoUrl();
+        this.authStatus = auth.getAuthStatus();
+        this.createdAt = auth.getCreatedAt();
+    }
 }

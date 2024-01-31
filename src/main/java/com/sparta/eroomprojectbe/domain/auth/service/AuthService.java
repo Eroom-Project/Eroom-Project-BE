@@ -14,7 +14,9 @@ public class AuthService {
     public AuthService(AuthRepository authRepository){this.authRepository=authRepository;}
 
     public List<AuthResponseDto> getMemberAuthList(Long challengerId)  { // 해당 챌린지 인증(member) 전체 조회
-        return null;
+        List<Auth> authList = authRepository.findAllByAuthIdOrderByCreatedAtDesc(challengerId);
+        List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
+        return authResponseList;
     }
 
     public AuthResponseDto updateLeaderAuth(AuthRequestDto requestDto, Long challengerId, Long authId) { // 챌린지 인증 허가 및 불가 처리(leader)

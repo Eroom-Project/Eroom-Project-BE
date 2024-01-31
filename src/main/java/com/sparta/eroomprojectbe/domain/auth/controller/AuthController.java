@@ -5,7 +5,6 @@ import com.sparta.eroomprojectbe.domain.auth.dto.AuthResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

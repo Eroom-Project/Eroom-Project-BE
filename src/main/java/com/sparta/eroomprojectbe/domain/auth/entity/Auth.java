@@ -5,11 +5,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
 public class Auth extends Timestamped{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authId;
@@ -26,7 +27,13 @@ public class Auth extends Timestamped{
     @Column
     private String authStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "challenger_id")
-    private Challenger challenger;
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
+
+    @Column(name = "modifiedAt")
+    private LocalDateTime modifiedAt;
+
+//    @ManyToOne
+//    @JoinColumn(name = "challenger_id")
+//    private Challenger challenger;
 }
