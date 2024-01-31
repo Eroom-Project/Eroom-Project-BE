@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.auth.dto;
 
 import com.sparta.eroomprojectbe.domain.auth.entity.Auth;
+import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class AuthResponseDto {
     private String authVideoUrl;
     private String authStatus;
     private LocalDateTime createdAt;
+    private Long challengerId;
 
     public AuthResponseDto(Auth auth){
         this.authId = auth.getAuthId();
@@ -22,5 +24,6 @@ public class AuthResponseDto {
         this.authVideoUrl = auth.getAuthVideoUrl();
         this.authStatus = auth.getAuthStatus();
         this.createdAt = auth.getCreatedAt();
+        this.challengerId = auth.getChallenger().getChallengerId();
     }
 }

@@ -14,10 +14,15 @@ import java.util.List;
 public class AuthController {
     private final AuthService authService;
     public AuthController(AuthService authService){this.authService = authService;}
+    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
+    public ResponseEntity<List<AuthResponseDto>> getMemberAuthList() {
+        List<AuthResponseDto> responseList = authService.getMemberAuthList();
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
 
     @GetMapping("/{challengerId}/details") // 해당 챌린지 인증(member) 전체 조회
-    public ResponseEntity<List<AuthResponseDto>> getMemberAuthList(@PathVariable Long challengerId) {
-        List<AuthResponseDto> responseList = authService.getMemberAuthList(challengerId);
+    public ResponseEntity<List<AuthResponseDto>> getChallengerAuthList(@PathVariable Long challengerId) {
+        List<AuthResponseDto> responseList = authService.getChallengerAuthList(challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
@@ -33,7 +38,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PostMapping("/{challengerId}/details") // 챌린지 인증(member)
+    @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
     public ResponseEntity<AuthResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
         AuthResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);

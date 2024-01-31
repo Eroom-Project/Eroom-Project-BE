@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.entity;
 
+import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,13 +28,15 @@ public class Auth extends Timestamped{
     @Column
     private String authStatus;
 
-    @Column(name = "createdAt")
-    private LocalDateTime createdAt;
+    @ManyToOne
+    @JoinColumn(name = "challenger_id")
+    private Challenger challenger;
 
-    @Column(name = "modifiedAt")
-    private LocalDateTime modifiedAt;
-
-//    @ManyToOne
-//    @JoinColumn(name = "challenger_id")
-//    private Challenger challenger;
+    public Auth(AuthRequestDto requestDto, Challenger challenger) {
+        this.authContents= requestDto.getAuthContents();
+        this.authImageUrl= requestDto.getAuthImageUrl();
+        this.authVideoUrl= requestDto.getAuthVideoUrl();
+        this.authStatus= requestDto.getAuthStatus();
+        this.challenger=challenger;
+    }
 }
