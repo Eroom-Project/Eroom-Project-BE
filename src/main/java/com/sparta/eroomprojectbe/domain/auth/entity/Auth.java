@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Auth {
+public class Auth extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
