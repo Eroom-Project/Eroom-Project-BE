@@ -40,20 +40,6 @@ public class ChallengeResponseDto {
         this.thumbnailImageUrl = challenge.getThumbnailImageUrl();
     }
 
-    public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Member member) {
-        this.challengeId = challenge.getChallengeId();
-        this.memberId = member.getMemberId();
-        this.title = challenge.getTitle();
-        this.category = challenge.getCategory();
-        this.description = challenge.getDescription();
-        this.startDate = challenge.getStartDate();
-        this.dueDate = challenge.getDueDate();
-        this.frequency = challenge.getFrequency();
-        this.currentAttendance = currentAttendance;
-        this.limitAttendance = challenge.getLimitAttendance();
-        this.authExplanation = challenge.getAuthExplanation();
-        this.thumbnailImageUrl = challenge.getThumbnailImageUrl();
-    }
 
     public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Long leaderId) {
         this.challengeId = challenge.getChallengeId();

@@ -41,7 +41,7 @@ public class ChallengeController {
 //    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestBody ChallengeRequestDto requestDto,
 //                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
 //        try {
-//            ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto,userDetails.getUSer);
+//            ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto,userDetails.getMember());
 //            return ResponseEntity.status(responseDto.getStatus())
 //                    .body(responseDto);
 //        } catch (Exception e) {

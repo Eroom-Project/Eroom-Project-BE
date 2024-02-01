@@ -55,7 +55,7 @@ public class ChallengeService {
     }
 //    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, Member member) {
 //        try {
-//            Member createMember = MemberRepository.fidnById(member.getMemberId()).ElseTrow(
+//            Member createMember = MemberRepository.findById(member.getMemberId()).ElseTrow(
 //                ()-> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
 //            );
 
@@ -85,11 +85,9 @@ public class ChallengeService {
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
-        Optional<Long> creatorMemberIdOptional = challengerRepository.findCreatorMemberIdByChallengeId(challengeId);
-        Long leaderId = creatorMemberIdOptional.orElse(null);
 
         Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, leaderId);
+        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge));
         ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
     }
