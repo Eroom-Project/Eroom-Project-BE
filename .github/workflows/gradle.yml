@@ -2,10 +2,10 @@
 name: CI/CD using github actions & docker
 
 # event trigger
-# master브랜치에 push가 되었을 때 실행
+# master이나 dev 브랜치에 push가 되었을 때 실행
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "dev" ]
 
 permissions:
   contents: read
@@ -30,28 +30,38 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: $-gradle-$
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            $-gradle-
 
       # 환경별 yml 파일 생성(1) - application.yml
       - name: make application.yml
         if: |
-          contains(github.ref, 'master')
+          contains(github.ref, 'master') ||
+          contains(github.ref, 'dev')
         run: |
           mkdir ./src/main/resources # resources 폴더 생성
           cd ./src/main/resources # resources 폴더로 이동
           touch ./application.yml # application.yml 생성
-          echo "${{ secrets.YML }}" > ./application.yml # github actions에서 설정한 값을 application.yml 파일에 쓰기
+          echo "$" > ./application.yml # github actions에서 설정한 값을 application.yml 파일에 쓰기
         shell: bash
 
-      # 환경별 yml 파일 생성(2) - application-prod.yml
+      # 환경별 yml 파일 생성(2) - dev
+      - name: make application-dev.yml
+        if: contains(github.ref, 'dev')
+        run: |
+          cd ./src/main/resources
+          touch ./application-dev.yml
+          echo "$" > ./application-dev.yml
+        shell: bash
+
+      # 환경별 yml 파일 생성(3) - prod
       - name: make application-prod.yml
         if: contains(github.ref, 'master')
         run: |
           cd ./src/main/resources
           touch ./application-prod.yml
-          echo "${{ secrets.YML_PROD }}" > ./application-prod.yml
+          echo "$" > ./application-prod.yml
         shell: bash
 
       # gradle build
@@ -62,9 +72,17 @@ jobs:
       - name: Docker build & push to prod
         if: contains(github.ref, 'master')
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod .
-          docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
+          docker login -u $ -p $
+          docker build -t $/eroom-prod 
+          docker push $/eroom-prod
+
+      # docker build & push to dev
+      - name: Docker build & push to dev
+        if: contains(github.ref, 'dev')
+        run: |
+          docker login -u $ -p $
+          docker build -t $/docker-test-dev 
+          docker push $/docker-test-dev
 
       ## deploy to production
       - name: Deploy to prod
@@ -72,16 +90,33 @@ jobs:
         id: deploy-prod
         if: contains(github.ref, 'master')
         with:
-          host: ${{ secrets.HOST_PROD }} # EC2 퍼블릭 IPv4 DNS
+          host: $ # EC2 퍼블릭 IPv4 DNS
           username: ubuntu
-          key: ${{ secrets.PRIVATE_KEY }}
+          key: $
           envs: GITHUB_SHA
           script: |
              sudo docker ps
              docker stop $(docker ps -a -q)
              docker rm $(docker ps -a -q)
-             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom_prod
-             sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/eroom_prod
+             sudo docker pull $/eroom_prod
+             sudo docker run -d -p 8080:8080 $/eroom_prod
              sudo docker image prune -f
 
-
+      ## deploy to develop
+      - name: Deploy to dev
+        uses: appleboy/ssh-action@master
+        id: deploy-dev
+        if: contains(github.ref, 'dev')
+        with:
+          host: $ # EC2 퍼블릭 IPv4 DNS
+          username: $ # ubuntu
+          password: $
+          port: 22
+          key: $
+          script: |
+             sudo docker ps
+             docker stop $(docker ps -a -q)
+             docker rm $(docker ps -a -q)
+             sudo docker pull $/eroom_dev
+             sudo docker run -d -p 8080:8080 $/eroom_dev
+             sudo docker image prune -f
