@@ -120,3 +120,4 @@ jobs:
              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom_dev
              sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/eroom_dev
              sudo docker image prune -f
+             
