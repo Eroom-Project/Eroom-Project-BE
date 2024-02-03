@@ -152,7 +152,7 @@ public class ChallengeController {
 //    @DeleteMapping("/challenge/{challengeId}")
 //    public ResponseEntity<ChallengeCreateResponseDto> deleteChallenge(@PathVariable Long challengeId,
 //                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        ChallengeCreateResponseDto responseDto = challengeService.deleteChallenge(challengeId, userDetials.getMember());
+//        ChallengeCreateResponseDto responseDto = challengeService.deleteChallenge(challengeId, userDetails.getMember());
 //        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
 //    }
 

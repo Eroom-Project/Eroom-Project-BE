@@ -7,12 +7,8 @@ import org.springframework.http.HttpStatus;
  * 챌린지 생성하여 성공여부와 httpStatus를 봔한하는 dto
  */
 @Getter
-public class ChallengeCreateResponseDto {
-    private String message;
-    private HttpStatus status;
-
+public class ChallengeCreateResponseDto extends BaseChallengeResponseDto {
     public ChallengeCreateResponseDto(String message, HttpStatus status) {
-        this.message = message;
-        this.status = status;
+        super(message, status);
     }
 }
