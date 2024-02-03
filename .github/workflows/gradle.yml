@@ -63,7 +63,6 @@ jobs:
           touch ./application-prod.yml
           echo "${{ secrets.YML_PROD }}" > ./application-prod.yml
         shell: bash
-
       # gradlew 스크립트에 실행 권한 부여
       - name: gradlew 스크립트에 실행 권한 부여
         run: |
@@ -77,7 +76,7 @@ jobs:
       - name: Docker build & push to prod
         if: contains(github.ref, 'master')
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker build -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod .
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
@@ -85,7 +84,7 @@ jobs:
       - name: Docker build & push to dev
         if: contains(github.ref, 'dev')
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker build -t ${{ secrets.DOCKER_USERNAME }}/eroom-dev .
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-dev
 
