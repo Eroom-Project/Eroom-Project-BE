@@ -40,12 +40,13 @@ public class ChallengeService {
      * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 성공여부 message, httpStatus
      */
+    @Transactional
     public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto) {
         try {
             Challenge challenge = new Challenge(requestDto);
             Challenge savedChallenge = challengeRepository.save(challenge);
-
             if (savedChallenge != null && savedChallenge.getChallengeId() != null) {
+                savedChallenge.incrementAttendance();
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 성공", HttpStatus.CREATED);
             } else {
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);

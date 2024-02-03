@@ -44,8 +44,12 @@ public class Challenge extends Timestamped{
     @Column(nullable = false)
     private short limitAttendance;
 
+    @Column(nullable = false)
+    private short currentAttendance;
+
     @Column(nullable = false, length = 512)
     private String thumbnailImageUrl;
+
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
@@ -61,6 +65,7 @@ public class Challenge extends Timestamped{
         this.frequency = requestDto.getFrequency();
         this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
+        this.currentAttendance = 0;
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
 
@@ -75,4 +80,9 @@ public class Challenge extends Timestamped{
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
     }
+
+    public void incrementAttendance() {
+        this.currentAttendance++;
+    }
+
 }
