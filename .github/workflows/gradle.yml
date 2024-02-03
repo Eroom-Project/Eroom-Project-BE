@@ -73,7 +73,7 @@ jobs:
         run: ./gradlew build -x test
 
       # docker build & push to production
-      - name: Docker build & push to prod
+      - name: Docker login, build, and push to prod
         if: contains(github.ref, 'master')
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -81,7 +81,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
       # docker build & push to develop
-      - name: Docker build & push to dev
+      - name: Docker login, Docker build & push to dev
         if: contains(github.ref, 'dev')
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
