@@ -72,6 +72,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      # 기존 설치된 도커 환경 사용
+      - name: Set up Docker
+        uses: actions/setup-docker@v2
+
       # docker build & push to production
       - name: Docker login, build, and push to prod
         if: contains(github.ref, 'master')
