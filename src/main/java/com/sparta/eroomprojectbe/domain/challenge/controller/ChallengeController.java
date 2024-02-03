@@ -84,7 +84,9 @@ public class ChallengeController {
             if (sortBy != null && !sortBy.isEmpty()) {
                 if ("popular".equals(sortBy)) {
                     responseDto = challengeService.getPopularChallenge();
-                } else {
+                } else if("latest".equals(sortBy)) {
+                    responseDto = challengeService.getLatestChallenge();
+                } else{
                     responseDto = challengeService.getLatestChallenge();
                 }
             } else if (category != null && !category.isEmpty()) {

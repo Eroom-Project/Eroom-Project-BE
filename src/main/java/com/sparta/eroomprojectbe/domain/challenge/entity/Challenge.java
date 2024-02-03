@@ -41,9 +41,9 @@ public class Challenge extends Timestamped{
     private String authExplanation;
 
     @Column(nullable = false)
-    private int limitAttendance;
+    private short limitAttendance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     private String thumbnailImageUrl;
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)

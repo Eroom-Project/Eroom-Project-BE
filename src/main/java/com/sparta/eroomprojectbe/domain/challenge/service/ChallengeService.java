@@ -112,7 +112,7 @@ public class ChallengeService {
     /**
      * 카테고리별로 조회하는 서비스 메서드
      *
-     * @param category IT, 외국어, 수학, 과학, 인문, 예체능
+     * @param category IT, 외국어, 수학, 과학, 인문, 예체능, 기타
      * @return param값과 일치하는 카테고리를 가진 챌린지 리스트, 조회 성공 여부 메세지, httpStatus
      */
     public ChallengeAllResponseDto getCategoryChallenge(String category) {
