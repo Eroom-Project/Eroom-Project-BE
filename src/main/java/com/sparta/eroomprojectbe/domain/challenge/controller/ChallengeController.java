@@ -5,6 +5,7 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeCreateResponseDto
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeDataResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
+import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.Role.SortRole;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
@@ -80,7 +81,7 @@ public class ChallengeController {
      */
     @GetMapping("/challenge")
     public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(@RequestParam(required = false) SortRole sortBy,
-                                                                   @RequestParam(required = false) String category,
+                                                                   @RequestParam(required = false) CategoryRole category,
                                                                    @RequestParam(required = false) String query) {
 
         ChallengeAllResponseDto responseDto;
@@ -96,7 +97,7 @@ public class ChallengeController {
                     default:
                         responseDto = challengeService.getLatestChallenge();
                 }
-            } else if (category != null && !category.isEmpty()) {
+            } else if (category != null) {
                 responseDto = challengeService.getCategoryChallenge(category);
             } else if (query != null && !query.isEmpty()) {
                 responseDto = challengeService.getQueryChallenge(query);
