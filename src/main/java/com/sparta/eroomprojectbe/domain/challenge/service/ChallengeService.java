@@ -3,6 +3,7 @@ package com.sparta.eroomprojectbe.domain.challenge.service;
 import com.sparta.eroomprojectbe.domain.challenge.dto.*;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
+import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.Role.ChallengerRole;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
@@ -115,9 +116,9 @@ public class ChallengeService {
      * @param category IT, 외국어, 수학, 과학, 인문, 예체능, 기타
      * @return param값과 일치하는 카테고리를 가진 챌린지 리스트, 조회 성공 여부 메세지, httpStatus
      */
-    public ChallengeAllResponseDto getCategoryChallenge(String category) {
+    public ChallengeAllResponseDto getCategoryChallenge(CategoryRole category) {
         try {
-            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category);
+            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category.name());
             List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallenges.stream()
                     .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge)))
                     .collect(Collectors.toList());

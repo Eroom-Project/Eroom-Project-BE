@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.challenge.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
@@ -25,7 +26,7 @@ public class Challenge extends Timestamped{
     @Column(nullable = false)
     private String category;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)
@@ -37,7 +38,7 @@ public class Challenge extends Timestamped{
     @Column(nullable = false)
     private String frequency;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String authExplanation;
 
     @Column(nullable = false)
@@ -47,7 +48,7 @@ public class Challenge extends Timestamped{
     private String thumbnailImageUrl;
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonBackReference
     private List<Challenger> challengers;
 
 
