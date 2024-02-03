@@ -5,10 +5,14 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeCreateResponseDto
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeDataResponseDto;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
+import com.sparta.eroomprojectbe.domain.challenger.Role.SortRole;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.sparta.eroomprojectbe.domain.challenger.Role.SortRole.LATEST;
+import static com.sparta.eroomprojectbe.domain.challenger.Role.SortRole.POPULAR;
 
 @RestController
 @RequestMapping("/api")
@@ -75,19 +79,22 @@ public class ChallengeController {
      * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
      */
     @GetMapping("/challenge")
-    public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(@RequestParam(required = false) String sortBy,
+    public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(@RequestParam(required = false) SortRole sortBy,
                                                                    @RequestParam(required = false) String category,
                                                                    @RequestParam(required = false) String query) {
 
         ChallengeAllResponseDto responseDto;
         try {
-            if (sortBy != null && !sortBy.isEmpty()) {
-                if ("popular".equals(sortBy)) {
-                    responseDto = challengeService.getPopularChallenge();
-                } else if("latest".equals(sortBy)) {
-                    responseDto = challengeService.getLatestChallenge();
-                } else{
-                    responseDto = challengeService.getLatestChallenge();
+            if (sortBy != null) {
+                switch (sortBy) {
+                    case POPULAR:
+                        responseDto = challengeService.getPopularChallenge();
+                        break;
+                    case LATEST:
+                        responseDto = challengeService.getLatestChallenge();
+                        break;
+                    default:
+                        responseDto = challengeService.getLatestChallenge();
                 }
             } else if (category != null && !category.isEmpty()) {
                 responseDto = challengeService.getCategoryChallenge(category);
