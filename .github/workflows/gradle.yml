@@ -12,7 +12,9 @@ permissions:
 
 jobs:
   CI-CD:
-    runs-on: ubuntu-latest
+    runs-on: spring-container
+    container:
+      image: eunchaelyu/eroom
     steps:
 
       # JDK setting - github actions에서 사용할 JDK 설정 (프로젝트나 AWS의 java 버전과 달라도 무방)
@@ -81,16 +83,12 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
       # docker build & push to develop
-      - name: Docker login, Docker build & push to dev
+      - name: Docker build & push to dev
         if: contains(github.ref, 'dev')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/eroom-dev .
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-dev
-          
-
-      - name: Check Docker Version
-        run: docker --version
 
       ## deploy to production
       - name: Deploy to prod
