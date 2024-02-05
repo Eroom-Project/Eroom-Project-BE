@@ -1,11 +1,14 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
+import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.MemberInfoDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
+import com.sparta.eroomprojectbe.global.dto.ResponseDto;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -40,15 +43,14 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signup(requestDto));
     }
 
-    // 회원 관련 정보 받기
-    @GetMapping("/user-info")
-    @ResponseBody
-    public MemberInfoDto getMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String userEmail = userDetails.getMember().getEmail();
-        MemberRoleEnum role = userDetails.getMember().getRole();
-
-        boolean isAdmin = (role == MemberRoleEnum.ADMIN);
-
-        return new MemberInfoDto(userEmail, isAdmin);
+    @GetMapping("/test")
+    public String test(){
+        return "hello";
     }
+
+//    // 토큰 재발행
+//    @PostMapping("/token")
+//    public ResponseEntity<String> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res){
+//        return memberService.reissueToken(userDetails.getMember().getEmail(), res);
+//    }
 }
