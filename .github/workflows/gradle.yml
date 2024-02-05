@@ -62,10 +62,10 @@ jobs:
         #          echo "${{ secrets.YML_DEV }}" > ./application-dev.yml
         #        shell: bash
 
-#      # gradlew 스크립트에 실행 권한 부여
-#      - name: gradlew 스크립트에 실행 권한 부여
-#        run: |
-#          chmod +x ./gradlew
+      # gradlew 스크립트에 실행 권한 부여
+      - name: gradlew 스크립트에 실행 권한 부여
+        run: |
+          chmod +x ./gradlew
 
       # gradle build
       - name: Build with Gradle
