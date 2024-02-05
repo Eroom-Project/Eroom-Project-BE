@@ -75,6 +75,7 @@ jobs:
           username: ${{ secrets.USERNAME }} # ubuntu
           port: 22
           key: ${{ secrets.PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           envs: GITHUB_SHA
           script: |
             sudo docker ps
