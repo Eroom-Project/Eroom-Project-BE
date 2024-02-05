@@ -64,7 +64,7 @@ jobs:
 
       ## pull to production
       - name: Pull to prod
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.4
         id: pull-prod
         if: |
           contains(github.ref, 'master') ||
