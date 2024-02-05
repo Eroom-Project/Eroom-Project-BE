@@ -57,17 +57,50 @@ public class AuthService {
        return null;
     }
 
+    /**
+     * 챌린지 인증 등록하는 서비스 메서드
+     * @param requestDto authContents,authImageUrl,authVideoUrl, authStatus
+     * @param challengerId 인증하려는 challengerId
+     * @return 챌린지 인증 등록 성공여부 message, httpStatus
+     */
     @Transactional
     public ChallengerCreateResponseDto createMemberAuth(AuthRequestDto requestDto, Long challengerId) { // 챌린지 인증(member) 등록
-        // Challenger DB에 존재하는 Challenger 인지 확인
-        Challenger challenger = challengerRepository.findById(challengerId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        // Auth(챌린지 인증) 객체 생성 후 Auth DB에 저장
-        Auth savedAuth = authRepository.save(new Auth(requestDto, challenger));
-
-        return new ChallengerCreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
+        try {
+            // Challenger DB에 존재하는 Challenger 인지 확인
+            Challenger challenger = challengerRepository.findById(challengerId)
+                    .orElseThrow(IllegalArgumentException::new);
+            // Auth(챌린지 인증) 객체 생성 후 Auth DB에 저장
+            Auth savedAuth = authRepository.save(new Auth(requestDto, challenger));
+            if(savedAuth != null && savedAuth.getAuthId() != null){
+                return new ChallengerCreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
+            }else {
+                return new ChallengerCreateResponseDto("챌린지 인증 등록 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+//    @Transactional
+//    public ChallengerCreateResponseDto createMemberAuth(AuthRequestDto requestDto, Long challengerId, Member member) { // 챌린지 인증(member) 등록
+//        try {
+//            // Challenger DB에 존재하는 Challenger 인지 확인
+//            Challenger challenger = challengerRepository.findById(challengerId)
+//                    .orElseThrow(IllegalArgumentException::new);
+//            // Challenger를 신청한 멤버인지 확인
+//            if(challenger.getMember().getMemberId() != member.getMemberId()){
+//               return new ChallengerCreateResponseDto("해당 챌린지를 신청한 유저가 아닙니다.", HttpStatus.BAD_REQUEST);
+//            }
+//            // Auth(챌린지 인증) 객체 생성 후 Auth DB에 저장
+//            Auth savedAuth = authRepository.save(new Auth(requestDto, challenger));
+//            if(savedAuth != null && savedAuth.getAuthId() != null){
+//                return new ChallengerCreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
+//            }else {
+//                return new ChallengerCreateResponseDto("챌린지 인증 등록 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        } catch (Exception e) {
+//            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * 유저가 챌린지를 신청하는 서비스 메서드

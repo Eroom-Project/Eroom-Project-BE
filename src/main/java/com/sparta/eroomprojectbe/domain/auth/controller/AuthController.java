@@ -39,11 +39,26 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    /**
+     * 챌린지 인등 등록하는 컨트롤러 메서드
+     * @param requestDto authContents,authImageUrl,authVideoUrl, authStatus
+     * @param challengerId 인증하려는 challengerId
+     * @return 챌린지 인증 등록 성공여부 message, httpStatus
+     */
     @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
-    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
+    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
+                                                                        @PathVariable Long challengerId) {
         ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
+//    @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
+//    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
+//                                                                        @PathVariable Long challengerId,
+//                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
 
     /**
      * 유저가 챌린지를 신청하는 컨트롤러 메서드
