@@ -2,6 +2,8 @@ package com.sparta.eroomprojectbe.domain.auth.entity;
 
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
+import com.sparta.eroomprojectbe.global.rollenum.AuthRole;
+import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +38,7 @@ public class Auth extends Timestamped{
         this.authContents= requestDto.getAuthContents();
         this.authImageUrl= requestDto.getAuthImageUrl();
         this.authVideoUrl= requestDto.getAuthVideoUrl();
-        this.authStatus= requestDto.getAuthStatus();
+        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
         this.challenger=challenger;
     }
 }
