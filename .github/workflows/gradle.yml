@@ -91,3 +91,4 @@ jobs:
         run: |
           sh /deploy.sh
           sudo docker image prune -f
+
