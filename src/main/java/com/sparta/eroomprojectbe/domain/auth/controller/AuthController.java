@@ -40,8 +40,8 @@ public class AuthController {
     }
 
     @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
-    public ResponseEntity<AuthResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
-        AuthResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);
+    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
+        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
