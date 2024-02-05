@@ -2,6 +2,7 @@ package com.sparta.eroomprojectbe.domain.auth.controller;
 
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthResponseDto;
+import com.sparta.eroomprojectbe.domain.auth.dto.ChallengerCreateResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +45,20 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PostMapping("/{challengerId}") //챌린지 신청
-    public ResponseEntity<AuthResponseDto> createChallenger(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
-        AuthResponseDto responseDto = authService.createChallenger(requestDto, challengerId);
+    /**
+     * 유저가 챌린지를 신청하는 컨트롤러 메서드
+     * @param challengeId 신청하려는 챌린지 id
+     * @return 챌린지 신청 성공여부 message, httpStatus
+     */
+    @PostMapping("/{challengeId}")
+    public ResponseEntity<ChallengerCreateResponseDto> createChallenger( @PathVariable Long challengeId) {
+        ChallengerCreateResponseDto responseDto = authService.createChallenger(challengeId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+//    @PostMapping("/{challengeId}")
+//    public ResponseEntity<ChallengerCreateResponseDto> createChallenger( @PathVariable Long challengeId,
+//                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        ChallengerCreateResponseDto responseDto = authService.createChallenger(challengeId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
 }
