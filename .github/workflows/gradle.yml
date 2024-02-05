@@ -79,7 +79,7 @@ jobs:
             sudo docker ps
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom_prod
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
   docker-pull-and-run:
     runs-on: [self-hosted, prod]
