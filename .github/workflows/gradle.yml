@@ -75,10 +75,10 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker ps
+            docker ps
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
+            docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
   docker-pull-and-run:
     runs-on: [self-hosted, prod]
@@ -88,4 +88,4 @@ jobs:
       - name : 배포 스크립트 실행
         run: |
           sh /deploy.sh
-          sudo docker image prune -f
+          docker image prune -f
