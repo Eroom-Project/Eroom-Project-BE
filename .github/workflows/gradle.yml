@@ -63,7 +63,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
       ## pull to production
       - name: Pull to prod
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@master
         id: pull-prod
         if: |
           contains(github.ref, 'master') ||
@@ -75,11 +75,10 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            whoami
-#            sudo docker ps
-#            docker stop $(docker ps -a -q)
-#            docker rm $(docker ps -a -q)
-#            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
+            sudo docker ps
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
   docker-pull-and-run:
     runs-on: [self-hosted, prod]
