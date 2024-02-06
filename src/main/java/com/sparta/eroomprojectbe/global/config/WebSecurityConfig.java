@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -64,11 +65,10 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001", "https://www.eroom-challenge.com"));
+        configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+        configuration.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
         configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
-
-        // Preflight 요청을 위한 설정
-        configuration.setAllowedMethods(Arrays.asList("OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -88,8 +88,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/main").permitAll()
-                        .requestMatchers("/api/signup","/api/login", "/api/kakao-login", "/api/challenge/**","error").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/", "/main").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/api/kakao-login", "/api/challenge/**","error").permitAll()
                         .anyRequest().permitAll()
         );
 

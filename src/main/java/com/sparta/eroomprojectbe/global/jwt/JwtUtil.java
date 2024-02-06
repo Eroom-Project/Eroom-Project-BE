@@ -1,7 +1,7 @@
 package com.sparta.eroomprojectbe.global.jwt;
 
+import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -27,12 +27,22 @@ import java.util.Date;
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_TOKEN_HEADER = "Refresh-token";
+
     // 사용자 권한 값의 KEY
     public static final String AUTHORIZATION_KEY = "auth";
+
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
+
     // 토큰 만료시간
     private final long TOKEN_TIME = 24 * 60 * 60 * 1000L;
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public JwtUtil(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -48,37 +58,52 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // 토큰 생성
-    public String createToken(String email, MemberRoleEnum role) {
-        Date date = new Date();
+    // Access Token 생성
+    public String createAccessToken(String email, MemberRoleEnum role) {
+        Date now = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, role) // 사용자 권한
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
+                        .setExpiration(new Date(now.getTime() + TOKEN_TIME)) // 만료 시간
+                        .setIssuedAt(now) // 발급일
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .compact();
+    }
+
+    // Refresh Token 생성
+    public String createRefreshToken(String email, MemberRoleEnum role) {
+        Date now = new Date();
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(email) // 사용자 식별자값(ID)
+                        .setExpiration(new Date(now.getTime() + (24 * TOKEN_TIME))) // 만료 시간
+                        .setIssuedAt(now) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
     }
 
     //생성된 JWT를 Cookie에 저장
-    public void addJwtToCookie(String token, HttpServletResponse res) throws UnsupportedEncodingException {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
-            cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            res.addCookie(cookie);
+    public void addJwtToCookie(String token, HttpServletResponse res, String value) throws UnsupportedEncodingException {
+        token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+        Cookie cookie = new Cookie(value, token);
+
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        res.addCookie(cookie);
     }
 
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) throws UnsupportedEncodingException {
         Cookie[] cookies = req.getCookies();
-        if(cookies != null) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8");
+                if (cookie.getName().equals(AUTHORIZATION_HEADER) || cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
+                    return URLDecoder.decode(cookie.getValue(), "UTF-8");
                 }
             }
         }

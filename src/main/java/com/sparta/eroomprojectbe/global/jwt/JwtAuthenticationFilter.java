@@ -3,7 +3,6 @@ package com.sparta.eroomprojectbe.global.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
@@ -48,8 +48,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         MemberRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getMember().getRole();
-        String token = jwtUtil.createToken(username, role);
-        jwtUtil.addJwtToCookie(token, response);
+        String accessToken = jwtUtil.createAccessToken(username, role);
+        String refreshToken = jwtUtil.createRefreshToken(username, role);
+
+        jwtUtil.addJwtToCookie(accessToken, response, JwtUtil.AUTHORIZATION_HEADER);
+        jwtUtil.addJwtToCookie(refreshToken, response, JwtUtil.REFRESH_TOKEN_HEADER);
 
         log.info("사용자 '{}'의 로그인 성공 및 JWT 생성", username);
     }

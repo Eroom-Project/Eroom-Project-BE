@@ -23,4 +23,11 @@ public class RefreshToken {
 
     @Column(nullable = false)
     private String keyEmail;
+
+    @Column(nullable = false)
+    private Long expiration;
+
+    public void setExpiration(long expiration) {
+        this.expiration = expiration;
+    }
 }
