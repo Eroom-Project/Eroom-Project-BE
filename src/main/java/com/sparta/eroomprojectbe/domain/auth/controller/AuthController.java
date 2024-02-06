@@ -13,18 +13,35 @@ import java.util.List;
 public class AuthController {
     private final AuthService authService;
     public AuthController(AuthService authService){this.authService = authService;}
+
+    /**
+     * 챌린지 인증 전체 조회하는 컨트롤러 메서드
+     * @return 챌린지 List, 조회 성공여부 message, httpStatus
+     */
     @GetMapping("/details") // 챌린지 인증(member) 전체 조회
-    public ResponseEntity<List<AuthResponseDto>> getMemberAuthList() {
-        List<AuthResponseDto> responseList = authService.getMemberAuthList();
+    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
+        AuthAllResponseDto responseList = authService.getMemberAuthList();
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
+    /**
+     * 해당 챌린지 인증 전체 조회하는 컨트롤러 메서드
+     * @param challengerId 조회하려는 챌린저 id
+     * @return 해당 챌린지 List, 조회 성공여부 message, httpStatus
+     */
     @GetMapping("/{challengerId}/details") // 해당 챌린지 인증(member) 전체 조회
-    public ResponseEntity<List<AuthResponseDto>> getChallengerAuthList(@PathVariable Long challengerId) {
-        List<AuthResponseDto> responseList = authService.getChallengerAuthList(challengerId);
+    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengerId) {
+        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
+    /**
+     * 리더가 챌린지 인증 허가 및 불가 처리하는 컨트롤러 메서드
+     * @param requestDto DENIED, APPROVED
+     * @param challengerId 선택한 챌린저 id
+     * @param authId 변경하려는 인증 id
+     * @return 인증 수정 후 data, 인증 수정 성공 여부 message, httpStatus
+     */
     @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
     public ResponseEntity<AuthDataResponseDto> updateLeaderAuth(@RequestBody AuthLeaderRequestDto requestDto,
                                                             @PathVariable Long challengerId,

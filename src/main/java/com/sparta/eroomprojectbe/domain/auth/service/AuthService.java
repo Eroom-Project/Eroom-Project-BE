@@ -9,6 +9,7 @@ import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +28,37 @@ public class AuthService {
         this.challengeRepository = challengeRepository;
     }
 
-    public List<AuthResponseDto> getMemberAuthList()  { // 챌린지 인증(member) 전체 조회
-        List<Auth> authList = authRepository.findAllByOrderByCreatedAtDesc();
-        List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
-        return authResponseList;
+    /**
+     * 챌린지 전체 조회
+     * @return 챌린지 인증 List, message, httpStatus
+     */
+    public AuthAllResponseDto getMemberAuthList()  { // 챌린지 인증(member) 전체 조회
+        try {
+            List<Auth> authList = authRepository.findAllByOrderByCreatedAtDesc();
+            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
+            return new AuthAllResponseDto(authResponseList, "챌린지 인증 전체 조회 성공", HttpStatus.OK);
+        }catch (Exception e){
+            return new AuthAllResponseDto(null,"챌린지 인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    public List<AuthResponseDto> getChallengerAuthList(Long challengerId)  { // 해당 챌린지 인증(member) 전체 조회
-        // Challenger DB에 존재하는 Challenger 인지 확인
-        Challenger challenger = challengerRepository.findById(challengerId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        // Challenger 엔티티의 ChallengeId와 일치하는 Auth 리스트 조회
-        List<Auth> authList = authRepository.findAllByAuthIdOrderByCreatedAtDesc(challenger.getChallenge().getChallengeId());
-
-        // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
-        List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
-        return authResponseList;
+    /**
+     * 선택한 챌린지 인증 전체 조회
+     * @param challengerId 조회하려는 챌린저의 id
+     * @return 선택한 챌린지의 인증 List, 조회성공여부 message, httpStatus
+     */
+    public AuthAllResponseDto getChallengerAuthList(Long challengerId)  { // 해당 챌린지 인증(member) 전체 조회
+        try {
+            // Challenger DB에 존재하는 Challenger 인지 확인
+            Challenger challenger = challengerRepository.findById(challengerId)
+                    .orElseThrow(IllegalArgumentException::new);
+            // Challenger 엔티티의 ChallengeId와 일치하는 Auth 리스트 조회
+            List<Auth> authList = authRepository.findAllByChallengerOrderByCreatedAtDesc(challenger);
+            // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
+            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
+            return new AuthAllResponseDto(authResponseList,"인증 전체 조회 성공", HttpStatus.OK);
+        } catch (Exception e){
+            return new AuthAllResponseDto(null, "인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -63,9 +78,9 @@ public class AuthService {
         );
         try {
             if(challenger.getRole() == ChallengerRole.LEADER){
-                auth.leaderUpdate(requestDto);
+                auth.leaderUpdate(auth,requestDto);
                 AuthResponseDto responseDto = new AuthResponseDto(auth);
-                return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
+                return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.OK);
             }else {
                 return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
             }
@@ -119,7 +134,7 @@ public class AuthService {
            auth.update(requestDto, challenger);
            AuthResponseDto responseDto = new AuthResponseDto(auth);
            if(auth != null && auth.getAuthId() != null){
-               return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 성공", HttpStatus.CREATED);
+               return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 성공", HttpStatus.OK);
            }else {
                return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
            }

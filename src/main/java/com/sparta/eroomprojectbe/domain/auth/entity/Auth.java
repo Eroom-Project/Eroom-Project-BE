@@ -50,7 +50,11 @@ public class Auth extends Timestamped{
         this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
         this.challenger= challenger;
     }
-    public void leaderUpdate(AuthLeaderRequestDto requestDto) {
+    public void leaderUpdate(Auth auth, AuthLeaderRequestDto requestDto) {
+        this.authContents = auth.getAuthStatus();
+        this.authImageUrl = auth.authImageUrl;
+        this.authVideoUrl = auth.authVideoUrl;
+        this.challenger = auth.challenger;
         this.authStatus = requestDto.getAuthStatus();
     }
 }
