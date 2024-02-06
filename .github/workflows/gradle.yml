@@ -76,7 +76,9 @@ jobs:
           port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
-          script: |
+          script:
+            sudo apt-get update
+            sudo apt-get install -y docker.io
             sudo docker ps
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
