@@ -2,6 +2,7 @@ package com.sparta.eroomprojectbe.domain.auth.entity;
 
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthLeaderRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
+import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.global.rollenum.AuthRole;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
@@ -34,6 +35,10 @@ public class Auth extends Timestamped{
     @ManyToOne
     @JoinColumn(name = "challenger_id")
     private Challenger challenger;
+
+    @ManyToOne
+    @JoinColumn(name = "challenge_id")
+    private Challenge challenge;
 
     public Auth(AuthRequestDto requestDto, Challenger challenger) {
         this.authContents= requestDto.getAuthContents();
