@@ -1,3 +1,4 @@
+
 # github repository actions 페이지에 나타날 이름
 name: CI/CD using github actions & docker
 
@@ -33,7 +34,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             $-gradle-
-
       # 환경별 yml 파일 생성 - application.yml
       - name: make application.yml
         if: |
@@ -48,7 +48,6 @@ jobs:
       - name: gradlew 스크립트에 실행 권한 부여
         run: |
           chmod +x ./gradlew
-
       # gradle build
       - name: Build with Gradle
         run: ./gradlew build -x test
@@ -62,10 +61,9 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod .
           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
-
       ## pull to production
       - name: Pull to prod
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.4
         id: pull-prod
         if: |
           contains(github.ref, 'master') ||
@@ -76,12 +74,11 @@ jobs:
           port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
-          script:
+          script: |
             sudo docker ps
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
-
   docker-pull-and-run:
     runs-on: [self-hosted, prod]
     if: ${{ needs.CI-CD.result == 'success' }}
@@ -91,4 +88,3 @@ jobs:
         run: |
           sh /deploy.sh
           sudo docker image prune -f
-
