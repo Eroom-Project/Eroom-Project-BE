@@ -1,18 +1,10 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
-import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.MemberInfoDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
-import com.sparta.eroomprojectbe.global.dto.ResponseDto;
-import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
-import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
