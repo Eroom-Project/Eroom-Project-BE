@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.controller;
 
+import com.sparta.eroomprojectbe.domain.auth.dto.AuthDataResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.ChallengerCreateResponseDto;
@@ -33,11 +34,29 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PutMapping("/{challengerId}/details") // 챌린지 인증 수정(member)
-    public ResponseEntity<AuthResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId) {
-        AuthResponseDto responseDto = authService.updateMemberAuth(requestDto, challengerId);
+    /**
+     * 챌린지인증 수정하는 컨트롤러 메서드
+     * @param requestDto authContents, authImageUrl, authVideoUrl, authStatus
+     * @param challengerId 수정하려는 챌린저 아이디
+     * @param authId 수정하려는 인증아이디
+     * @return HttpStatus, (수정한 내용 data, 수정성공여부 message, httpStatus)
+     */
+    @PutMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
+    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
+                                                                @PathVariable Long challengerId,
+                                                                @PathVariable Long authId) {
+        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengerId, authId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+//    @PutMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
+//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
+//                                                                @PathVariable Long challengerId,
+//                                                                @PathVariable Long authId,
+//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengerId, authId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
+
 
     /**
      * 챌린지 인등 등록하는 컨트롤러 메서드
@@ -45,7 +64,7 @@ public class AuthController {
      * @param challengerId 인증하려는 challengerId
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
-    @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
+    @PostMapping("/{challengerId}/auth") // 챌린지 인증(member) 등록
     public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
                                                                         @PathVariable Long challengerId) {
         ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);

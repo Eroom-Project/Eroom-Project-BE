@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.service;
 
+import com.sparta.eroomprojectbe.domain.auth.dto.AuthDataResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthResponseDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.ChallengerCreateResponseDto;
@@ -9,6 +10,7 @@ import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -52,10 +54,60 @@ public class AuthService {
     public AuthResponseDto updateLeaderAuth(AuthRequestDto requestDto, Long challengerId, Long authId) { // 챌린지 인증 허가 및 불가 처리(leader)
         return null;
     }
+
+    /**
+     * 챌린저인증 수정하는 서비스 메서드
+     * @param requestDto authContents, authImageUrl, authVideoUrl, authStatus
+     * @param challengerId 수정하려는 챌린저 아이디
+     * @param authId 수정하려는 Auth 아이디
+     * @return 수정후 인증 내용 data, 수정성공여부 message, httpStatus
+     */
     @Transactional
-    public AuthResponseDto updateMemberAuth(AuthRequestDto requestDto, Long challengerId) { // 챌린지 인증 수정(member)
-       return null;
+    public AuthDataResponseDto updateMemberAuth(AuthRequestDto requestDto, Long challengerId, Long authId) { // 챌린지 인증 수정(member)
+       try {
+           // auth 존재 여부 확인
+           Auth auth = authRepository.findById(authId).orElseThrow(
+                   ()-> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
+           );
+           Challenger challenger = challengerRepository.findById(challengerId).orElseThrow(
+                   ()-> new IllegalArgumentException("해당 챌린저가 존재하지 않습니다.")
+           );
+           auth.update(requestDto, challenger);
+           AuthResponseDto responseDto = new AuthResponseDto(auth);
+           if(auth != null && auth.getAuthId() != null){
+               return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 성공", HttpStatus.CREATED);
+           }else {
+               return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+           }
+       }catch (Exception e){
+           return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
+//    @Transactional
+//    public AuthDataResponseDto updateMemberAuth(AuthRequestDto requestDto, Long challengerId, Long authId, Member member) { // 챌린지 인증 수정(member)
+//        try {
+//            // auth 존재 여부 확인
+//            Auth auth = authRepository.findById(authId).orElseThrow(
+//                    ()-> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
+//            );
+//            Challenger challenger = challengerRepository.findById(challengerId).orElseThrow(
+//                    ()-> new IllegalArgumentException("해당 챌린저가 존재하지 않습니다.")
+//            );
+//            auth.update(requestDto, challenger);
+//            AuthResponseDto responseDto = new AuthResponseDto(auth);
+//            if(auth != null && auth.getAuthId() != null){
+//                if(member.getMemberId() == challenger.getMember().getMemberId()){
+//                    return new AuthDataResponseDto(responseDto,"챌린지 인증 등록 성공", HttpStatus.CREATED);
+//                }else {
+//                    return new AuthDataResponseDto(null,"해당 인증을 작성하지 않았습니다", HttpStatus.BAD_REQUEST);
+//                }
+//            } else {
+//                return new AuthDataResponseDto(responseDto,"챌린지 인증 등록 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }catch (Exception e){
+//            return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * 챌린지 인증 등록하는 서비스 메서드

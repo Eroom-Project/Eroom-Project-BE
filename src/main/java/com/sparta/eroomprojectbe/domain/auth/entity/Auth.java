@@ -41,4 +41,12 @@ public class Auth extends Timestamped{
         this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
         this.challenger=challenger;
     }
+
+    public void update(AuthRequestDto requestDto, Challenger challenger) {
+        this.authContents = requestDto.getAuthContents();
+        this.authImageUrl = requestDto.getAuthImageUrl();
+        this.authVideoUrl = requestDto.getAuthVideoUrl();
+        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
+        this.challenger= challenger;
+    }
 }
