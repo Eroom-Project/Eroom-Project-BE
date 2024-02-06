@@ -43,10 +43,23 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signup(requestDto));
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "hello";
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name = "Refresh_token") String refreshToken){
+        return ResponseEntity.ok(memberService.logout(refreshToken));
     }
+
+    // 이메일 중복 확인
+    @PostMapping("/auth/signup/email")
+    public ResponseEntity<String> emailCheck(@RequestBody String email) {
+        return ResponseEntity.ok(memberService.emailCheck(email));
+    }
+
+    // 닉네임 중복 확인
+    @PostMapping("/auth/signup/nickname")
+    public ResponseEntity<String> nicknameCheck(@RequestBody String nickname) {
+        return ResponseEntity.ok(memberService.nicknameCheck(nickname));
+    }
+
 
 //    // 토큰 재발행
 //    @PostMapping("/token")
