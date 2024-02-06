@@ -1,9 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.controller;
 
-import com.sparta.eroomprojectbe.domain.auth.dto.AuthDataResponseDto;
-import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
-import com.sparta.eroomprojectbe.domain.auth.dto.AuthResponseDto;
-import com.sparta.eroomprojectbe.domain.auth.dto.ChallengerCreateResponseDto;
+import com.sparta.eroomprojectbe.domain.auth.dto.*;
 import com.sparta.eroomprojectbe.domain.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +26,20 @@ public class AuthController {
     }
 
     @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
-    public ResponseEntity<AuthResponseDto> updateLeaderAuth(@RequestBody AuthRequestDto requestDto, @PathVariable Long challengerId,@PathVariable Long authId) {
-        AuthResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengerId, authId);
+    public ResponseEntity<AuthDataResponseDto> updateLeaderAuth(@RequestBody AuthLeaderRequestDto requestDto,
+                                                            @PathVariable Long challengerId,
+                                                            @PathVariable Long authId) {
+        AuthDataResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengerId, authId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+//    @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
+//    public ResponseEntity<AuthDataResponseDto> updateLeaderAuth(@RequestBody AuthLeaderRequestDto requestDto,
+//                                                                @PathVariable Long challengerId,
+//                                                                @PathVariable Long authId,
+//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails)) {
+//        AuthDataResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengerId, authId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
 
     /**
      * 챌린지인증 수정하는 컨트롤러 메서드

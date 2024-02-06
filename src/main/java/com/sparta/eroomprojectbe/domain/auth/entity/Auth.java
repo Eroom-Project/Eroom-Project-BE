@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.entity;
 
+import com.sparta.eroomprojectbe.domain.auth.dto.AuthLeaderRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.global.rollenum.AuthRole;
@@ -48,5 +49,8 @@ public class Auth extends Timestamped{
         this.authVideoUrl = requestDto.getAuthVideoUrl();
         this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
         this.challenger= challenger;
+    }
+    public void leaderUpdate(AuthLeaderRequestDto requestDto) {
+        this.authStatus = requestDto.getAuthStatus();
     }
 }
