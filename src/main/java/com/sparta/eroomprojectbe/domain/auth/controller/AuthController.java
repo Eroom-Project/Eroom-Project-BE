@@ -23,6 +23,12 @@ public class AuthController {
         AuthAllResponseDto responseList = authService.getMemberAuthList();
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
+//    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
+//    @Secured("ROLE_Member")
+//    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
+//        AuthAllResponseDto responseList = authService.getMemberAuthList();
+//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+//    }
 
     /**
      * 해당 챌린지 인증 전체 조회하는 컨트롤러 메서드
@@ -34,6 +40,12 @@ public class AuthController {
         AuthAllResponseDto responseList = authService.getChallengerAuthList(challengerId);
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
+//    @GetMapping("/{challengerId}/details") // 해당 챌린지 인증(member) 전체 조회
+//    @Secured("ROLE_Member")
+//    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengerId) {
+//        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengerId);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+//    }
 
     /**
      * 리더가 챌린지 인증 허가 및 불가 처리하는 컨트롤러 메서드
@@ -50,6 +62,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 //    @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
+//    @Secured("ROLE_Member")
 //    public ResponseEntity<AuthDataResponseDto> updateLeaderAuth(@RequestBody AuthLeaderRequestDto requestDto,
 //                                                                @PathVariable Long challengerId,
 //                                                                @PathVariable Long authId,
@@ -73,6 +86,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 //    @PutMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
+//    @Secured("ROLE_Member")
 //    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
 //                                                                @PathVariable Long challengerId,
 //                                                                @PathVariable Long authId,
@@ -96,6 +110,7 @@ public class AuthController {
     }
 
 //    @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
+//    @Secured("ROLE_Member")
 //    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
 //                                                                        @PathVariable Long challengerId,
 //                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -114,6 +129,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 //    @PostMapping("/{challengeId}")
+//    @Secured("ROLE_Member")
 //    public ResponseEntity<ChallengerCreateResponseDto> createChallenger( @PathVariable Long challengeId,
 //                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        ChallengerCreateResponseDto responseDto = authService.createChallenger(challengeId, userDetails.getMember());
