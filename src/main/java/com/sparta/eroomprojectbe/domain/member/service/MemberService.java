@@ -1,13 +1,11 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
-import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
-import com.sparta.eroomprojectbe.global.dto.ResponseDto;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
@@ -15,13 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
