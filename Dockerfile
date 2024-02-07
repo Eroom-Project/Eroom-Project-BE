@@ -14,3 +14,4 @@ COPY ${JAR_FILE} Eroom-Project-BE-0.0.1-SNAPSHOT.jar
 # 운영 및 개발에서 사용되는 환경 설정을 분리
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/Eroom-Project-BE-0.0.1-SNAPSHOT.jar"]
 
+
