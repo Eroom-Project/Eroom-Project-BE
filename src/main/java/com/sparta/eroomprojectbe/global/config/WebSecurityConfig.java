@@ -64,7 +64,7 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://eroom-project-fe.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://eroom-challenge.com", "https://www.eroom-challenge.com"));
         configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
         configuration.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
         configuration.setAllowCredentials(true);
