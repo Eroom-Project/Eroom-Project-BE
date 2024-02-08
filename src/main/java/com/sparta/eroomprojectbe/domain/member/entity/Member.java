@@ -1,5 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.entity;
 
+import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
+import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -14,7 +16,7 @@ public class Member {
     private Long memberId;
 
     @Email
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -24,10 +26,31 @@ public class Member {
     private String nickname;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private MemberRoleEnum role;
 
     @Column
-    private String profileImageURL;
+    private String profileImageUrl;
 
+    private Long kakaoId;
 
+    public Member(String email, String password, String nickname){
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = MemberRoleEnum.USER;
+    }
+
+    public Member(String email, String password, String nickname, Long kakaoId){
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = MemberRoleEnum.USER;
+        this.kakaoId = kakaoId;
+    }
+
+    public Member kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
 }
