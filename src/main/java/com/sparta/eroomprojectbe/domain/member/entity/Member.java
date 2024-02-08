@@ -32,10 +32,25 @@ public class Member {
     @Column
     private String profileImageUrl;
 
+    private Long kakaoId;
+
     public Member(String email, String password, String nickname){
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
+    }
+
+    public Member(String email, String password, String nickname, Long kakaoId){
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = MemberRoleEnum.USER;
+        this.kakaoId = kakaoId;
+    }
+
+    public Member kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }
