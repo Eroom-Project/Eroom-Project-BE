@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
@@ -88,12 +89,12 @@ public class MemberService {
     }
 
     // 이메일 중복 확인
-    public String emailCheck(String email){
+    public String emailCheck(@RequestBody String email){
         return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
     }
 
     // 닉네임 중복 확인
-    public String nicknameCheck(String nickname) {
+    public String nicknameCheck(@RequestBody  String nickname) {
         return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
     }
 }
