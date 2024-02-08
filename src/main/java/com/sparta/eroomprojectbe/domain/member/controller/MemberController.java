@@ -1,14 +1,26 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
+import com.sparta.eroomprojectbe.domain.member.dto.MemberInfoDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
+import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
+import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
+import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
+import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
@@ -17,9 +29,11 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoService kakaoService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, KakaoService kakaoService) {
         this.memberService = memberService;
+        this.kakaoService = kakaoService;
     }
 
     @PostMapping("/signup")
@@ -52,10 +66,27 @@ public class MemberController {
         return ResponseEntity.ok(memberService.nicknameCheck(nickname));
     }
 
+    // 토큰 재발행
+    @PostMapping("/token")
+    public ResponseEntity<String> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
+        return memberService.reissueToken(userDetails.getMember().getEmail(), res);
+    }
 
-//    // 토큰 재발행
-//    @PostMapping("/token")
-//    public ResponseEntity<String> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res){
-//        return memberService.reissueToken(userDetails.getMember().getEmail(), res);
+    @GetMapping("/auth/callback/kakao")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
+//
+//    // 카카오 로그인
+//    @GetMapping("/auth/callback/kakao")
+//    public ResponseEntity<String> kakaoLogin(@RequestParam String code,
+//                                             HttpServletResponse response) {
+//        return ResponseUtil.response(kakaoService.kakaoLogin(code, response));
 //    }
+
 }
