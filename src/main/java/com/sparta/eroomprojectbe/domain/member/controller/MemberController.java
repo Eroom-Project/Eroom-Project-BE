@@ -55,13 +55,13 @@ public class MemberController {
     }
 
     // 이메일 중복 확인
-    @GetMapping("/auth/signup/email")
+    @GetMapping("/signup/email")
     public ResponseEntity<String> emailCheck(@RequestParam String email) {
         return ResponseEntity.ok(memberService.emailCheck(email));
     }
 
     // 닉네임 중복 확인
-    @GetMapping("/auth/signup/nickname")
+    @GetMapping("/signup/nickname")
     public ResponseEntity<String> nicknameCheck(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.nicknameCheck(nickname));
     }
