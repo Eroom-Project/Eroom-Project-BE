@@ -49,13 +49,13 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signup(requestDto));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity<?> logout(@CookieValue(name = "Refresh_token") String refreshToken){
         return ResponseEntity.ok(memberService.logout(refreshToken));
     }
 
     // 이메일 중복 확인
-    @GetMapping("/signup/email")
+    @GetMapping("/auth/signup/email")
     public ResponseEntity<String> emailCheck(@RequestParam String email) {
         return ResponseEntity.ok(memberService.emailCheck(email));
     }
