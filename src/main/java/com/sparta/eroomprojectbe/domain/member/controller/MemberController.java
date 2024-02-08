@@ -61,7 +61,7 @@ public class MemberController {
     }
 
     // 닉네임 중복 확인
-    @GetMapping("/signup/nickname")
+    @GetMapping("/auth/signup/nickname")
     public ResponseEntity<String> nicknameCheck(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.nicknameCheck(nickname));
     }
