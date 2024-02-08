@@ -46,6 +46,16 @@ public class MemberService {
         return new SignupResponseDto(memberRepository.save(member));
     }
 
+    // 이메일 중복 확인
+    public String emailCheck(String email){
+        return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
+    }
+
+    // 닉네임 중복 확인
+    public String nicknameCheck(String nickname) {
+        return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
+    }
+
     @Transactional
     public ResponseEntity<String> reissueToken(@CookieValue(name = JwtUtil.REFRESH_TOKEN_HEADER) String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException {
         if (jwtUtil.validateToken(refreshToken)) {
@@ -88,13 +98,5 @@ public class MemberService {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token이 유효하지 않습니다.");
     }
 
-    // 이메일 중복 확인
-    public String emailCheck(@RequestBody String email){
-        return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
-    }
 
-    // 닉네임 중복 확인
-    public String nicknameCheck(@RequestBody  String nickname) {
-        return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
-    }
 }
