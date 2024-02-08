@@ -41,13 +41,13 @@ public class MemberController {
     }
 
     // 이메일 중복 확인
-    @PostMapping("/auth/signup/email")
+    @PostMapping("/signup/email")
     public ResponseEntity<String> emailCheck(@RequestBody String email) {
         return ResponseEntity.ok(memberService.emailCheck(email));
     }
 
     // 닉네임 중복 확인
-    @PostMapping("/auth/signup/nickname")
+    @PostMapping("/signup/nickname")
     public ResponseEntity<String> nicknameCheck(@RequestBody String nickname) {
         return ResponseEntity.ok(memberService.nicknameCheck(nickname));
     }
