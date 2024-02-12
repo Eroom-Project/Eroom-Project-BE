@@ -91,22 +91,20 @@ jobs:
         with:
           username: ubuntu
           host: ${{ secrets.HOST_PROD }}
+          port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           script_stop: true
           script: |
             sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{ env.TARGET_UPSTREAM }};" > /etc/nginx/conf.d/service-env.inc && nginx -s reload' 
 
-      - name: Stop current server if exists
+      - name: Stop current server
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
           host: ${{ secrets.HOST_PROD }}
+          port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           script_stop: true
-          run: |
-            if sudo docker ps -a --format '{{.Names}}' | grep -q "${{ env.CURRENT_UPSTREAM }}"; then
-              sudo docker stop ${{ env.CURRENT_UPSTREAM }}
-              sudo docker rm ${{ env.CURRENT_UPSTREAM }}
-            else
-              echo "Container ${{ env.CURRENT_UPSTREAM }} doesn't exist."
-            fi
+          script: |
+            sudo docker stop ${{env.CURRENT_UPSTREAM}}
+            sudo docker rm ${{env.CURRENT_UPSTREAM}}
