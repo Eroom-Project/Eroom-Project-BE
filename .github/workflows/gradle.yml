@@ -40,7 +40,7 @@ jobs:
       - name: Build Docker
         run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod .
       - name: Push Docker
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod
 
   deploy:
     needs: build
@@ -72,10 +72,11 @@ jobs:
         with:
           username: ubuntu
           host: ${{ secrets.HOST_PROD }}
+          port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           script_stop: true
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
 
       - name: Check deploy server URL
