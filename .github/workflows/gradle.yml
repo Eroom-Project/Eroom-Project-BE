@@ -25,7 +25,7 @@ jobs:
       - name: Build with Gradle
         run: |
           mkdir -p ./src/main/resources          
-          echo "${{ secrets.YML }}" > ./src/main/resources/application.yml
+          echo ${{ secrets.YML }} > ./src/main/resources/application.yml
           cat ./src/main/resources/application.yml
           chmod +x ./gradlew
           ./gradlew build -x test
