@@ -113,8 +113,7 @@ public class AuthController {
     }
 //    @DeleteMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
 //    @Secured("ROLE_Member")
-//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
-//                                                                @PathVariable Long challengeId,
+//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@PathVariable Long challengeId,
 //                                                                @PathVariable Long authId,
 //                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        AuthDataResponseDto responseDto = authService.deleteAuth(requestDto, challengeId, authId, userDetails.getMember());
