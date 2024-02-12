@@ -106,4 +106,5 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script_stop: true
           script: |
+            sudo docker ps
             sudo docker stop ${{env.CURRENT_UPSTREAM}} && sudo docker rm ${{env.CURRENT_UPSTREAM}}
