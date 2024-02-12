@@ -51,16 +51,16 @@ public class AuthService {
     /**
      * 선택한 챌린지 인증 전체 조회
      *
-     * @param challengerId 조회하려는 챌린저의 id
+     * @param challengeId 조회하려는 챌린저의 id
      * @return 선택한 챌린지의 인증 List, 조회성공여부 message, httpStatus
      */
-    public AuthAllResponseDto getChallengerAuthList(Long challengerId) { // 해당 챌린지 인증(member) 전체 조회
+    public AuthAllResponseDto getChallengerAuthList(Long challengeId) { // 해당 챌린지 인증(member) 전체 조회
         try {
             // Challenger DB에 존재하는 Challenger 인지 확인
-            Challenger challenger = challengerRepository.findById(challengerId)
+            Challenge challenge = challengeRepository.findById(challengeId)
                     .orElseThrow(IllegalArgumentException::new);
             // Challenger 엔티티의 ChallengeId와 일치하는 Auth 리스트 조회
-            List<Auth> authList = authRepository.findAllByChallengerOrderByCreatedAtDesc(challenger);
+            List<Auth> authList = authRepository.findByChallenger_Challenge(challenge);
             // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
             List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
             return new AuthAllResponseDto(authResponseList, "인증 전체 조회 성공", HttpStatus.OK);

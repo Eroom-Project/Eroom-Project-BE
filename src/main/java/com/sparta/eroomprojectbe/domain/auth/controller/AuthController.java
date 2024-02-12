@@ -33,18 +33,18 @@ public class AuthController {
 
     /**
      * 해당 챌린지 인증 전체 조회하는 컨트롤러 메서드
-     * @param challengerId 조회하려는 챌린저 id
+     * @param challengeId 조회하려는 챌린저 id
      * @return 해당 챌린지 List, 조회 성공여부 message, httpStatus
      */
-    @GetMapping("/{challengerId}/details") // 해당 챌린지 인증(member) 전체 조회
-    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengerId) {
-        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengerId);
+    @GetMapping("/{challengeId}/auth") // 해당 챌린지 인증(member) 전체 조회
+    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId) {
+        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId);
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
-//    @GetMapping("/{challengerId}/details") // 해당 챌린지 인증(member) 전체 조회
+//    @GetMapping("/{challengeId}/details") // 해당 챌린지 인증(member) 전체 조회
 //    @Secured("ROLE_Member")
-//    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengerId) {
-//        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengerId);
+//    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId) {
+//        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId);
 //        return ResponseEntity.status(HttpStatus.OK).body(responseList);
 //    }
 

@@ -27,6 +27,7 @@ public class Challenger {
     @Enumerated(EnumType.STRING)
     private ChallengerRole role;
 
+
     public Challenger(Challenge challenge, ChallengerRole challengerRole) {
         this.challenge = challenge;
         this.role = challengerRole;
