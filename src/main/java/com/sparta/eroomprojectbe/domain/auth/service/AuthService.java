@@ -38,15 +38,15 @@ public class AuthService {
      *
      * @return 챌린지 인증 List, message, httpStatus
      */
-    public AuthAllResponseDto getMemberAuthList() { // 챌린지 인증(member) 전체 조회
-        try {
-            List<Auth> authList = authRepository.findAllByOrderByCreatedAtDesc();
-            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
-            return new AuthAllResponseDto(authResponseList, "챌린지 인증 전체 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new AuthAllResponseDto(null, "챌린지 인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    public AuthAllResponseDto getMemberAuthList() { // 챌린지 인증(member) 전체 조회
+//        try {
+//            List<Auth> authList = authRepository.findAllByOrderByCreatedAtDesc();
+//            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
+//            return new AuthAllResponseDto(authResponseList, "챌린지 인증 전체 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new AuthAllResponseDto(null, "챌린지 인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * 선택한 챌린지 인증 전체 조회
@@ -54,16 +54,25 @@ public class AuthService {
      * @param challengeId 조회하려는 챌린저의 id
      * @return 선택한 챌린지의 인증 List, 조회성공여부 message, httpStatus
      */
-    public AuthAllResponseDto getChallengerAuthList(Long challengeId) { // 해당 챌린지 인증(member) 전체 조회
+    public AuthAllResponseDto getChallengerAuthList(Long challengeId, Long memberId) { // 해당 챌린지 인증(member) 전체 조회
         try {
             // Challenger DB에 존재하는 Challenger 인지 확인
             Challenge challenge = challengeRepository.findById(challengeId)
                     .orElseThrow(IllegalArgumentException::new);
+            Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
             // Challenger 엔티티의 ChallengeId와 일치하는 Auth 리스트 조회
             List<Auth> authList = authRepository.findByChallenger_Challenge(challenge);
-            // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
-            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
-            return new AuthAllResponseDto(authResponseList, "인증 전체 조회 성공", HttpStatus.OK);
+            Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge,member);
+            if(challengerOptional.isPresent()){
+                // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
+                List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
+                MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto(challengerOptional.get().getRole(),member.getMemberId());
+                AuthMemberInfoResponseDto authMemberInfoResponseDto = new AuthMemberInfoResponseDto(authResponseList, memberInfoResponseDto);
+                return new AuthAllResponseDto(authMemberInfoResponseDto, "인증 전체 조회 성공", HttpStatus.OK);
+            }else {
+                return new AuthAllResponseDto(null, "인증 전체 조회 실패", HttpStatus.BAD_REQUEST);
+            }
+
         } catch (Exception e) {
             return new AuthAllResponseDto(null, "인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }

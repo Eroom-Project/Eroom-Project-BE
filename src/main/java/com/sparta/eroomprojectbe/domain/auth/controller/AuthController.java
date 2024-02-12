@@ -19,11 +19,11 @@ public class AuthController {
      * @return 챌린지 List, 조회 성공여부 message, httpStatus
      */
     //이건 어디다 쓰는 걸까용?
-    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
-    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
-        AuthAllResponseDto responseList = authService.getMemberAuthList();
-        return ResponseEntity.status(HttpStatus.OK).body(responseList);
-    }
+//    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
+//    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
+//        AuthAllResponseDto responseList = authService.getMemberAuthList();
+//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+//    }
 //    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
 //    @Secured("ROLE_Member")
 //    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
@@ -36,15 +36,17 @@ public class AuthController {
      * @param challengeId 조회하려는 챌린저 id
      * @return 해당 챌린지 List, 조회 성공여부 message, httpStatus
      */
-    @GetMapping("/{challengeId}/auth") // 해당 챌린지 인증(member) 전체 조회
-    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId) {
-        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId);
+    @GetMapping("/{challengeId}/auth/member/{memberId}") // 해당 챌린지 인증(member) 전체 조회
+    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId,
+                                                                    @PathVariable Long memberId) {
+        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
-//    @GetMapping("/{challengeId}/details") // 해당 챌린지 인증(member) 전체 조회
+//    @GetMapping("/{challengeId}/auth") // 해당 챌린지 인증(member) 전체 조회
 //    @Secured("ROLE_Member")
-//    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId) {
-//        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId);
+//    public ResponseEntity<AuthAllResponseDto> getChallengerAuthList(@PathVariable Long challengeId,
+//                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId, userDetails.getMember());
 //        return ResponseEntity.status(HttpStatus.OK).body(responseList);
 //    }
 
