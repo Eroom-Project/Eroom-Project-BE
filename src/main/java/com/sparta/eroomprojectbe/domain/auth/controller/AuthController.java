@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/challenger")
+@RequestMapping("/api/challenge")
 public class AuthController {
     private final AuthService authService;
     public AuthController(AuthService authService){this.authService = authService;}
@@ -18,6 +18,7 @@ public class AuthController {
      * 챌린지 인증 전체 조회하는 컨트롤러 메서드
      * @return 챌린지 List, 조회 성공여부 message, httpStatus
      */
+    //이건 어디다 쓰는 걸까용?
     @GetMapping("/details") // 챌린지 인증(member) 전체 조회
     public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
         AuthAllResponseDto responseList = authService.getMemberAuthList();
@@ -99,20 +100,21 @@ public class AuthController {
     /**
      * 챌린지 인등 등록하는 컨트롤러 메서드
      * @param requestDto authContents,authImageUrl,authVideoUrl, authStatus
-     * @param challengerId 인증하려는 challengerId
+     * @param challengeId 인증하려는 challengerId
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
-    @PostMapping("/{challengerId}/auth") // 챌린지 인증(member) 등록
+    @PostMapping("/{challengeId}/auth/member/{memberId}") // 챌린지 인증(member) 등록
     public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
-                                                                        @PathVariable Long challengerId) {
-        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId);
+                                                                        @PathVariable Long challengeId,
+                                                                        @PathVariable Long memberId) {
+        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengeId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-//    @PostMapping("/{challengerId}/details") // 챌린지 인증(member) 등록
+//    @PostMapping("/{challengeId}/auth") // 챌린지 인증(member) 등록
 //    @Secured("ROLE_Member")
 //    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
-//                                                                        @PathVariable Long challengerId,
+//                                                                        @PathVariable Long challengeId,
 //                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengerId, userDetails.getMember());
 //        return ResponseEntity.status(HttpStatus.OK).body(responseDto);

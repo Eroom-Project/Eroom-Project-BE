@@ -36,9 +36,6 @@ public class Auth extends Timestamped{
     @JoinColumn(name = "challenger_id")
     private Challenger challenger;
 
-    @ManyToOne
-    @JoinColumn(name = "challenge_id")
-    private Challenge challenge;
 
     public Auth(AuthRequestDto requestDto, Challenger challenger) {
         this.authContents= requestDto.getAuthContents();
