@@ -98,7 +98,7 @@ public class AuthService {
                 } else {
                     return new AuthDataResponseDto(null, "해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 return new AuthDataResponseDto(null, "에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
@@ -290,7 +290,8 @@ public class AuthService {
             return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @Transactional
+
+    //    @Transactional
 //    public ChallengerCreateResponseDto createChallenger(Long challengeId, Member member) {
 //        try {
 //            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
@@ -313,4 +314,31 @@ public class AuthService {
 //            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+    public ChallengerCreateResponseDto deleteAuth(Long challengeId, Long authId, Long memberId) {
+        try {
+            // auth 존재 여부 확인
+            Auth auth = authRepository.findById(authId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
+            );
+            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
+            );
+            Member member = memberRepository.findById(memberId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
+            );
+            Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge,member);
+            if(challengerOptional.isPresent()){
+                if (challengerOptional.get().getRole() == ChallengerRole.LEADER || challengerOptional.get().getMember() == member){
+                    authRepository.delete(auth);
+                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
+                }else {
+                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.BAD_REQUEST);
+                }
+            }else {
+                return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -98,9 +98,32 @@ public class AuthController {
 //        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 //    }
 
+    /**
+     * 챌린지인증 삭제하는 컨트롤러 메서드
+     * @param challengeId 삭제하려는 인증의 챌린지 아이디
+     * @param authId 삭제하려는 인증아이디
+     * @return 삭제 성공여부 message, status
+     */
+    @DeleteMapping("/{challengeId}/auth/{authId}/member/{memberId}") // 챌린지 인증 수정(member)
+    public ResponseEntity<ChallengerCreateResponseDto> deleteAuth( @PathVariable Long challengeId,
+                                                                @PathVariable Long memberId,
+                                                                @PathVariable Long authId) {
+        ChallengerCreateResponseDto responseDto = authService.deleteAuth(challengeId, authId, memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+//    @DeleteMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
+//    @Secured("ROLE_Member")
+//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
+//                                                                @PathVariable Long challengeId,
+//                                                                @PathVariable Long authId,
+//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        AuthDataResponseDto responseDto = authService.deleteAuth(requestDto, challengeId, authId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
+
 
     /**
-     * 챌린지 인등 등록하는 컨트롤러 메서드
+     * 챌린지 인증 등록하는 컨트롤러 메서드
      * @param requestDto authContents,authImageUrl,authVideoUrl, authStatus
      * @param challengeId 인증하려는 challengerId
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
