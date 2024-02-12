@@ -107,4 +107,6 @@ jobs:
           script_stop: true
           script: |
             sudo docker ps
+            if [ -n "$(sudo docker ps -q -f name=${{env.CURRENT_UPSTREAM}})" ]; then
             sudo docker stop ${{env.CURRENT_UPSTREAM}} && sudo docker rm ${{env.CURRENT_UPSTREAM}}
+            fi
