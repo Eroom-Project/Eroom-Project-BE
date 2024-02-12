@@ -7,6 +7,7 @@ import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,7 +57,7 @@ public class Challenge extends Timestamped{
     private List<Challenger> challengers;
 
 
-    public Challenge(ChallengeRequestDto requestDto) {
+    public Challenge(ChallengeRequestDto requestDto, String file) {
         this.title = requestDto.getTitle();
         this.category = requestDto.getCategory();
         this.description = requestDto.getDescription();
@@ -66,10 +67,11 @@ public class Challenge extends Timestamped{
         this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
         this.currentAttendance = 0;
-        this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
+        this.thumbnailImageUrl = file;
     }
 
-    public void update(ChallengeRequestDto requestDto) {
+
+    public void update(ChallengeRequestDto requestDto, String file) {
         this.title = requestDto.getTitle();
         this.category = requestDto.getCategory();
         this.description = requestDto.getDescription();
@@ -78,7 +80,7 @@ public class Challenge extends Timestamped{
         this.frequency = requestDto.getFrequency();
         this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
-        this.thumbnailImageUrl = requestDto.getThumbnailImageUrl();
+        this.thumbnailImageUrl = file;
     }
 
     public void incrementAttendance() {

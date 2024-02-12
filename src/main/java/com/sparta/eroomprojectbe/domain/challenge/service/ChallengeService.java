@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +24,12 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final ChallengerRepository challengerRepository;
 //    private final MemberRepository memberRepository;
+    private final ImageS3Service imageS3Service;
 
-    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository) {
+    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service) {
         this.challengeRepository = challengeRepository;
         this.challengerRepository = challengerRepository;
+        this.imageS3Service = imageS3Service;
     }
 //    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, MemberRepository memberRepository) {
 //        this.challengeRepository = challengeRepository;
@@ -41,9 +44,9 @@ public class ChallengeService {
      * @return 성공여부 message, httpStatus
      */
     @Transactional
-    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto) {
+    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, MultipartFile file) {
         try {
-            Challenge challenge = new Challenge(requestDto);
+            Challenge challenge = new Challenge(requestDto, imageS3Service.saveFile(file));
             Challenge savedChallenge = challengeRepository.save(challenge);
             if (savedChallenge != null && savedChallenge.getChallengeId() != null) {
                 savedChallenge.incrementAttendance();
@@ -173,12 +176,13 @@ public class ChallengeService {
      * @return 수정한 챌린지 data, 수정 성공여부 message, httpStatus
      */
     @Transactional
-    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto) {
+    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file) {
         try {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
             );
-            challenge.update(requestDto);
+            // 이미지 새로 바꿀때와 안바꿀때를 나눠야 하나?02/08
+            challenge.update(requestDto, imageS3Service.updateFile(challenge.getThumbnailImageUrl(),file));
             Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
             ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, currentAttendance);
             return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
