@@ -11,6 +11,7 @@ import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.entity.MemberRepository;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,63 +72,75 @@ public class AuthService {
     /**
      * 리더가 챌린지 인증을 수정하는 서비스 메서드
      *
-     * @param requestDto   DENIED, APPROVED
-     * @param challengerId 인증하려는 챌린저 id
-     * @param authId       인증하려는 auth id
+     * @param requestDto  DENIED, APPROVED
+     * @param challengeId 인증하려는 챌린저 id
+     * @param authId      인증하려는 auth id
      * @return 인증 수정 후 data, 인증 수정 성공 여부 message, httpStatus
      */
     @Transactional
-    public AuthDataResponseDto updateLeaderAuth(AuthLeaderRequestDto requestDto, Long challengerId, Long authId) { // 챌린지 인증 허가 및 불가 처리(leader)
-        Challenger challenger = challengerRepository.findById(challengerId).orElseThrow(
-                () -> new IllegalArgumentException("해당 챌린지를 신청하지 않습니다.")
+    public AuthDataResponseDto updateLeaderAuth(AuthLeaderRequestDto requestDto, Long challengeId, Long authId, Long memberId) { // 챌린지 인증 허가 및 불가 처리(leader)
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
         Auth auth = authRepository.findById(authId).orElseThrow(
                 () -> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
         );
-        try {
-            if (challenger.getRole() == ChallengerRole.LEADER) {
-                auth.leaderUpdate(auth, requestDto);
-                AuthResponseDto responseDto = new AuthResponseDto(auth);
-                return new AuthDataResponseDto(responseDto, "챌린지 상태 수정 성공", HttpStatus.OK);
-            } else {
-                return new AuthDataResponseDto(null, "해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("해당 맴버가 존재하지 않습니다.")
+        );
+        Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
+        if (challengerOptional.isPresent()) {
+            try {
+                if (challengerOptional.get().getRole() == ChallengerRole.LEADER) {
+                    auth.leaderUpdate(auth, requestDto);
+                    AuthResponseDto responseDto = new AuthResponseDto(auth);
+                    return new AuthDataResponseDto(responseDto, "챌린지 상태 수정 성공", HttpStatus.OK);
+                } else {
+                    return new AuthDataResponseDto(null, "해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
+                }
+            }catch(Exception e){
+                return new AuthDataResponseDto(null, "에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception e) {
-            return new AuthDataResponseDto(null, "에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new AuthDataResponseDto(null, "해당 챌린지를 신청하지 않았습니다.", HttpStatus.BAD_REQUEST);
         }
 
     }
 //    @Transactional
-//    public AuthDataResponseDto updateLeaderAuth(AuthLeaderRequestDto requestDto, Long challengerId, Long authId, Member member) { // 챌린지 인증 허가 및 불가 처리(leader)
-//        Challenger challenger = challengerRepository.findById(challengerId).orElseThrow(
+//    public AuthDataResponseDto updateLeaderAuth(AuthLeaderRequestDto requestDto, Long challengeId, Long authId, Member member) { // 챌린지 인증 허가 및 불가 처리(leader)
+//        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
 //                ()-> new IllegalArgumentException("해당 챌린지를 신청하지 않습니다.")
 //        );
 //        Auth auth = authRepository.findById(authId).orElseThrow(
 //                ()-> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
 //        );
-//        try {
-//            if(challenger.getMember().getMemberId() = member.getMemberId()){
-//                return new AuthDataResponseDto(null,"해당 인증과 관련있는 맴버가 아닙니다.")
+//        Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
+//        if(challengerOptional.isPresent()){
+//            try {
+//                if(challengerOptional.get().getMember().getMemberId() != member.getMemberId()){
+//                    return new AuthDataResponseDto(null,"해당 인증과 관련있는 맴버가 아닙니다.", HttpStatus.BAD_REQUEST);
+//                }
+//                if(challengerOptional.get().getRole() == ChallengerRole.LEADER){
+//                    auth.leaderUpdate(auth,requestDto);
+//                    AuthResponseDto responseDto = new AuthResponseDto(auth);
+//                    return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
+//                }else {
+//                    return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
+//                }
+//            }catch (Exception e){
+//                return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 //            }
-//            if(challenger.getRole() == ChallengerRole.LEADER){
-//                auth.leaderUpdate(requestDto);
-//                AuthResponseDto responseDto = new AuthResponseDto(auth);
-//                return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
-//            }else {
-//                return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
-//            }
-//        }catch (Exception e){
-//            return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }else {
+//            return  new AuthDataResponseDto(null, "해당 챌린지를 신청한 멤버가 아닙니다.", HttpStatus.BAD_REQUEST);
 //        }
-//
 //    }
 
     /**
      * 챌린저인증 수정하는 서비스 메서드
      *
-     * @param requestDto   authContents, authImageUrl, authVideoUrl, authStatus
+     * @param requestDto  authContents, authImageUrl, authVideoUrl, authStatus
      * @param challengeId 수정하려는 챌린저 아이디
-     * @param authId       수정하려는 Auth 아이디
+     * @param authId      수정하려는 Auth 아이디
      * @return 수정후 인증 내용 data, 수정성공여부 message, httpStatus
      */
     @Transactional
@@ -141,10 +154,10 @@ public class AuthService {
                     () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
             );
             Member member = memberRepository.findById(memberId).orElseThrow(
-                    ()-> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
+                    () -> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
             );
             Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
-            if(challengerOptional.isPresent()){
+            if (challengerOptional.isPresent()) {
                 auth.update(requestDto, challengerOptional.get());
                 AuthResponseDto responseDto = new AuthResponseDto(auth);
                 if (auth != null && auth.getAuthId() != null) {
@@ -152,8 +165,8 @@ public class AuthService {
                 } else {
                     return new AuthDataResponseDto(responseDto, "챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-            }else {
-                return new AuthDataResponseDto(null,"해당 챌린저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+            } else {
+                return new AuthDataResponseDto(null, "해당 챌린저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             return new AuthDataResponseDto(null, "에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

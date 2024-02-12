@@ -51,15 +51,16 @@ public class AuthController {
     /**
      * 리더가 챌린지 인증 허가 및 불가 처리하는 컨트롤러 메서드
      * @param requestDto DENIED, APPROVED
-     * @param challengerId 선택한 챌린저 id
+     * @param challengeId 선택한 챌린저 id
      * @param authId 변경하려는 인증 id
      * @return 인증 수정 후 data, 인증 수정 성공 여부 message, httpStatus
      */
-    @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
+    @PutMapping("/{challengeId}/leader/auth/{authId}/member/{memberId}") // 챌린지 인증 허가 및 불가 처리(leader)
     public ResponseEntity<AuthDataResponseDto> updateLeaderAuth(@RequestBody AuthLeaderRequestDto requestDto,
-                                                            @PathVariable Long challengerId,
+                                                            @PathVariable Long challengeId,
+                                                            @PathVariable Long memberId,
                                                             @PathVariable Long authId) {
-        AuthDataResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengerId, authId);
+        AuthDataResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengeId, authId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 //    @PutMapping("/{challengerId}/details/auth/{authId}") // 챌린지 인증 허가 및 불가 처리(leader)
