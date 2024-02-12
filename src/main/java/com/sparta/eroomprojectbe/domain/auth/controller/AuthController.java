@@ -75,24 +75,25 @@ public class AuthController {
     /**
      * 챌린지인증 수정하는 컨트롤러 메서드
      * @param requestDto authContents, authImageUrl, authVideoUrl, authStatus
-     * @param challengerId 수정하려는 챌린저 아이디
+     * @param challengeId 수정하려는 인증의 챌린지 아이디
      * @param authId 수정하려는 인증아이디
      * @return HttpStatus, (수정한 내용 data, 수정성공여부 message, httpStatus)
      */
-    @PutMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
+    @PutMapping("/{challengeId}/auth/{authId}/member/{memberId}") // 챌린지 인증 수정(member)
     public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
-                                                                @PathVariable Long challengerId,
+                                                                @PathVariable Long challengeId,
+                                                                @PathVariable Long memberId,
                                                                 @PathVariable Long authId) {
-        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengerId, authId);
+        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengeId, authId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 //    @PutMapping("/{challengerId}/auth/{authId}") // 챌린지 인증 수정(member)
 //    @Secured("ROLE_Member")
 //    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
-//                                                                @PathVariable Long challengerId,
+//                                                                @PathVariable Long challengeId,
 //                                                                @PathVariable Long authId,
 //                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengerId, authId, userDetails.getMember());
+//        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengeId, authId, userDetails.getMember());
 //        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 //    }
 
