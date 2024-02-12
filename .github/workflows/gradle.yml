@@ -24,8 +24,11 @@ jobs:
 
       - name: Build with Gradle
         run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.YML }}" > ./src/main/resources/application.yml
           chmod +x ./gradlew
           ./gradlew build -x test
+
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
