@@ -45,7 +45,7 @@ jobs:
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: eroom-challenge # 엘리스틱 빈스톡 애플리케이션 이름!
           environment_name: Eroom-challenge-env # 엘리스틱 빈스톡 환경 이름!
