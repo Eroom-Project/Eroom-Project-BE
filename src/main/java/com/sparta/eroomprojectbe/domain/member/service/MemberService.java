@@ -116,4 +116,9 @@ public class MemberService {
 
         return new ProfileResponseDto(findMember);
     }
+
+
+    public boolean checkPassword(Member member, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, member.getPassword());
+    }
 }

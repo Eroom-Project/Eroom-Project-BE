@@ -85,4 +85,16 @@ public class MemberController {
     public ResponseEntity<ProfileResponseDto> updateProfile(@RequestBody ProfileRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(memberService.updateProfile(requestDto, userDetails.getMember()));
     }
+
+    // 비밀번호 확인 요청
+    @GetMapping("/api/member/password")
+    public ResponseEntity<String> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                @RequestBody String password) {
+        boolean isMatch = memberService.checkPassword(userDetails.getMember(), password);
+        if (isMatch) {
+            return ResponseEntity.ok("비밀번호가 일치합니다.");
+        } else {
+            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+        }
+    }
 }
