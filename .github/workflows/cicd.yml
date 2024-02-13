@@ -18,20 +18,16 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      # 테스트 환경
-      - name: Build and Test with Gradle
-        run: ./gradlew clean build test
-        env:
-          SPRING_DATASOURCE_URL: jdbc:h2:mem:test;MODE=MYSQL
-          SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
-          SPRING_DATASOURCE_USERNAME: sa
-          SPRING_DATASOURCE_PASSWORD: password
+      - name: Build with Gradle
+        run: |
+          mkdir -p ./src/main/resources
+          echo ${{ secrets.YML }} | base64 --decode  > ./src/main/resources/application.yml
+          cat ./src/main/resources/application.yml
+          chmod +x ./gradlew
+          ./gradlew build -x test
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew clean build
 
       # 현재 시간 가져오기
       - name: Get current time
