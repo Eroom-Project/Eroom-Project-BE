@@ -1,13 +1,12 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
-import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +78,11 @@ public class MemberController {
     @GetMapping("/api/member/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(memberService.getProfile(userDetails.getMember()));
+    }
+
+    // 프로필 페이지 수정
+    @PutMapping("/api/member/profile")
+    public ResponseEntity<ProfileResponseDto> updateProfile(@RequestBody ProfileRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(memberService.updateProfile(requestDto, userDetails.getMember()));
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
+import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
@@ -15,12 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
@@ -105,6 +104,16 @@ public class MemberService {
     public ProfileResponseDto getProfile(Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(()-> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        return new ProfileResponseDto(findMember);
+    }
+
+    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, Member member) {
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+
+        findMember.updateProfile(requestDto);
+        memberRepository.save(findMember); // 변경된 정보를 저장합니다.
+
         return new ProfileResponseDto(findMember);
     }
 }

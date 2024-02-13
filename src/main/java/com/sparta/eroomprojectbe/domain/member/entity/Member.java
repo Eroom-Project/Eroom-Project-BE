@@ -1,9 +1,11 @@
 package com.sparta.eroomprojectbe.domain.member.entity;
 
+import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,10 +43,11 @@ public class Member {
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
+        this.profileImageUrl ="https://files.slack.com/files-pri/T01L2TNGW3T-F06K5JP92N4/group_69.png";
     }
 
-    public Member(String kakaoEmail, String s, String nickname, Long kakaoId, boolean b) {
-        this.email = email;
+    public Member(String kakaoEmail, String password, String nickname, Long kakaoId, boolean b) {
+        this.email = kakaoEmail;
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
@@ -55,5 +58,12 @@ public class Member {
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
+    }
+
+    public void updateProfile(ProfileRequestDto requestDto) {
+        this.email = requestDto.getEmail();
+        this.password = requestDto.getPassword();
+        this.nickname = requestDto.getNickname();
+        this.profileImageUrl = requestDto.getProfileImageUrl();
     }
 }
