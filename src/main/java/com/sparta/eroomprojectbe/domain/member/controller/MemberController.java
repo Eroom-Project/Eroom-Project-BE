@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
@@ -74,4 +75,9 @@ public class MemberController {
         return ResponseEntity.ok(kakaoService.kakaoLogin(code, response));
     }
 
+    // 프로필 페이지 조회
+    @GetMapping("/api/member/profile")
+    public ResponseEntity<ProfileResponseDto> getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(memberService.getProfile(userDetails.getMember()));
+    }
 }

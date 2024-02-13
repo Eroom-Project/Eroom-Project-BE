@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
+import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
@@ -9,10 +10,12 @@ import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,4 +102,9 @@ public class MemberService {
     }
 
 
+    public ProfileResponseDto getProfile(Member member) {
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(()-> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        return new ProfileResponseDto(findMember);
+    }
 }
