@@ -34,6 +34,8 @@ public class Member {
 
     private Long kakaoId;
 
+    private Boolean isSocialMember;
+
     public Member(String email, String password, String nickname){
         this.email = email;
         this.password = password;
@@ -41,12 +43,13 @@ public class Member {
         this.role = MemberRoleEnum.USER;
     }
 
-    public Member(String email, String password, String nickname, Long kakaoId){
+    public Member(String kakaoEmail, String s, String nickname, Long kakaoId, boolean b) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
         this.kakaoId = kakaoId;
+        this.isSocialMember = b;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {

@@ -27,7 +27,20 @@ public class RefreshToken {
     @Column(nullable = false)
     private Long expiration;
 
+    public RefreshToken(String keyEmail, String refreshToken) {
+        this.keyEmail = keyEmail;
+        this.refreshToken = refreshToken;
+        // expiration 초기화 로직 추가 필요
+    }
+
     public void setExpiration(long expiration) {
         this.expiration = expiration;
+    }
+
+    // updateToken 메소드 추가 필요
+    public RefreshToken updateToken(String newRefreshToken) {
+        this.refreshToken = newRefreshToken;
+        // expiration 업데이트 로직 추가 필요
+        return this;
     }
 }

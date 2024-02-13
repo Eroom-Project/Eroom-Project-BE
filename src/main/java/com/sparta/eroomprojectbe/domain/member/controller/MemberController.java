@@ -1,15 +1,11 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.MemberInfoDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
-import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,7 +21,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
 public class MemberController {
 
     private final MemberService memberService;
@@ -36,7 +31,7 @@ public class MemberController {
         this.kakaoService = kakaoService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -49,44 +44,34 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signup(requestDto));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<?> logout(@CookieValue(name = "Refresh_token") String refreshToken){
         return ResponseEntity.ok(memberService.logout(refreshToken));
     }
 
     // 이메일 중복 확인
-    @GetMapping("/signup/email")
+    @GetMapping("/api/signup/email")
     public ResponseEntity<String> emailCheck(@RequestParam String email) {
         return ResponseEntity.ok(memberService.emailCheck(email));
     }
 
     // 닉네임 중복 확인
-    @GetMapping("/signup/nickname")
+    @GetMapping("/api/signup/nickname")
     public ResponseEntity<String> nicknameCheck(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.nicknameCheck(nickname));
     }
 
     // 토큰 재발행
-    @PostMapping("/token")
+    @PostMapping("/api/token")
     public ResponseEntity<String> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
         return memberService.reissueToken(userDetails.getMember().getEmail(), res);
     }
 
+    // 카카오 로그인
     @GetMapping("/auth/callback/kakao")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "redirect:/";
+    public ResponseEntity<String> kakaoLogin(@RequestParam String code,
+                                             HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
+        return ResponseEntity.ok(kakaoService.kakaoLogin(code, response));
     }
-//
-//    // 카카오 로그인
-//    @GetMapping("/auth/callback/kakao")
-//    public ResponseEntity<String> kakaoLogin(@RequestParam String code,
-//                                             HttpServletResponse response) {
-//        return ResponseUtil.response(kakaoService.kakaoLogin(code, response));
-//    }
 
 }

@@ -6,12 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.KakaoUserInfoDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.global.RefreshToken;
+import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
-import lombok.RequiredArgsConstructor;
+import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,33 +27,52 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.UUID;
 
 @Slf4j(topic = "KAKAO Login")
 @Service
-@RequiredArgsConstructor
 public class KakaoService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
-        // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = getToken(code);
+    @Value("${kakao.client-id}")
+    private String kakaoClientId;
 
-        // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+    @Value("${kakao.redirect-uri}")
+    private String kakaoRedirectUri;
 
-        // 3. 필요시에 회원가입
+    public KakaoService(PasswordEncoder passwordEncoder, MemberRepository memberRepository, RestTemplate restTemplate, JwtUtil jwtUtil,  RefreshTokenRepository refreshTokenRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.memberRepository = memberRepository;
+        this.restTemplate = restTemplate;
+        this.jwtUtil = jwtUtil;
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
+
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
+        String kakaoAccessToken = getToken(code);
+        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(kakaoAccessToken);
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        Authentication authentication = forceLogin(kakaoUser);
 
-        // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createAccessToken(kakaoUser.getEmail(), kakaoUser.getRole());
+        String accessToken = jwtUtil.createAccessToken(kakaoUserInfo.getEmail(), kakaoUser.getRole());
+        jwtUtil.addJwtToCookie(accessToken, response, "accessToken");
 
-        return null;
+        String refreshToken = jwtUtil.createRefreshToken(kakaoUserInfo.getEmail(), kakaoUser.getRole());
+        jwtUtil.addJwtToCookie(refreshToken, response, "refreshToken");
+
+        RefreshToken existingToken = refreshTokenRepository.findByKeyEmail(kakaoUser.getEmail())
+                .orElseGet(() -> new RefreshToken(kakaoUserInfo.getEmail(), refreshToken));
+        existingToken.updateToken(refreshToken);
+        refreshTokenRepository.save(existingToken);
+
+        return kakaoUser.getNickname();
     }
 
     private String getToken(String code) throws JsonProcessingException {
@@ -53,7 +80,7 @@ public class KakaoService {
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com")
-                .path("/oauth/token")
+                .path("/oauth/authorize") //
                 .encode()
                 .build()
                 .toUri();
@@ -65,9 +92,8 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "8fdb806fb9ab6efe73c78638a985c28b");
-        body.add("redirect_uri", "https://eroom-challenge/auth/callback/kakao");
-        body.add("redirect_uri", "https://eroom-challenge/auth/callback/kakao");
+        body.add("client_id", kakaoClientId);
+        body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
@@ -93,7 +119,6 @@ public class KakaoService {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kapi.kakao.com")
                 .path("/v2/user/me")
-                .encode()
                 .build()
                 .toUri();
 
@@ -135,24 +160,24 @@ public class KakaoService {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
             String kakaoEmail = kakaoUserInfo.getEmail();
             Member sameEmailUser = memberRepository.findByEmail(kakaoEmail).orElse(null);
+
             if (sameEmailUser != null) {
                 kakaoUser = sameEmailUser;
                 // 기존 회원정보에 카카오 Id 추가
                 kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
             } else {
-                // 신규 회원가입
-                // password: random UUID
-                String password = UUID.randomUUID().toString();
-                String encodedPassword = passwordEncoder.encode(password);
-
-                // email: kakao email
-                String email = kakaoUserInfo.getEmail();
-
-                kakaoUser = new Member(kakaoUserInfo.getEmail(), encodedPassword, kakaoUser.getNickname(), kakaoId);
+                kakaoUser = new Member(kakaoEmail, "", kakaoUserInfo.getNickname(), kakaoId, true);
             }
 
             memberRepository.save(kakaoUser);
         }
         return kakaoUser;
+    }
+
+    private Authentication forceLogin(Member kakaoUser) {
+        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 }
