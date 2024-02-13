@@ -82,7 +82,7 @@ jobs:
         with:
           url: http://${{ secrets.HOST_PROD }}:${{env.STOPPED_PORT}}/env
           max-attempts: 5
-          retry-delay: 10s
+          retry-delay: 15s
 
       - name: Change nginx upstream
         uses: appleboy/ssh-action@master
