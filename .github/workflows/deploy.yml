@@ -9,18 +9,19 @@ on:
 # actions/setup-java@v2는 사용자 정의 배포를 지원하고 Zulu OpenJDK, Eclipse Temurin 및 Adopt OpenJDK를 기본적으로 지원합니다. v1은 Zulu OpenJDK만 지원합니다.
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 최초 ubuntu를 설치
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3 # 버전 3에 맞는 프로그램 설치 가능
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v3 # 자바 설치
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: 17
+          distribution: zulu # 지정해줘야 함
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x ./gradlew # 빌드 할 수 있는 권한 설정
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build # 빌드
 
       # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다
       - name: Get current time
