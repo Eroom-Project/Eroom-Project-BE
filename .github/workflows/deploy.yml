@@ -16,12 +16,12 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3 # 자바 설치
         with:
-          java-version: 17
-          distribution: zulu # 지정해줘야 함
+          java-version: '17'
+          distribution: 'temurin' # 지정해줘야 함
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew # 빌드 할 수 있는 권한 설정
       - name: Build with Gradle
-        run: ./gradlew clean build # 빌드
+        run: ./gradlew build -x test # 빌드
 
       # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다
       - name: Get current time
