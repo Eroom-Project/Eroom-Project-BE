@@ -12,6 +12,7 @@ import com.sparta.eroomprojectbe.domain.myroom.repository.MyroomRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
+import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityNotFoundException;
@@ -79,31 +80,32 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity<String> reissueToken(@CookieValue(name = JwtUtil.REFRESH_TOKEN_HEADER) String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException {
-        if (jwtUtil.validateToken(refreshToken)) {
-            Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
-            String userEmail = claims.getSubject();
-            MemberRoleEnum userRole = (MemberRoleEnum) claims.get("roles");
+    public String reissueToken(UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException {
+        String userEmail = userDetails.getMember().getEmail();
+        Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
 
-            // DB에서 저장된 Refresh Token 가져오기
-            Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
+        if (storedRefreshToken.isPresent()) {
+            String storedToken = storedRefreshToken.get().getRefreshToken();
 
-            // DB에 저장된 Refresh Token이 있고 일치한다면
-            if (storedRefreshToken.isPresent() && storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
-                // 사용자 정보로 새로운 Access Token 생성
+            // JWT 유효성 검사
+            if (jwtUtil.validateToken(storedToken)) {
+                Claims claims = jwtUtil.getUserInfoFromToken(storedToken);
+                MemberRoleEnum userRole = (MemberRoleEnum) claims.get("roles");
+
+                // 새로운 Access Token 생성
                 String newAccessToken = jwtUtil.createAccessToken(userEmail, userRole);
                 jwtUtil.addJwtToCookie(newAccessToken, res, JwtUtil.AUTHORIZATION_HEADER);
 
-                // 새로운 Access Token을 응답으로 반환
-                return ResponseEntity.ok().build();
+                return "토큰 재발급 성공";
             }
         }
-        // Refresh Token이 유효하지 않으면 적절한 응답을 반환하면서 / 쿠키만료 메서드를 jwtUtil에 따로 만들 것
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token이 유효하지 않습니다.");
+
+        throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
     }
 
+
     @Transactional
-    public ResponseEntity<String> logout(HttpServletResponse response, String refreshToken) {
+    public String logout(HttpServletResponse response, String refreshToken) {
 
         refreshToken = refreshToken.substring(7);
 
@@ -118,10 +120,10 @@ public class MemberService {
 
                 deleteCookie(response);
 
-                return ResponseEntity.ok("로그아웃 성공");
+                return "로그아웃 성공";
             }
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token이 유효하지 않습니다.");
+        return "Refresh Token이 유효하지 않습니다.";
     }
 
 
@@ -147,12 +149,12 @@ public class MemberService {
     }
 
 
+    @Transactional
     public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
 
         findMember.updateProfile(requestDto);
-        memberRepository.save(findMember); // 변경된 정보를 저장합니다.
 
         return new ProfileResponseDto(findMember);
     }
