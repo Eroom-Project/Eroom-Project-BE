@@ -1,10 +1,8 @@
 package com.sparta.eroomprojectbe.domain.auth.dto;
 
 import com.sparta.eroomprojectbe.domain.auth.entity.Auth;
-import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

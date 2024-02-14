@@ -3,7 +3,6 @@ package com.sparta.eroomprojectbe.domain.member.dto;
 import com.sparta.eroomprojectbe.domain.myroom.entity.Bricks;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class BricksInfoDto {
     private Long brickId;

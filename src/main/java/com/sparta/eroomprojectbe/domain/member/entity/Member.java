@@ -2,10 +2,8 @@ package com.sparta.eroomprojectbe.domain.member.entity;
 
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

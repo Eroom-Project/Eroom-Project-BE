@@ -5,7 +5,7 @@ name: CI/CD
 # master이나 dev 브랜치에 push가 되었을 때 실행
 on:
   push:
-    branches: [ "master", "dev" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read

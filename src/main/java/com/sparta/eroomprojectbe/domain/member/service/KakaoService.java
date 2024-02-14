@@ -29,7 +29,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.UUID;
 
 @Slf4j(topic = "KAKAO Login")
 @Service
