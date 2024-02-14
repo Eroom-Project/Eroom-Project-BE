@@ -90,8 +90,8 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/health","/env").permitAll()
                         .requestMatchers(HttpMethod.GET,"/", "/main").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/api/kakao-login", "/api/challenge/**","error").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/auth/callback/kakao", "/api/challenge/**","error").permitAll()
+                        .anyRequest().authenticated()
         );
 
         http.formLogin(AbstractHttpConfigurer::disable);
