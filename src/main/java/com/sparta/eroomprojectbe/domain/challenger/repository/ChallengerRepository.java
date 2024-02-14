@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
+
+
     Long countByChallenge_ChallengeId(Long challengeId);
 
     Long countByChallenge(Challenge challenge);
@@ -17,9 +19,11 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
     @Query("SELECT c.member.memberId FROM Challenger c WHERE c.challenge.challengeId = :challengeId AND c.role = 'LEADER'")
     Optional<Long> findCreatorMemberIdByChallengeId(@Param("challengeId") Long challengeId);
 
+
     Optional<Challenger> findByChallengeAndMember(Challenge challenge, Member member);
 
     @Query("SELECT DISTINCT c.challenge FROM Challenger c WHERE c.member.memberId = :memberId")
     List<Challenge> findAllChallengesByMemberId(@Param("memberId") Long memberId);
 }
+
 
