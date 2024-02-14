@@ -11,13 +11,30 @@ import java.util.TreeMap;
 @RestController
 public class HealthCheckController {
 
+    @Value("${server.env}")
+    private String env;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Value("${server.serverAddress}")
+    private String serverAddress;
+
+    @Value("${serverName}")
+    private String serverName;
+
     @GetMapping("/health")
-    public ResponseEntity<Void> healthCheck() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> healthCheck() {
+        Map<String, String> responseData = new TreeMap<>();
+        responseData.put("serverName", serverName);
+        responseData.put("serverPort", serverPort);
+        responseData.put("serverAddress", serverAddress);
+        responseData.put("env", env);
+        return ResponseEntity.ok(responseData);
     }
 
     @GetMapping("/env")
-    public ResponseEntity<Void> getEnv() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> getEnv() {
+        return ResponseEntity.ok(env);
     }
 }
