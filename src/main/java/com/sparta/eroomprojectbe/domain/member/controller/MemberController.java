@@ -1,19 +1,15 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.MemberInfoDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.dto.BaseChallengeResponseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
-import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
-import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -22,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
 public class MemberController {
 
     private final MemberService memberService;
@@ -36,49 +32,78 @@ public class MemberController {
         this.kakaoService = kakaoService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body("필요한 정보 중 일부가 누락되었습니다.");
+    @PostMapping("/api/signup")
+    public ResponseEntity<BaseDto<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(new BaseDto<>(null, errorMessage, HttpStatus.BAD_REQUEST));
         }
-        return ResponseEntity.ok(memberService.signup(requestDto));
+
+        try {
+            SignupResponseDto signupResponseDto = memberService.signup(requestDto);
+            return ResponseEntity.ok(new BaseDto<>(signupResponseDto, "회원가입 성공", HttpStatus.CREATED));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseDto<>(null, e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
     }
 
-    @PostMapping("/auth/logout")
-    public ResponseEntity<?> logout(@CookieValue(name = "Refresh_token") String refreshToken){
-        return ResponseEntity.ok(memberService.logout(refreshToken));
+    @PostMapping("/api/logout")
+    public ResponseEntity<BaseDto<String>> logout(HttpServletResponse response, @CookieValue(name = "Refresh-token") String refreshToken){
+        String message = memberService.logout(response, refreshToken);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
-    // 이메일 중복 확인
-    @GetMapping("/signup/email")
-    public ResponseEntity<String> emailCheck(@RequestParam String email) {
-        return ResponseEntity.ok(memberService.emailCheck(email));
+    @GetMapping("/api/signup/email")
+    public ResponseEntity<BaseDto<String>> emailCheck(@RequestParam String email) {
+        String message = memberService.emailCheck(email);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
-    // 닉네임 중복 확인
-    @GetMapping("/signup/nickname")
-    public ResponseEntity<String> nicknameCheck(@RequestParam String nickname) {
-        return ResponseEntity.ok(memberService.nicknameCheck(nickname));
+    @GetMapping("/api/signup/nickname")
+    public ResponseEntity<BaseDto<String>> nicknameCheck(@RequestParam String nickname) {
+        String message = memberService.nicknameCheck(nickname);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     // 토큰 재발행
-    @PostMapping("/token")
-    public ResponseEntity<String> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
-        return memberService.reissueToken(userDetails.getMember().getEmail(), res);
+    @PostMapping("/api/token")
+    public ResponseEntity<BaseDto<String>> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
+        String message = memberService.reissueToken(userDetails, res);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
+    // 카카오 로그인
     @GetMapping("/auth/callback/kakao")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "redirect:/";
+    public ResponseEntity<BaseDto<String>> kakaoLogin(@RequestParam String code,
+                                             HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
+        String message = kakaoService.kakaoLogin(code, response);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
+
+    // 마이 페이지 조회
+    @GetMapping("/api/mypage")
+    public ResponseEntity<BaseDto<MypageResponseDto>> getMypage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        MypageResponseDto data = memberService.getMypage(userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(data, "", HttpStatus.OK));
+    }
+
+    // 마이 페이지 개인 정보 수정
+    @PutMapping("/api/member/profile")
+    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestBody ProfileRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ProfileResponseDto data = memberService.updateProfile(requestDto, userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
+    }
+
+    @GetMapping("/api/member/password")
+    public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {
+        boolean isMatch = memberService.checkPassword(userDetails.getMember(), password);
+        if (isMatch) {
+            return ResponseEntity.ok(new BaseDto<>(null, "비밀번호가 일치합니다.", HttpStatus.OK));
+        } else {
+            return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
+        }
+    }
+
 }
