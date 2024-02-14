@@ -81,11 +81,4 @@ public class MemberController {
 
         return "redirect:/";
     }
-
-    // 테스트
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
-    }
-
 }
