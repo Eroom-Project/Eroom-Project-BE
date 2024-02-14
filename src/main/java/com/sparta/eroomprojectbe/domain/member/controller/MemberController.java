@@ -81,12 +81,11 @@ public class MemberController {
 
         return "redirect:/";
     }
-//
-//    // 카카오 로그인
-//    @GetMapping("/auth/callback/kakao")
-//    public ResponseEntity<String> kakaoLogin(@RequestParam String code,
-//                                             HttpServletResponse response) {
-//        return ResponseUtil.response(kakaoService.kakaoLogin(code, response));
-//    }
+
+    // 테스트
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
 
 }
