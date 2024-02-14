@@ -1,7 +1,6 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.challenge.dto.BaseChallengeResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
@@ -13,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j

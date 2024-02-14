@@ -2,15 +2,12 @@ package com.sparta.eroomprojectbe.domain.auth.entity;
 
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthLeaderRequestDto;
 import com.sparta.eroomprojectbe.domain.auth.dto.AuthRequestDto;
-import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.global.rollenum.AuthRole;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

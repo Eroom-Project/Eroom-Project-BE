@@ -1,7 +1,6 @@
 package com.sparta.eroomprojectbe.domain.auth.dto;
 
 import lombok.Getter;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 
 @Getter

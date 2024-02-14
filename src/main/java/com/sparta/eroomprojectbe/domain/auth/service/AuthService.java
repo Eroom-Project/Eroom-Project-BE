@@ -10,8 +10,6 @@ import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerReposito
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.entity.MemberRepository;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,5 @@
 package com.sparta.eroomprojectbe.global;
 
-import io.jsonwebtoken.Claims;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
