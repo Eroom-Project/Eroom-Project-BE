@@ -64,7 +64,7 @@ public class KakaoService {
         String accessToken = jwtUtil.createAccessToken(kakaoUserInfo.getEmail(), kakaoUser.getRole());
         jwtUtil.addJwtToCookie(accessToken, response, "accessToken");
 
-        String refreshToken = jwtUtil.createRefreshToken(kakaoUserInfo.getEmail(), kakaoUser.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(kakaoUserInfo.getEmail());
         jwtUtil.addJwtToCookie(refreshToken, response, "refreshToken");
 
         RefreshToken existingToken = refreshTokenRepository.findByKeyEmail(kakaoUser.getEmail())

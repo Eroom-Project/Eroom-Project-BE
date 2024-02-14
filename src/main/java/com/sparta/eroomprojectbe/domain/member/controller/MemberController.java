@@ -45,8 +45,8 @@ public class MemberController {
     }
 
     @PostMapping("/api/logout")
-    public ResponseEntity<?> logout(@CookieValue(name = "Refresh_token") String refreshToken){
-        return ResponseEntity.ok(memberService.logout(refreshToken));
+    public ResponseEntity<?> logout(HttpServletResponse response, @CookieValue(name = "Refresh-token") String refreshToken){
+        return memberService.logout(response, refreshToken);
     }
 
     // 이메일 중복 확인

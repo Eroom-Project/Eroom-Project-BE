@@ -12,8 +12,10 @@ import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -83,7 +86,10 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity<String> logout(@CookieValue(name = "Refresh_token") String refreshToken) {
+    public ResponseEntity<String> logout(HttpServletResponse response, String refreshToken) {
+
+        refreshToken = refreshToken.substring(7);
+
         if (jwtUtil.validateToken(refreshToken)) {
             Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
             String userEmail = claims.getSubject();
@@ -91,8 +97,9 @@ public class MemberService {
             Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
 
             if (storedRefreshToken.isPresent() && storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
-                storedRefreshToken.get().setExpiration(System.currentTimeMillis());
-                refreshTokenRepository.save(storedRefreshToken.get());
+                refreshTokenRepository.delete(storedRefreshToken.get());
+
+                deleteCookie(response);
 
                 return ResponseEntity.ok("로그아웃 성공");
             }
@@ -120,5 +127,14 @@ public class MemberService {
 
     public boolean checkPassword(Member member, String rawPassword) {
         return passwordEncoder.matches(rawPassword, member.getPassword());
+    }
+
+    private void deleteCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Refresh_token", null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(0); // max-age를 0으로 설정하여 쿠키 삭제
+        response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
 }

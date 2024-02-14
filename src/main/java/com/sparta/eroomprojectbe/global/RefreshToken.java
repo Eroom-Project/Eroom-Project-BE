@@ -6,12 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Entity
 @Getter
-@Table(name = "T_REFRESH_TOKEN")
 @NoArgsConstructor
-@AllArgsConstructor
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,23 +21,14 @@ public class RefreshToken {
     @Column(nullable = false)
     private String keyEmail;
 
-    @Column(nullable = false)
-    private Long expiration;
-
-    public RefreshToken(String keyEmail, String refreshToken) {
-        this.keyEmail = keyEmail;
+    public RefreshToken(String refreshToken, String keyEmail) {
         this.refreshToken = refreshToken;
-        // expiration 초기화 로직 추가 필요
-    }
-
-    public void setExpiration(long expiration) {
-        this.expiration = expiration;
+        this.keyEmail = keyEmail;
     }
 
     // updateToken 메소드 추가 필요
     public RefreshToken updateToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
-        // expiration 업데이트 로직 추가 필요
         return this;
     }
 }
