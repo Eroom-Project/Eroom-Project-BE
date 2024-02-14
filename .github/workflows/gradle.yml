@@ -106,4 +106,4 @@ jobs:
             sudo docker rm ${{env.CURRENT_UPSTREAM}}
 
       - name: Prune unused Docker images
-        run: sudo docker image prune -f
+        run: sudo docker image prune -a
