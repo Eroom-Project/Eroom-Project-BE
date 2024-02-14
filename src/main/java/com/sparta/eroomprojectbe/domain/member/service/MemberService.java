@@ -1,11 +1,14 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
-import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
+import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
+import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
+import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.domain.myroom.entity.Bricks;
+import com.sparta.eroomprojectbe.domain.myroom.entity.Myroom;
+import com.sparta.eroomprojectbe.domain.myroom.repository.BricksRepository;
+import com.sparta.eroomprojectbe.domain.myroom.repository.MyroomRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
@@ -14,7 +17,6 @@ import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
@@ -35,6 +38,20 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ChallengerRepository challengerRepository;
+    private final MyroomRepository myroomRepository;
+    private final BricksRepository bricksRepository;
+
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, MyroomRepository myroomRepository, BricksRepository bricksRepository) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.challengerRepository = challengerRepository;
+        this.myroomRepository = myroomRepository;
+        this.bricksRepository = bricksRepository;
+    }
+
 
     @Transactional
     public SignupResponseDto signup(SignupRequestDto requestDto) {
@@ -108,11 +125,27 @@ public class MemberService {
     }
 
 
-    public ProfileResponseDto getProfile(Member member) {
-        Member findMember = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(()-> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
-        return new ProfileResponseDto(findMember);
+    public MypageResponseDto getMypage(Member member) {
+        MemberInfoDto memberInfo = new MemberInfoDto(member);
+
+        Myroom myroom = myroomRepository.findByMemberId(member.getMemberId());
+        MyroomInfoDto myroomInfo = new MyroomInfoDto(myroom);
+
+        List<Challenge> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
+        List<MypageChallengeDto> challengeList = challenges.stream().map(MypageChallengeDto::new).toList();
+
+        List<Bricks> bricks = bricksRepository.findByRoomId(myroom.getRoomId());
+        List<BricksInfoDto> bricksInfo = bricks.stream().map(BricksInfoDto::new).collect(Collectors.toList());
+
+        MypageResponseDto response = new MypageResponseDto(
+                List.of(new DataDto(memberInfo, myroomInfo, bricksInfo, challengeList)),
+                "",
+                HttpStatus.OK
+        );
+
+        return response;
     }
+
 
     public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
@@ -137,4 +170,6 @@ public class MemberService {
         cookie.setMaxAge(0); // max-age를 0으로 설정하여 쿠키 삭제
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
+
+
 }

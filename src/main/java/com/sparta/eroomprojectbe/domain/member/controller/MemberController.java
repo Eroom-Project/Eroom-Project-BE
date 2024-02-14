@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.eroomprojectbe.domain.member.dto.MypageResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileResponseDto;
 import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
@@ -74,13 +75,13 @@ public class MemberController {
         return ResponseEntity.ok(kakaoService.kakaoLogin(code, response));
     }
 
-    // 프로필 페이지 조회
-    @GetMapping("/api/member/profile")
-    public ResponseEntity<ProfileResponseDto> getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(memberService.getProfile(userDetails.getMember()));
+    // 마이 페이지 조회
+    @GetMapping("/api/mypage")
+    public ResponseEntity<MypageResponseDto> getMypage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(memberService.getMypage(userDetails.getMember()));
     }
 
-    // 프로필 페이지 수정
+    // 마이 페이지 개인 정보 수정
     @PutMapping("/api/member/profile")
     public ResponseEntity<ProfileResponseDto> updateProfile(@RequestBody ProfileRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(memberService.updateProfile(requestDto, userDetails.getMember()));
