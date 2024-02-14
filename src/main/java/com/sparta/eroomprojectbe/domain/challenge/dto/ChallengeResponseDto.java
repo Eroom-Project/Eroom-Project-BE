@@ -1,11 +1,9 @@
 package com.sparta.eroomprojectbe.domain.challenge.dto;
 
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
-import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * 선택한 챌린지를 조회하여 반환하는 dto

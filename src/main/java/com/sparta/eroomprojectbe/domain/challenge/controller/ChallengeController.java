@@ -7,15 +7,11 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
 import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.Role.SortRole;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.sparta.eroomprojectbe.domain.challenger.Role.SortRole.LATEST;
-import static com.sparta.eroomprojectbe.domain.challenger.Role.SortRole.POPULAR;
 
 @RestController
 @RequestMapping("/api")
