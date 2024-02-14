@@ -2,6 +2,7 @@ package com.sparta.eroomprojectbe.domain.challenge.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sparta.eroomprojectbe.domain.auth.entity.Timestamped;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class Challenge extends Timestamped{
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +53,9 @@ public class Challenge extends Timestamped{
     @Column(nullable = false, length = 512)
     private String thumbnailImageUrl;
 
-
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Challenger> challengers;
-
 
     public Challenge(ChallengeRequestDto requestDto, String file) {
         this.title = requestDto.getTitle();
@@ -82,6 +82,7 @@ public class Challenge extends Timestamped{
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = file;
     }
+
 
     public void incrementAttendance() {
         this.currentAttendance++;

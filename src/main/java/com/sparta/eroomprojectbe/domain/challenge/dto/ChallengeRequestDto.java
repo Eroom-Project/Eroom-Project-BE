@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 챌린지를 생성할때 요청하는 dto
  */
+
 @Getter
 public class ChallengeRequestDto {
     private String title;
@@ -18,4 +19,5 @@ public class ChallengeRequestDto {
     private String authExplanation;
 //    private String thumbnailImageUrl;
     private MultipartFile file;
+
 }

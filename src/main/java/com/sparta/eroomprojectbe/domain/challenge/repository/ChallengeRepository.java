@@ -3,7 +3,6 @@ package com.sparta.eroomprojectbe.domain.challenge.repository;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
@@ -40,4 +39,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
      * @return 작성날짜를 기준으로 내림차순
      */
     List<Challenge> findByOrderByCreatedAtDesc();
+
 }
