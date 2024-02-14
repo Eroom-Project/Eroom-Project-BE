@@ -87,8 +87,8 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/health","/env").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/", "/main","/signup/email","/signup/nickname").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/auth/callback/kakao", "/api/challenge/**","error").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/api/challenge/**","error").permitAll()
                         .anyRequest().authenticated()
         );
 
