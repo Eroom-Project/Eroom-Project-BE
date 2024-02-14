@@ -8,7 +8,7 @@ import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
-import com.sparta.eroomprojectbe.domain.member.entity.MemberRepository;
+import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
