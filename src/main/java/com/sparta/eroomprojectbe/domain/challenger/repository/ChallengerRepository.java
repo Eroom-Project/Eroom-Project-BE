@@ -6,7 +6,7 @@ import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import java.util.List;
 import java.util.Optional;
 
 public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
@@ -18,4 +18,8 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
     Optional<Long> findCreatorMemberIdByChallengeId(@Param("challengeId") Long challengeId);
 
     Optional<Challenger> findByChallengeAndMember(Challenge challenge, Member member);
+
+    @Query("SELECT DISTINCT c.challenge FROM Challenger c WHERE c.member.memberId = :memberId")
+    List<Challenge> findAllChallengesByMemberId(@Param("memberId") Long memberId);
 }
+

@@ -11,6 +11,10 @@ java {
 	sourceCompatibility = '17'
 }
 
+jar {
+	enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -27,18 +31,23 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	runtimeOnly 'com.h2database:h2'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.0.0-alpha-1'
+
+	implementation 'mysql:mysql-connector-java:8.0.27'
 }
 
 tasks.named('test') {
