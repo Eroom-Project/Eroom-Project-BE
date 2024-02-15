@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.challenge.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +40,19 @@ public class ImageS3Service {
     // 전체적으로 이 메서드는 주어진 MultipartFile을 AWS S3에 업로드하고, 업로드된 파일의 URL을 반환합니다.
 
     public String updateFile(String existingFileName, MultipartFile newFile) throws IOException {
-        // 기존 파일 삭제
-        amazonS3.deleteObject(bucketName, existingFileName);
+        try {
+            // 기존 파일 삭제
+            amazonS3.deleteObject(bucketName, existingFileName.split("/")[3]);
+            // 새로운 파일 업로드
+            return saveFile(newFile);
+        }catch (SdkClientException e){
+            throw new IOException("S3에서 파일을 삭제하는데 실패했습니다.", e);
+        }
 
-        // 새로운 파일 업로드
-        return saveFile(newFile);
+
     }
 
-    public void deleteFile(String existingFileName) throws IOException{
-        amazonS3.deleteObject(bucketName,existingFileName);
+    public void deleteFile(String existingFileName) {
+        amazonS3.deleteObject(bucketName,existingFileName.split("/")[3]);
     }
 }
