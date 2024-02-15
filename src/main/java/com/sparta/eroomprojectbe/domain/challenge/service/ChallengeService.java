@@ -9,6 +9,7 @@ import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerReposito
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ChallengeService {
 
@@ -36,9 +38,10 @@ public class ChallengeService {
 
     /**
      * 챌린지를 생성하는 서비스 메서드
-     *
-     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
-     * @return 성공여부 message, httpStatus
+     * @param requestDto  title, description, startDate, dueDate, frequency, limitation
+     * @param file 업로드할 파일
+     * @param member 로그인 한 멤버
+     * @return 챌린지 생성 성공여부 message, httpStatus
      */
     @Transactional
     public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, MultipartFile file, Member member) {
@@ -150,31 +153,14 @@ public class ChallengeService {
             return new ChallengeAllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
-     * 챌린지 수정하는 서비스 메서드
-     *
+     * 선택한 챌린지를 수정하는 서비스 메서드
      * @param challengeId 수정을 할 챌린지 id
-     *                    //     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
+     * @param requestDto requestDto title, description, startDate, dueDate, frequency, limitation
+     * @param file 수정하려고 업로드할 파일
+     * @param member 로그인 한 멤버
      * @return 수정한 챌린지 data, 수정 성공여부 message, httpStatus
      */
-//    @Transactional
-//    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file) {
-//        try {
-//            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-//                    () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
-//            );
-//            // 이미지 새로 바꿀때와 안바꿀때를 나눠야 하나?02/08
-//            challenge.update(requestDto, imageS3Service.updateFile(challenge.getThumbnailImageUrl(),file));
-//            Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-//            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, currentAttendance);
-//            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
-//                    HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @Transactional
     public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file, Member member) {
         try {
@@ -185,7 +171,7 @@ public class ChallengeService {
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
             String saveFile;
-            if(file == null){
+            if(file.isEmpty()){
                 saveFile = challenge.getThumbnailImageUrl();
             }else {
                 saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
@@ -198,39 +184,28 @@ public class ChallengeService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
-     * 선택한 챌린지를 삭제하는 서비스 메서드
-     *
+     * 선택한 첼린지를 삭제하는 서비스 메서드
      * @param challengeId 삭제하려는 챌린지 id
+     * @param member 로그인한 멤버
      * @return 삭제 성공여부 메세지, httpStatus
      */
-    public ChallengeCreateResponseDto deleteChallenge(Long challengeId) {
+    public ChallengeCreateResponseDto deleteChallenge(Long challengeId, Member member) {
         try {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지가 존재하지 않습니다.")
             );
+            if(member.getMemberId() != findLeaderId(challenge)){
+                  throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
+            }
+            log.info(challenge.getThumbnailImageUrl());
+            imageS3Service.deleteFile(challenge.getThumbnailImageUrl());
             challengeRepository.delete(challenge);
             return new ChallengeCreateResponseDto("챌린지 이룸 삭제 성공", HttpStatus.OK);
         } catch (DataAccessException e) {
             return new ChallengeCreateResponseDto("오류: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    public ChallengeCreateResponseDto deleteChallenge(Long challengeId, Member member) {
-//        try {
-//            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-//                    () -> new IllegalArgumentException("선택한 챌린지가 존재하지 않습니다.")
-//            );
-//            if(member.getMemberId() != findLeaderId(challenge)){
-//                  throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다")
-//            }
-//            challengeRepository.delete(challenge);
-//            return new ChallengeCreateResponseDto("챌린지 이룸 삭제 성공", HttpStatus.OK);
-//        } catch (DataAccessException e) {
-//            return new ChallengeCreateResponseDto("오류: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     /**
      * 현재참여인원을 계산해 주는 메서드
