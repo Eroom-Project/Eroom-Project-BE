@@ -7,9 +7,11 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
 import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.Role.SortRole;
+import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,11 +31,12 @@ public class ChallengeController {
      * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return message, HttpStatus
      */
-    @PostMapping(value = "/challenge", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestBody ChallengeRequestDto requestDto,
-                                                                      @RequestPart("ImageUrl") MultipartFile file) {
+    @PostMapping("/challenge")
+    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestPart("data") ChallengeRequestDto requestDto,
+                                                                      @RequestPart(value = "file", required = false) MultipartFile file,
+                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
-            ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto, file);
+            ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto,file,userDetails.getMember());
             return ResponseEntity.status(responseDto.getStatus())
                     .body(responseDto);
         } catch (Exception e) {
@@ -41,18 +44,6 @@ public class ChallengeController {
                     .body(new ChallengeCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
-//    @PostMapping("/challenge")
-//    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestBody ChallengeRequestDto requestDto,
-//                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        try {
-//            ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto,userDetails.getMember());
-//            return ResponseEntity.status(responseDto.getStatus())
-//                    .body(responseDto);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ChallengeCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
-//        }
-//    }
 
     /**
      * 선택한 챌린지 조회하는 컨트롤러 메서드
@@ -116,35 +107,36 @@ public class ChallengeController {
      * 챌린지 수정을 하는 컨트롤러 메서드
      *
      * @param challengeId 수정하려는 챌린지 id
-     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
+     * @param requestDto  title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 수정한 챌린지 내용, 수정 성공 여부 메세지, httpStatus
      */
-    @PutMapping("/challenge/{challengeId}")
-    public ResponseEntity<ChallengeDataResponseDto> updateChallenge(@PathVariable Long challengeId,
-                                                                    @RequestBody ChallengeRequestDto requestDto,
-                                                                    @RequestPart("ImageUrl") MultipartFile file) {
-        try {
-            ChallengeDataResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto, file);
-            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ChallengeDataResponseDto(null, "수정 중 오류가 발생했습니다.",
-                            HttpStatus.INTERNAL_SERVER_ERROR));
-        }
-    }
 //    @PutMapping("/challenge/{challengeId}")
 //    public ResponseEntity<ChallengeDataResponseDto> updateChallenge(@PathVariable Long challengeId,
 //                                                                    @RequestBody ChallengeRequestDto requestDto,
-//                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+//                                                                    @RequestPart("ImageUrl") MultipartFile file) {
 //        try {
-//            ChallengeDataResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto,userDetails.getMember());
+//            ChallengeDataResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto, file);
 //            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
-//        } catch (Exception e){
+//        } catch (Exception e) {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 //                    .body(new ChallengeDataResponseDto(null, "수정 중 오류가 발생했습니다.",
 //                            HttpStatus.INTERNAL_SERVER_ERROR));
 //        }
 //    }
+    @PutMapping("/challenge/{challengeId}")
+    public ResponseEntity<ChallengeDataResponseDto> updateChallenge(@PathVariable Long challengeId,
+                                                                    @RequestPart(value = "file", required = false) MultipartFile file,
+                                                                    @RequestPart("data") ChallengeRequestDto requestDto,
+                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+        try {
+            ChallengeDataResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto,file, userDetails.getMember());
+            return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ChallengeDataResponseDto(null, "수정 중 오류가 발생했습니다.",
+                            HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 
 
     /**

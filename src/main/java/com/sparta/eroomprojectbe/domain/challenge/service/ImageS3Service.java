@@ -45,4 +45,8 @@ public class ImageS3Service {
         // 새로운 파일 업로드
         return saveFile(newFile);
     }
+
+    public void deleteFile(String existingFileName) throws IOException{
+        amazonS3.deleteObject(bucketName,existingFileName);
+    }
 }

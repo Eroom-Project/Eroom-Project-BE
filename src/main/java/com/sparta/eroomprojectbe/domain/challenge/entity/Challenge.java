@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.eroomprojectbe.domain.auth.entity.Timestamped;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,7 +68,6 @@ public class Challenge extends Timestamped{
         this.currentAttendance = 0;
         this.thumbnailImageUrl = file;
     }
-
 
     public void update(ChallengeRequestDto requestDto, String file) {
         this.title = requestDto.getTitle();

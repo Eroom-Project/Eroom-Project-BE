@@ -4,7 +4,11 @@ import com.sparta.eroomprojectbe.domain.challenge.dto.*;
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
+import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
+import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,19 +24,15 @@ public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
     private final ChallengerRepository challengerRepository;
-//    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final ImageS3Service imageS3Service;
 
-    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service) {
+    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, MemberRepository memberRepository, ImageS3Service imageS3Service) {
         this.challengeRepository = challengeRepository;
         this.challengerRepository = challengerRepository;
+        this.memberRepository = memberRepository;
         this.imageS3Service = imageS3Service;
     }
-//    public ChallengeService(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, MemberRepository memberRepository) {
-//        this.challengeRepository = challengeRepository;
-//        this.challengerRepository = challengerRepository;
-//        this.memberRepository = memberRepository;
-//    }
 
     /**
      * 챌린지를 생성하는 서비스 메서드
@@ -41,12 +41,18 @@ public class ChallengeService {
      * @return 성공여부 message, httpStatus
      */
     @Transactional
-    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, MultipartFile file) {
+    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, MultipartFile file, Member member) {
         try {
-            Challenge challenge = new Challenge(requestDto, imageS3Service.saveFile(file));
+            Member createMember = memberRepository.findById(member.getMemberId()).orElseThrow(
+                    ()-> new IllegalArgumentException("해당 맴버가 존재하지 않습니다.")
+            );
+            String saveFile = imageS3Service.saveFile(file);
+            Challenge challenge = new Challenge(requestDto, saveFile);
             Challenge savedChallenge = challengeRepository.save(challenge);
-            if (savedChallenge != null && savedChallenge.getChallengeId() != null) {
-                savedChallenge.incrementAttendance();
+
+            if (savedChallenge.getChallengeId() != null) {
+                Challenger challenger = new Challenger(challenge, member, ChallengerRole.LEADER);
+                challengerRepository.save(challenger);
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 성공", HttpStatus.CREATED);
             } else {
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,26 +61,6 @@ public class ChallengeService {
             return new ChallengeCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    public ChallengeCreateResponseDto createChallenge(ChallengeRequestDto requestDto, Member member) {
-//        try {
-//            Member createMember = MemberRepository.findById(member.getMemberId()).ElseTrow(
-//                ()-> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
-//            );
-
-//            Challenge challenge = new Challenge(requestDto);
-//            Challenge savedChallenge = challengeRepository.save(challenge);
-//
-//            if (savedChallenge != null && savedChallenge.getChallengeId() != null) {
-//                Challenger challenger = new Challenger(challenge,member,ChallengerRole.LEADER);
-//                challengerRepository.save(challenger);
-//                return new ChallengeCreateResponseDto("챌린지 이룸 생성 성공", HttpStatus.CREATED);
-//            } else {
-//                return new ChallengeCreateResponseDto("챌린지 이룸 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        } catch (Exception e) {
-//            return new ChallengeCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     /**
      * 선택한 챌린지 조회하는 서비스 메서드
@@ -172,41 +158,46 @@ public class ChallengeService {
      *                    //     * @param requestDto title, description, startDate, dueDate, frequency, limitation, thumbnailImgUrl
      * @return 수정한 챌린지 data, 수정 성공여부 message, httpStatus
      */
-    @Transactional
-    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file) {
-        try {
-            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-                    () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
-            );
-            // 이미지 새로 바꿀때와 안바꿀때를 나눠야 하나?02/08
-            challenge.update(requestDto, imageS3Service.updateFile(challenge.getThumbnailImageUrl(),file));
-            Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, currentAttendance);
-            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 //    @Transactional
-//    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, Member member) {
+//    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file) {
 //        try {
 //            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
 //                    () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
-//            )
-//            if(member.getMemberId() != findLeaderId(challenge)){
-//                  throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다")
-//            }
-//            challenge.update(requestDto);
+//            );
+//            // 이미지 새로 바꿀때와 안바꿀때를 나눠야 하나?02/08
+//            challenge.update(requestDto, imageS3Service.updateFile(challenge.getThumbnailImageUrl(),file));
 //            Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-//            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge,currentAttendance, member.getMemberId());
+//            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, currentAttendance);
 //            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
 //        } catch (Exception e) {
 //            return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
 //                    HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+
+    @Transactional
+    public ChallengeDataResponseDto updateChallenge(Long challengeId, ChallengeRequestDto requestDto, MultipartFile file, Member member) {
+        try {
+            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                    () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
+            );
+            if(member.getMemberId() != findLeaderId(challenge)){
+                  throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
+            }
+            String saveFile;
+            if(file == null){
+                saveFile = challenge.getThumbnailImageUrl();
+            }else {
+                saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
+            }
+            challenge.update(requestDto, saveFile);
+            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId());
+            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * 선택한 챌린지를 삭제하는 서비스 메서드
