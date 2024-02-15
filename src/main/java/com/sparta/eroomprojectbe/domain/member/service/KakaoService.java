@@ -79,7 +79,7 @@ public class KakaoService {
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com")
-                .path("/oauth/authorize") //
+                .path("/oauth/token") //
                 .encode()
                 .build()
                 .toUri();
@@ -126,10 +126,10 @@ public class KakaoService {
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
-                .post(uri)
+        RequestEntity<Void> requestEntity = RequestEntity
+                .get(uri)
                 .headers(headers)
-                .body(new LinkedMultiValueMap<>());
+                .build();
 
         // HTTP 요청 보내기
         ResponseEntity<String> response = restTemplate.exchange(
