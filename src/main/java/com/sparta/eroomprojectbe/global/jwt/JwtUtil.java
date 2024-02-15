@@ -99,6 +99,7 @@ public class JwtUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "None");
 
         int maxAgeInSeconds = 3600; // 1시간
         cookie.setMaxAge(maxAgeInSeconds);
