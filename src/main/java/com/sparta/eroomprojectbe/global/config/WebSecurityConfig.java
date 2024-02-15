@@ -87,8 +87,10 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/health","/env").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao", "/api/challenge","/api/challenge/{challengeId}").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login","error").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao", "/api/challenge","/api/challenge/{challengeId}","/api/mypage","error").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login", "/api/challenge").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/challenge/{challengeId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/api/challenge/{challengeId}").permitAll()
                         .anyRequest().authenticated()
         );
 
