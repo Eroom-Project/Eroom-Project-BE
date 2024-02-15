@@ -66,7 +66,7 @@ public class WebSecurityConfig {
         configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
         configuration.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
         configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT", "PATCH", "DELETE","OPTIONS"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
