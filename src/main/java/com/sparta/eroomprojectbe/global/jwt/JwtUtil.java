@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.global.jwt;
 
+import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.*;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -73,26 +75,33 @@ public class JwtUtil {
     }
 
     // Refresh Token 생성
-    public String createRefreshToken(String email, MemberRoleEnum role) {
+    public String createRefreshToken(String email) {
         Date now = new Date();
 
-        return BEARER_PREFIX +
-                Jwts.builder()
+        String refreshToken = Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
                         .setExpiration(new Date(now.getTime() + (24 * TOKEN_TIME))) // 만료 시간
                         .setIssuedAt(now) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
+
+        RefreshToken token = new RefreshToken(refreshToken, email);
+        refreshTokenRepository.save(token);
+
+        return BEARER_PREFIX + refreshToken;
     }
 
     //생성된 JWT를 Cookie에 저장
     public void addJwtToCookie(String token, HttpServletResponse res, String value) throws UnsupportedEncodingException {
-        token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+        token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
         Cookie cookie = new Cookie(value, token);
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+
+        int maxAgeInSeconds = 3600; // 1시간
+        cookie.setMaxAge(maxAgeInSeconds);
 
         res.addCookie(cookie);
     }
@@ -103,7 +112,7 @@ public class JwtUtil {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER) || cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
-                    return URLDecoder.decode(cookie.getValue(), "UTF-8");
+                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 }
             }
         }
@@ -141,3 +150,4 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 }
+

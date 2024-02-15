@@ -2,7 +2,6 @@ package com.sparta.eroomprojectbe.global.jwt;
 
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
-import com.sparta.eroomprojectbe.global.rollenum.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
