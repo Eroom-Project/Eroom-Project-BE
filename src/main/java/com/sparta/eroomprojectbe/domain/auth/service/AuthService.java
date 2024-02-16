@@ -219,10 +219,10 @@ public class AuthService {
                     ()-> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
             );
             String updateFile;
-            if(file.isEmpty()){
-                updateFile = auth.getAuthImageUrl();
-            }else {
+            if(file != null){
                 updateFile = imageS3Service.updateFile(auth.getAuthImageUrl(), file);
+            }else {
+                updateFile = auth.getAuthImageUrl();
             }
             Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
             if(challengerOptional.isPresent()){
