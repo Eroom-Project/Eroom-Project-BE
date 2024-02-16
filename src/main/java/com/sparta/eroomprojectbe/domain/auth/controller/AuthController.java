@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/challenge")
@@ -51,10 +52,11 @@ public class AuthController {
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
     @PostMapping("/{challengeId}/auth") // 챌린지 인증(member) 등록
-    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestBody AuthRequestDto requestDto,
+    public ResponseEntity<ChallengerCreateResponseDto> createMemberAuth(@RequestPart("authCreateData") AuthRequestDto requestDto,
+                                                                        @RequestParam(value = "authImageUrl", required = false) MultipartFile file,
                                                                         @PathVariable Long challengeId,
                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, challengeId, userDetails.getMember());
+        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, file ,challengeId, userDetails.getMember());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     /**
@@ -93,14 +95,14 @@ public class AuthController {
      * @param userDetails 로그인 멤버
      * @return HttpStatus, (수정한 내용 data, 수정성공여부 message, httpStatus)
      */
-    @PutMapping("/{challengeId}/auth/{authId}") // 챌린지 인증 수정(member)
-    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
-                                                                @PathVariable Long challengeId,
-                                                                @PathVariable Long authId,
-                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengeId, authId, userDetails.getMember());
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
+//    @PutMapping("/{challengeId}/auth/{authId}") // 챌린지 인증 수정(member)
+//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
+//                                                                @PathVariable Long challengeId,
+//                                                                @PathVariable Long authId,
+//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengeId, authId, userDetails.getMember());
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
     /**
      * 챌린지인증 삭제하는 컨트롤러 메서드
      * @param challengeId 삭제하려는 인증의 챌린지 아이디
