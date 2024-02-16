@@ -1,6 +1,5 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
-import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
@@ -19,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -131,19 +128,13 @@ public class MemberService {
         Myroom myroom = myroomRepository.findByMemberId(member.getMemberId());
         MyroomInfoDto myroomInfo = new MyroomInfoDto(myroom);
 
-        List<Challenge> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
+        List<ChallengeWithRoleDto> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
         List<MypageChallengeDto> challengeList = challenges.stream().map(MypageChallengeDto::new).toList();
 
         List<Bricks> bricks = bricksRepository.findByRoomId(myroom.getRoomId());
-        List<BricksInfoDto> bricksInfo = bricks.stream().map(BricksInfoDto::new).collect(Collectors.toList());
+        List<BricksInfoDto> bricksInfo = bricks.stream().map(BricksInfoDto::new).toList();
 
-        MypageResponseDto response = new MypageResponseDto(
-                List.of(new DataDto(memberInfo, myroomInfo, bricksInfo, challengeList)),
-                "",
-                HttpStatus.OK
-        );
-
-        return response;
+        return new MypageResponseDto(memberInfo, myroomInfo, bricksInfo, challengeList);
     }
 
 
