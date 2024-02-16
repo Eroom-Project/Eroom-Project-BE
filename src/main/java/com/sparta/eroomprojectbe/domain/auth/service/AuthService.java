@@ -266,13 +266,15 @@ public class AuthService {
             Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge,member);
             if(challengerOptional.isPresent()){
                 if (challengerOptional.get().getRole() == ChallengerRole.LEADER ){
+                    imageS3Service.deleteFile(auth.getAuthImageUrl());
                     authRepository.delete(auth);
                     return new ChallengerCreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
                 }else if(challengerOptional.get().getMember().getMemberId() == member.getMemberId()){
+                    imageS3Service.deleteFile(auth.getAuthImageUrl());
                     authRepository.delete(auth);
                     return new ChallengerCreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
                 } else {
-                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.BAD_REQUEST);
+                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패(리더가 아니거나, 작성자가 아닙니다)", HttpStatus.BAD_REQUEST);
                 }
             }else {
                 return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.NOT_FOUND);
