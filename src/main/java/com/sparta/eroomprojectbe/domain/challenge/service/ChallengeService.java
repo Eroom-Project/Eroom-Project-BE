@@ -49,7 +49,7 @@ public class ChallengeService {
             Member createMember = memberRepository.findById(member.getMemberId()).orElseThrow(
                     ()-> new IllegalArgumentException("해당 맴버가 존재하지 않습니다.")
             );
-            String saveFile = imageS3Service.saveFile(file);
+            String saveFile = (file != null)?imageS3Service.saveFile(file):"https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2zkAR%2FbtsEYKQRgO5%2FjD2MchKeMu7gNiPOt187gK%2Fimg.png";
             Challenge challenge = new Challenge(requestDto, saveFile);
             Challenge savedChallenge = challengeRepository.save(challenge);
 
