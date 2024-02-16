@@ -205,39 +205,45 @@ public class AuthService {
      * @param loginMember 로그인 멤버
      * @return 수정후 인증 내용 data, 수정성공여부 message, httpStatus
      */
-//    @Transactional
-//    public AuthDataResponseDto updateMemberAuth(AuthRequestDto requestDto, Long challengeId, Long authId, Member loginMember) { // 챌린지 인증 수정(member)
-//        try {
-//            // auth 존재 여부 확인
-//            Auth auth = authRepository.findById(authId).orElseThrow(
-//                    ()-> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
-//            );
-//            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-//                    ()-> new IllegalArgumentException("해당 챌린저가 존재하지 않습니다.")
-//            );
-//            Member member = memberRepository.findById(loginMember.getMemberId()).orElseThrow(
-//                    ()-> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
-//            );
-//            Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
-//            if(challengerOptional.isPresent()){
-//                if(auth.getAuthId() != null){
-//                    auth.update(requestDto, challengerOptional.get());
-//                    AuthResponseDto responseDto = new AuthResponseDto(auth);
-//                    if(member.getMemberId() == challengerOptional.get().getMember().getMemberId()){
-//                        return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 성공", HttpStatus.CREATED);
-//                    }else {
-//                        return new AuthDataResponseDto(null,"해당 인증을 작성하지 않았습니다", HttpStatus.BAD_REQUEST);
-//                    }
-//                } else {
-//                    return new AuthDataResponseDto(null,"챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-//                }
-//            }else {
-//                return new AuthDataResponseDto(null, "해당 챌린지를 신청하지 않았습니다.", HttpStatus.BAD_REQUEST);
-//            }
-//        }catch (Exception e){
-//            return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @Transactional
+    public AuthDataResponseDto updateMemberAuth(AuthRequestDto requestDto,MultipartFile file, Long challengeId, Long authId, Member loginMember) { // 챌린지 인증 수정(member)
+        try {
+            // auth 존재 여부 확인
+            Auth auth = authRepository.findById(authId).orElseThrow(
+                    ()-> new IllegalArgumentException("해당 인증이 존재하지 않습니다.")
+            );
+            Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                    ()-> new IllegalArgumentException("해당 챌린저가 존재하지 않습니다.")
+            );
+            Member member = memberRepository.findById(loginMember.getMemberId()).orElseThrow(
+                    ()-> new IllegalArgumentException("해당 멤버가 존재 하지 않습니다.")
+            );
+            String updateFile;
+            if(file.isEmpty()){
+                updateFile = auth.getAuthImageUrl();
+            }else {
+                updateFile = imageS3Service.updateFile(auth.getAuthImageUrl(), file);
+            }
+            Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge, member);
+            if(challengerOptional.isPresent()){
+                if(auth.getAuthId() != null){
+                    auth.update(requestDto, updateFile, challengerOptional.get());
+                    AuthResponseDto responseDto = new AuthResponseDto(auth);
+                    if(member.getMemberId() == challengerOptional.get().getMember().getMemberId()){
+                        return new AuthDataResponseDto(responseDto,"챌린지 인증 수정 성공", HttpStatus.OK);
+                    }else {
+                        return new AuthDataResponseDto(null,"해당 인증을 작성하지 않았습니다", HttpStatus.BAD_REQUEST);
+                    }
+                } else {
+                    return new AuthDataResponseDto(null,"챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }else {
+                return new AuthDataResponseDto(null, "해당 챌린지를 신청하지 않았습니다.", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return new AuthDataResponseDto(null,"에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     /**
      * 선택한 챌린지 인증 삭제하는 서비스 메서드
      * @param challengeId 삭제하려는 인증을 담고있는 챌린지 id

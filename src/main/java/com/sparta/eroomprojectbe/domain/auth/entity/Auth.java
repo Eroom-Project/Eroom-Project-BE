@@ -50,13 +50,13 @@ public class Auth extends Timestamped{
         this.challenger=challenger;
     }
 
-//    public void update(AuthRequestDto requestDto, Challenger challenger) {
-//        this.authContents = requestDto.getAuthContents();
-//        this.authImageUrl = requestDto.getAuthImageUrl();
-//        this.authVideoUrl = requestDto.getAuthVideoUrl();
-//        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
-//        this.challenger= challenger;
-//    }
+    public void update(AuthRequestDto requestDto, String updateFile, Challenger challenger) {
+        this.authContents = (requestDto.getAuthContents()!= null)?requestDto.getAuthContents():"비어있음";
+        this.authImageUrl = updateFile;
+        this.authVideoUrl = (requestDto.getAuthVideoUrl()!=null)?requestDto.getAuthVideoUrl():"비디오 Url 없음";
+        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
+        this.challenger= challenger;
+    }
     public void leaderUpdate(Auth auth, AuthLeaderRequestDto requestDto) {
         this.authContents = auth.getAuthStatus();
         this.authImageUrl = auth.authImageUrl;
