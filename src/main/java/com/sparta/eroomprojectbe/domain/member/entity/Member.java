@@ -58,9 +58,9 @@ public class Member {
         return this;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto) {
+    public void updateProfile(ProfileRequestDto requestDto, String password) {
         this.email = requestDto.getEmail();
-        this.password = requestDto.getPassword();
+        this.password = password;
         this.nickname = requestDto.getNickname();
         this.profileImageUrl = requestDto.getProfileImageUrl();
     }
