@@ -46,6 +46,9 @@ public class KakaoService {
     @Value("${kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
+    @Value("${kakao.client-secret}")
+    private String kakaoClientSecret;
+
     public KakaoService(PasswordEncoder passwordEncoder, MemberRepository memberRepository, RestTemplate restTemplate, JwtUtil jwtUtil,  RefreshTokenRepository refreshTokenRepository) {
         this.passwordEncoder = passwordEncoder;
         this.memberRepository = memberRepository;
@@ -94,6 +97,7 @@ public class KakaoService {
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
+        body.add("client_secret", kakaoClientSecret);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
