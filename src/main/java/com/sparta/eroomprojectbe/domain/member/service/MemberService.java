@@ -143,7 +143,8 @@ public class MemberService {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
 
-        findMember.updateProfile(requestDto);
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        findMember.updateProfile(requestDto, password);
 
         return new ProfileResponseDto(findMember);
     }
