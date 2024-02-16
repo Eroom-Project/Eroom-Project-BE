@@ -70,7 +70,7 @@ public class ChallengeController {
      * @param query 검색하려는 단어
      * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
      */
-    @GetMapping("/challenge")
+    @GetMapping("/challenge/all")
     public ResponseEntity<ChallengeAllResponseDto> getAllChallenge(@RequestParam(required = false) SortRole sortBy,
                                                                    @RequestParam(required = false) CategoryRole category,
                                                                    @RequestParam(required = false) String query) {
