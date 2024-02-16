@@ -32,7 +32,7 @@ public class ChallengeController {
      */
     @PostMapping("/challenge")
     public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestPart("challengeCreateData") ChallengeRequestDto requestDto,
-                                                                      @RequestPart(value = "thumbnailImageUrl", required = false) MultipartFile file,
+                                                                      @RequestParam(value = "thumbnailImageUrl", required = false) MultipartFile file,
                                                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
             ChallengeCreateResponseDto responseDto = challengeService.createChallenge(requestDto,file,userDetails.getMember());
