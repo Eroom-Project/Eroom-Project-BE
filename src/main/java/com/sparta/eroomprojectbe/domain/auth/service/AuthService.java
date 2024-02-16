@@ -62,6 +62,10 @@ public class AuthService {
             Member member = memberRepository.findById(loginMember.getMemberId()).orElseThrow(
                     ()-> new IllegalArgumentException("멤버가 존재하지 않습니다.")
             );
+            boolean isAlreadyApplied = challengerRepository.existsByChallengeAndMember(challenge, member);
+            if (isAlreadyApplied) {
+                throw new IllegalArgumentException("이미 챌린지에 참여하고 있습니다.");
+            }
             if (challenge.getCurrentAttendance() == challenge.getLimitAttendance()) {
                 throw new IllegalArgumentException("인원이 초과되었습니다.");
             }
