@@ -47,7 +47,8 @@ public class AuthController {
     /**
      * 챌린지 인증 등록하는 컨트롤러 메서드
      * @param requestDto authContents,authImageUrl,authVideoUrl, authStatus
-     * @param challengeId 증하려는 challengerId
+     * @param file 인증용 사진
+     * @param challengeId 인증하려는 challengerId
      * @param userDetails 로그인 멤버
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
@@ -95,14 +96,15 @@ public class AuthController {
      * @param userDetails 로그인 멤버
      * @return HttpStatus, (수정한 내용 data, 수정성공여부 message, httpStatus)
      */
-//    @PutMapping("/{challengeId}/auth/{authId}") // 챌린지 인증 수정(member)
-//    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestBody AuthRequestDto requestDto,
-//                                                                @PathVariable Long challengeId,
-//                                                                @PathVariable Long authId,
-//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, challengeId, authId, userDetails.getMember());
-//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-//    }
+    @PutMapping("/{challengeId}/auth/{authId}") // 챌린지 인증 수정(member)
+    public ResponseEntity<AuthDataResponseDto> updateMemberAuth(@RequestPart("authUpdateData") AuthRequestDto requestDto,
+                                                                @RequestPart(value = "authImageUrl", required = false) MultipartFile file,
+                                                                @PathVariable Long challengeId,
+                                                                @PathVariable Long authId,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, file, challengeId, authId, userDetails.getMember());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
     /**
      * 챌린지인증 삭제하는 컨트롤러 메서드
      * @param challengeId 삭제하려는 인증의 챌린지 아이디
