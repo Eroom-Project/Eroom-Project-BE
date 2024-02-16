@@ -1,9 +1,11 @@
 package com.sparta.eroomprojectbe.domain.member.dto;
 
 import com.sparta.eroomprojectbe.domain.myroom.entity.Bricks;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 public class BricksInfoDto {
     private Long brickId;
     private Long roomId;
