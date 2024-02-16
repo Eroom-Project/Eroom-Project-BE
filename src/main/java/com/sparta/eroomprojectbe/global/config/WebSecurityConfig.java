@@ -86,10 +86,12 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/health","/env").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao", "/api/challenge","/api/challenge/{challengeId}").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login","error").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/health","/env").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/challenge/{challengeId}/auth").authenticated()
+//                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao", "/api/challenge/**","error").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login").permitAll()
+//                        .anyRequest().authenticated()
         );
 
         http.formLogin(AbstractHttpConfigurer::disable);
