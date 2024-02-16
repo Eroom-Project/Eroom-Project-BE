@@ -31,7 +31,7 @@ public class ChallengeController {
      * @return 챌린지 생성 성공 여부 message, httpStatus
      */
     @PostMapping("/challenge")
-    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestPart("ChallengeCreateData") ChallengeRequestDto requestDto,
+    public ResponseEntity<ChallengeCreateResponseDto> createChallenge(@RequestPart("challengeCreateData") ChallengeRequestDto requestDto,
                                                                       @RequestPart(value = "thumbnailImageUrl", required = false) MultipartFile file,
                                                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
         try {
