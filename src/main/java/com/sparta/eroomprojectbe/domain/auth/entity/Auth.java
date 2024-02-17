@@ -58,7 +58,7 @@ public class Auth extends Timestamped{
         this.challenger= challenger;
     }
     public void leaderUpdate(Auth auth, AuthLeaderRequestDto requestDto) {
-        this.authContents = auth.getAuthStatus();
+        this.authContents = auth.authContents;
         this.authImageUrl = auth.authImageUrl;
         this.authVideoUrl = auth.authVideoUrl;
         this.challenger = auth.challenger;
