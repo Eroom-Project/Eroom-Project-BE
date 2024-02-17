@@ -41,16 +41,18 @@ public class Member {
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
+        this.isSocialMember = false;
         this.profileImageUrl ="https://files.slack.com/files-pri/T01L2TNGW3T-F06K5JP92N4/group_69.png";
     }
 
-    public Member(String kakaoEmail, String password, String nickname, Long kakaoId, boolean b) {
+    public Member(String kakaoEmail, String password, String nickname, Long kakaoId, String profileImageUrl) {
         this.email = kakaoEmail;
         this.password = password;
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
         this.kakaoId = kakaoId;
-        this.isSocialMember = b;
+        this.isSocialMember = true;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {
