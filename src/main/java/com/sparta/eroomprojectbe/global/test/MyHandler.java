@@ -1,4 +1,4 @@
-package com.sparta.eroomprojectbe.global.config;
+package com.sparta.eroomprojectbe.global.test;
 
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

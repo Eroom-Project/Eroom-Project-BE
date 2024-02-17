@@ -1,5 +1,6 @@
-package com.sparta.eroomprojectbe.global.config;
+package com.sparta.eroomprojectbe.global.test;
 
+import com.sparta.eroomprojectbe.global.test.MyHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;
