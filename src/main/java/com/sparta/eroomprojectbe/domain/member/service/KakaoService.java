@@ -169,7 +169,7 @@ public class KakaoService {
                 // 기존 회원정보에 카카오 Id 추가
                 kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
             } else {
-                kakaoUser = new Member(kakaoEmail, "", kakaoUserInfo.getNickname(), kakaoId, true);
+                kakaoUser = new Member(kakaoEmail, "", kakaoUserInfo.getNickname(), kakaoId, kakaoUserInfo.getProfileImageUrl());
             }
 
             memberRepository.save(kakaoUser);
