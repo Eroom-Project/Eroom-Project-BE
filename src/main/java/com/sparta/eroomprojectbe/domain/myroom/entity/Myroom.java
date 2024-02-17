@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class Myroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +21,8 @@ public class Myroom {
     private LocalDate creationDate;
     private String floor;
     private String wall;
+
+    public Myroom (){
+        this.floor = "https://files.slack.com/files-tmb/T01L2TNGW3T-F06JYEWHGDC-76c0db4a17/brickbackground_480.jpg";
+    }
 }
