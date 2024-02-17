@@ -25,6 +25,8 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
     @Query("SELECT new com.sparta.eroomprojectbe.domain.member.dto.ChallengeWithRoleDto(c.challenge, c.role) FROM Challenger c WHERE c.member.memberId = :memberId")
     List<ChallengeWithRoleDto> findAllChallengesByMemberId(@Param("memberId") Long memberId);
+
+    boolean existsByChallengeAndMember(Challenge challenge, Member member);
 }
 
 
