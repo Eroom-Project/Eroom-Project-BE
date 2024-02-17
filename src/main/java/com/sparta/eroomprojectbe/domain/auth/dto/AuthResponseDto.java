@@ -14,6 +14,7 @@ public class AuthResponseDto {
     private String authVideoUrl;
     private String authStatus;
     private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
     private Long challengeId;
     private Long memberId;
 
@@ -25,6 +26,7 @@ public class AuthResponseDto {
         this.authVideoUrl = auth.getAuthVideoUrl();
         this.authStatus = auth.getAuthStatus();
         this.createdAt = auth.getCreatedAt();
+        this.modifiedAt = auth.getModifiedAt();
         this.challengeId = auth.getChallenger().getChallenge().getChallengeId();
         this.memberId = auth.getChallenger().getMember().getMemberId();
     }
