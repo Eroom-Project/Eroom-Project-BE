@@ -17,7 +17,6 @@ public class ChallengeRequestDto {
     private String frequency;
     private short limitAttendance;
     private String authExplanation;
-//    private String thumbnailImageUrl;
     private MultipartFile file;
 
 }
