@@ -198,7 +198,6 @@ public class ChallengeService {
             if(member.getMemberId() != findLeaderId(challenge)){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
-            log.info(challenge.getThumbnailImageUrl());
             imageS3Service.deleteFile(challenge.getThumbnailImageUrl());
             challengeRepository.delete(challenge);
             return new ChallengeCreateResponseDto("챌린지 이룸 삭제 성공", HttpStatus.OK);
