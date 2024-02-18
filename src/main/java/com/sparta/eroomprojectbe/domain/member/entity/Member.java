@@ -57,6 +57,7 @@ public class Member {
 
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
+        this.isSocialMember = true;
         return this;
     }
 
