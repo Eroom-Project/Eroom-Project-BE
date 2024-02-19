@@ -1,8 +1,11 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
+import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
+import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class WebSocketEventListener {
@@ -26,21 +30,33 @@ public class WebSocketEventListener {
 
     @Autowired
     private ChallengerRepository challengerRepository;
+
+    @Autowired
+    private ChallengeRepository challengeRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
-
+        // 이벤트에서 Stomp 헤더 접근
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        Long challengeId = (Long) headerAccessor.getSessionAttributes().get("challengeId"); // 챌린지 ID 가져오기
+        // 챌린지 ID 가져오기
+        Long challengeId = (Long) headerAccessor.getSessionAttributes().get("challengeId");
+        // 회원 ID 가져오기
+        Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId");
 
-        if (challengeId != null) {
-            // WebSocket 연결 시 챌린지 참여 여부 확인
-            Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId"); // 회원 ID 가져오기
-            Challenger challenger = challengerRepository.findByChallengeIdAndMemberId(challengeId, memberId);
-            if (challenger != null) {
-                // 챌린지에 해당 회원이 참여 중인 경우
-                String nickname = challenger.getMember().getNickname(); // 회원의 닉네임 가져오기
-                headerAccessor.getSessionAttributes().put("nickname", nickname);
+        if (challengeId != null && memberId != null) {
+            // 챌린지와 회원 엔터티를 찾음
+            Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
+
+            // 챌린지와 회원이 존재하는 경우에만 처리
+            if (challengeOptional.isPresent() && memberOptional.isPresent()) {
+                Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challengeOptional.get(), memberOptional.get());
+                // 챌린저가 존재하는 경우 닉네임을 세션에 저장
+                challengerOptional.ifPresent(challenger -> headerAccessor.getSessionAttributes().put("nickname", challenger.getMember().getNickname()));
             }
         }
     }
