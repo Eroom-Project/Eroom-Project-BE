@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +33,7 @@ import java.net.URI;
 
 @Slf4j(topic = "KAKAO Login")
 @Service
+@Transactional
 public class KakaoService {
 
     private final PasswordEncoder passwordEncoder;
@@ -72,7 +74,6 @@ public class KakaoService {
         RefreshToken existingToken = refreshTokenRepository.findByKeyEmail(kakaoUser.getEmail())
                 .orElseGet(() -> new RefreshToken(kakaoUserInfo.getEmail(), refreshToken));
         existingToken.updateToken(refreshToken);
-        refreshTokenRepository.save(existingToken);
 
         return kakaoUser.getNickname();
     }
@@ -157,6 +158,7 @@ public class KakaoService {
     private Member registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
+        log.info("kakaoId : "+ kakaoId);
         Member kakaoUser = memberRepository.findByKakaoId(kakaoId).orElse(null);
 
         if (kakaoUser == null) {

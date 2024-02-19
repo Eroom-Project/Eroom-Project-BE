@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -75,6 +77,7 @@ public class JwtUtil {
     }
 
     // Refresh Token 생성
+    @Transactional
     public String createRefreshToken(String email) {
         Date now = new Date();
 
@@ -85,9 +88,12 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
 
-        RefreshToken token = new RefreshToken(refreshToken, email);
-        refreshTokenRepository.save(token);
-
+        Optional<RefreshToken> findToken = refreshTokenRepository.findByKeyEmail(email);
+        if (findToken.isPresent()){
+            findToken.get().updateToken(refreshToken);
+        } else {
+            refreshTokenRepository.save(new RefreshToken(refreshToken, email));
+        }
         return BEARER_PREFIX + refreshToken;
     }
 
