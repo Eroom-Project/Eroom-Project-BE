@@ -7,6 +7,7 @@ import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,6 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
     @Query("SELECT c.member.memberId FROM Challenger c WHERE c.challenge.challengeId = :challengeId AND c.role = 'LEADER'")
     Optional<Long> findCreatorMemberIdByChallengeId(@Param("challengeId") Long challengeId);
 
-
     Optional<Challenger> findByChallengeAndMember(Challenge challenge, Member member);
 
     @Query("SELECT new com.sparta.eroomprojectbe.domain.member.dto.ChallengeWithRoleDto(c.challenge, c.role) FROM Challenger c WHERE c.member.memberId = :memberId")
@@ -30,6 +30,6 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
     List<Long> findMemberIdsByChallenge(@Param("challenge") Challenge challenge);
 
     boolean existsByChallengeAndMember(Challenge challenge, Member member);
+
+
 }
-
-

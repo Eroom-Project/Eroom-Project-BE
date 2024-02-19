@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.challenge.dto;
 
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import lombok.Getter;
 
 import java.time.LocalDate;
