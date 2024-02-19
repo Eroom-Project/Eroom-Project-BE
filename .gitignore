@@ -42,3 +42,6 @@ out/
 
 ### VS Code ###
 .vscode/
+main.js
+main.css
+index.html
