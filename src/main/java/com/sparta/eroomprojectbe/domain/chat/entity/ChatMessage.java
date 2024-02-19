@@ -1,9 +1,18 @@
 package com.sparta.eroomprojectbe.domain.chat.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 public class ChatMessage {
     private MessageType type;
-    private String content;
+    private String message;
     private String sender;
+
+    private LocalDateTime time;
 
     public enum MessageType {
         CHAT,
@@ -20,11 +29,11 @@ public class ChatMessage {
     }
 
     public String getContent() {
-        return content;
+        return message;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.message = content;
     }
 
     public String getSender() {

@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
-
     Long countByChallenge_ChallengeId(Long challengeId);
 
     Long countByChallenge(Challenge challenge);
@@ -27,6 +26,7 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
     List<ChallengeWithRoleDto> findAllChallengesByMemberId(@Param("memberId") Long memberId);
 
     boolean existsByChallengeAndMember(Challenge challenge, Member member);
+
 }
 
 
