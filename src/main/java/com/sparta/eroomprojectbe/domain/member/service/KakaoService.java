@@ -66,14 +66,10 @@ public class KakaoService {
         Authentication authentication = forceLogin(kakaoUser);
 
         String accessToken = jwtUtil.createAccessToken(kakaoUserInfo.getEmail(), kakaoUser.getRole());
-        jwtUtil.addJwtToCookie(accessToken, response, "accessToken");
+        jwtUtil.addJwtToCookie(accessToken, response, JwtUtil.AUTHORIZATION_HEADER);
 
         String refreshToken = jwtUtil.createRefreshToken(kakaoUserInfo.getEmail());
-        jwtUtil.addJwtToCookie(refreshToken, response, "refreshToken");
-
-        RefreshToken existingToken = refreshTokenRepository.findByKeyEmail(kakaoUser.getEmail())
-                .orElseGet(() -> new RefreshToken(kakaoUserInfo.getEmail(), refreshToken));
-        existingToken.updateToken(refreshToken);
+        jwtUtil.addJwtToCookie(refreshToken, response, JwtUtil.REFRESH_TOKEN_HEADER);
 
         return kakaoUser.getNickname();
     }
