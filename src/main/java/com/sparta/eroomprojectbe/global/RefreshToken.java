@@ -16,7 +16,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private String refreshToken;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String keyEmail;
 
     public RefreshToken(String refreshToken, String keyEmail) {
@@ -24,9 +24,7 @@ public class RefreshToken {
         this.keyEmail = keyEmail;
     }
 
-    // updateToken 메소드 추가 필요
-    public RefreshToken updateToken(String newRefreshToken) {
+    public void updateToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
-        return this;
     }
 }
