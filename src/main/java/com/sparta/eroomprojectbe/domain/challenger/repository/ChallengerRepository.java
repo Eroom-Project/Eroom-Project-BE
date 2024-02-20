@@ -30,5 +30,3 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
     boolean existsByChallengeAndMember(Challenge challenge, Member member);
 }
-
-}
