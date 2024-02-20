@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
-
     Long countByChallenge_ChallengeId(Long challengeId);
 
     Long countByChallenge(Challenge challenge);
