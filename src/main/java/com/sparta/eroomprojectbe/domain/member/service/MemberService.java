@@ -169,7 +169,7 @@ public class MemberService {
     }
 
     private void deleteCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("Refresh_token", null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
+        Cookie cookie = new Cookie(JwtUtil.REFRESH_TOKEN_HEADER, null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
