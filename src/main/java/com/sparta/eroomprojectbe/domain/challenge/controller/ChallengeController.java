@@ -51,9 +51,16 @@ public class ChallengeController {
      * @return 조회한 챌린지 data, 선택한 챌린지 조회 성공 여부 message, httpStatus
      */
     @GetMapping("/challenge/{challengeId}")
-    public ResponseEntity<ChallengeDataResponseDto> getChallenge(@PathVariable Long challengeId) {
+    public ResponseEntity<ChallengeDataResponseDto> getChallenge(@PathVariable Long challengeId,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String loginMemberId;
+        if(userDetails != null){
+            loginMemberId = ""+userDetails.getMember().getMemberId();
+        }else{
+            loginMemberId = "No members logged in";
+        }
         try {
-            ChallengeDataResponseDto responseDto = challengeService.getChallenge(challengeId);
+            ChallengeDataResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

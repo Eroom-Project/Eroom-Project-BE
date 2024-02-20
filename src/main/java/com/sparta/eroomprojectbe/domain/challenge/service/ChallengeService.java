@@ -68,17 +68,19 @@ public class ChallengeService {
     /**
      * 선택한 챌린지 조회하는 서비스 메서드
      *
-     * @param challengeId 선택한 challenge 아이디
+     * @param challengeId   선택한 challenge 아이디
+     * @param loginMemberId
      * @return 선택한 챌린지 data, 성공여부 message, httpStatus
      */
-    public ChallengeDataResponseDto getChallenge(Long challengeId) {
+    public ChallengeDataResponseDto getChallenge(Long challengeId, String loginMemberId) {
         Optional<Challenge> optionalChallenge = challengeRepository.findById(challengeId);
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
         Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
         ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
-        ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
+        ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId);
+        ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeLoginResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
     }
 
@@ -177,7 +179,8 @@ public class ChallengeService {
             }
             challenge.update(requestDto, saveFile);
             ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId(),findCurrentMemberIds(challenge));
-            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
+            ChallengeLoginResponseDto loginResponseDto = new ChallengeLoginResponseDto(responseDto,""+member.getMemberId());
+            return new ChallengeDataResponseDto(loginResponseDto, "챌린지 수정 성공", HttpStatus.OK);
         } catch (Exception e) {
             return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
