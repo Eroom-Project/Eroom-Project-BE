@@ -30,7 +30,7 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.sendMessage/{challengeId}")
-    @SendTo("/sub/chat/challenge/{challengeId}")
+    @SendTo("/sub/chat/challenge/37")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    @DestinationVariable("challengeId") String challengeId){
         // 챌린지 ID와 회원 ID 가져오기
