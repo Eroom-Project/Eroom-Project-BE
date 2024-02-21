@@ -29,7 +29,7 @@ public class WebSocketEventListener {
 
         String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
 
-        messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId, chatMessage);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
     }
 
     @EventListener
@@ -48,7 +48,7 @@ public class WebSocketEventListener {
             String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
 
             if (challengeId != null) {
-                messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId, chatMessage);
+                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
     }

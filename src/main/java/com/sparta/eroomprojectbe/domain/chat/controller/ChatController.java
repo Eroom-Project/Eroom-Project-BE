@@ -37,10 +37,33 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage/{challengeId}")
     public void sendMessage(@Payload ChatMessage chatMessage,
                             @DestinationVariable("challengeId") String challengeId) {
-        chatMessage.setTime(LocalDateTime.now());
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-    }
+        // 회원 ID 가져오기
+        String challengeIdString = chatMessage.getChallengeId();
+        String memberIdString = chatMessage.getMemberId();
 
+        if (challengeIdString != null && memberIdString != null) {
+            // String 값을 Long 값으로 변환
+            Long challenge = Long.parseLong(challengeIdString);
+            Long member = Long.parseLong(memberIdString);
+
+            // 챌린지와 회원을 찾음
+            Optional<Challenge> challengeOptional = challengeRepository.findById(challenge);
+            Optional<Member> memberOptional = memberRepository.findById(member);
+
+            // 챌린지와 회원이 존재하는 경우에만 처리
+            if (challengeOptional.isPresent() && memberOptional.isPresent()) {
+                Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challengeOptional.get(), memberOptional.get());
+
+                challengerOptional.ifPresent(challenger -> {
+                    String senderNickname = challenger.getMember().getNickname();
+                    chatMessage.setSender(senderNickname);
+                });
+                chatMessage.setTime(LocalDateTime.now());
+                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+            }
+        }
+    }
+}
 
 //    @MessageMapping("/chat.sendMessage")
 //    @SendTo("/sub/chat/challenge/{challengeId}")
@@ -71,4 +94,4 @@ public class ChatController {
 //        }
 //        return chatMessage; // 채팅 메시지 반환
 //    }
-}
+//}
