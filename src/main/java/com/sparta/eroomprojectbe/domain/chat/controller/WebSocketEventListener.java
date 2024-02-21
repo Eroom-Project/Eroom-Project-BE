@@ -22,6 +22,15 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setType(ChatMessage.MessageType.JOIN);
+
+        String memberId = headerAccessor.getFirstNativeHeader("memberId");
+        String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
+
+        messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId + memberId, chatMessage);
     }
 
     @EventListener
