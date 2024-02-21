@@ -14,6 +14,7 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/sub/chat/challenge/{challengeId}")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+        System.out.println(chatMessage);
         chatMessage.setTime(LocalDateTime.now());
         return chatMessage;
     }
