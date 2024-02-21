@@ -83,7 +83,7 @@ public class JwtUtil {
 
         String refreshToken = Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
-                        .setExpiration(new Date(now.getTime() + (24 * TOKEN_TIME))) // 만료 시간
+                        .setExpiration(new Date(now.getTime() + (7 * 24 * TOKEN_TIME))) // 만료 시간
                         .setIssuedAt(now) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
@@ -108,7 +108,13 @@ public class JwtUtil {
         cookie.setAttribute("SameSite", "None");
 
         int maxAgeInSeconds = 3600; // 1시간
-        cookie.setMaxAge(maxAgeInSeconds);
+        if (value.equals(JwtUtil.AUTHORIZATION_HEADER)) {
+            cookie.setMaxAge(maxAgeInSeconds);
+        }
+
+        if (value.equals(JwtUtil.REFRESH_TOKEN_HEADER)) {
+            cookie.setMaxAge(7 * 24 * maxAgeInSeconds);
+        }
 
         res.addCookie(cookie);
     }

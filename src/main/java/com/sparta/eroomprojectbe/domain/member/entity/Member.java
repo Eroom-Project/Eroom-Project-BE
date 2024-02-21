@@ -42,7 +42,7 @@ public class Member {
         this.nickname = nickname;
         this.role = MemberRoleEnum.USER;
         this.isSocialMember = false;
-        this.profileImageUrl ="https://files.slack.com/files-pri/T01L2TNGW3T-F06JYF3GTB8/image.png";
+        this.profileImageUrl ="https://github.com/Eroom-Project/Eroom-Project-FE/assets/151543350/e026bdc5-2a06-4578-b561-739d26097db2";
     }
 
     public Member(String kakaoEmail, String password, String nickname, Long kakaoId, String profileImageUrl) {

@@ -56,6 +56,7 @@ public class ChallengeService {
             if (savedChallenge.getChallengeId() != null) {
                 Challenger challenger = new Challenger(challenge, member, ChallengerRole.LEADER);
                 challengerRepository.save(challenger);
+                challenge.incrementAttendance();
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 성공", HttpStatus.CREATED);
             } else {
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,8 +78,7 @@ public class ChallengeService {
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
-        Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
+        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(optionalChallenge.get()), findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
         ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId);
         ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeLoginResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
