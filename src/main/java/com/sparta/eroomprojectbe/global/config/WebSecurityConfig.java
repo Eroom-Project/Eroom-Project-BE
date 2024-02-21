@@ -87,7 +87,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/health","/env").permitAll()
+                        .requestMatchers("/health","/env").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/challenge/{challengeId}/auth").authenticated()
 //                        .requestMatchers(HttpMethod.GET,"/", "/main","/api/signup/email","/api/signup/nickname","/auth/callback/kakao", "/api/challenge/**","error").permitAll()
 //                        .requestMatchers(HttpMethod.POST,"/api/signup","/api/login").permitAll()
