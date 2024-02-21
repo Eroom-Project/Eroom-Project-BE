@@ -17,8 +17,8 @@ public class ChatController {
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setTime(LocalDateTime.now());
-        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
-        chatMessage.setSender(nickname);
+//        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
+//        chatMessage.setSender(nickname);
         return chatMessage;
     }
 }
