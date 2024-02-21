@@ -38,7 +38,7 @@ public class WebSocketEventListener {
     private MemberRepository memberRepository;
 
     @EventListener
-    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+    public String handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
         // 이벤트에서 Stomp 헤더 접근
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -60,12 +60,14 @@ public class WebSocketEventListener {
                 Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challengeOptional.get(), memberOptional.get());
                 // 챌린저가 존재하는 경우 닉네임을 세션에 저장
                 challengerOptional.ifPresent(challenger -> headerAccessor.getSessionAttributes().put("nickname", challenger.getMember().getNickname()));
+
             }
         }
+        return "연결됨";
     }
 
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+    public String handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
@@ -79,5 +81,6 @@ public class WebSocketEventListener {
 
             messagingTemplate.convertAndSend( "/sub/chat/challenge/{challengeId}", chatMessage);
         }
+    return "연결 끝";
     }
 }
