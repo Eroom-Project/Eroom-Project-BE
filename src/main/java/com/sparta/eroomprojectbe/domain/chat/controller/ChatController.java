@@ -59,7 +59,7 @@ public class ChatController {
                     chatMessage.setSender(senderNickname);
                 });
                 chatMessage.setTime(LocalDateTime.now());
-                chatMessage.setType(ChatMessage.MessageType.CHAT);
+                chatMessage.setMessagesType(ChatMessage.MessagesType.CHAT);
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
