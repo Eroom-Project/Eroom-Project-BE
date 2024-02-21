@@ -65,7 +65,6 @@ public class Challenge extends Timestamped{
         this.frequency = requestDto.getFrequency();
         this.authExplanation = requestDto.getAuthExplanation();
         this.limitAttendance = requestDto.getLimitAttendance();
-        this.currentAttendance = 0;
         this.thumbnailImageUrl = file;
     }
 
