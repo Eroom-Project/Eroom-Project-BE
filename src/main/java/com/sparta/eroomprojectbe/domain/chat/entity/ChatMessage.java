@@ -11,8 +11,8 @@ public class ChatMessage {
     private MessageType type;
     private String message;
     private String sender;
-
     private LocalDateTime time;
+    private String memberId;
 
     public enum MessageType {
         CHAT,
@@ -28,17 +28,13 @@ public class ChatMessage {
         this.type = type;
     }
 
-    public String getContent() {
-        return message;
-    }
-
-    public void setContent(String content) {
-        this.message = content;
-    }
-
-    public String getSender() {
-        return sender;
-    }
+//    public String getContent() {
+//        return message;
+//    }
+//
+//    public void setContent(String content) {
+//        this.message = content;
+//    }
 
     public void setSender(String sender) {
         this.sender = sender;
