@@ -13,6 +13,7 @@ public class ChatMessage {
     private String sender;
     private LocalDateTime time;
     private String memberId;
+    private String challengeId;
 
     public enum MessageType {
         CHAT,

@@ -30,15 +30,15 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.sendMessage")
-    @SendTo("/sub/chat/challenge/37")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
-                                   @DestinationVariable("challengeId") String challengeId){
+    @SendTo("/sub/chat/challenge/{challengeId}")
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage){
         // 회원 ID 가져오기
+        String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
 
-        if (challengeId != null && memberIdString != null) {
+        if (challengeIdString != null && memberIdString != null) {
             // String 값을 Long 값으로 변환
-            Long challenge = Long.parseLong(challengeId);
+            Long challenge = Long.parseLong(challengeIdString);
             Long member = Long.parseLong(memberIdString);
 
             // 챌린지와 회원을 찾음
