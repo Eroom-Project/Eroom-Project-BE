@@ -14,19 +14,15 @@ import java.time.LocalDateTime;
 public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/sub/chat/challenge/{challengeId}")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        chatMessage.setTime(LocalDateTime.now());
-        return chatMessage;
-    }
-
-    @MessageMapping("/chat.addUser")
-    @SendTo("/sub/chat/challenge/{challengeId}")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage,
-                               SimpMessageHeaderAccessor headerAccessor) {
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
+                                   SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setTime(LocalDateTime.now());
         headerAccessor.getSessionAttributes().put("nickname", chatMessage.getSender());
         return chatMessage;
     }
+}
+
+
 //    @MessageMapping("/chat.sendMessage")
 //    @SendTo("/sub/public")
 //    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
@@ -41,5 +37,3 @@ public class ChatController {
 //        headerAccessor.getSessionAttributes().put("nickname", chatMessage.getSender());
 //        return chatMessage;
 //    }
-
-}
