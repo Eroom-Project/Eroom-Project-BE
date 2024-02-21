@@ -56,6 +56,7 @@ public class ChallengeService {
             if (savedChallenge.getChallengeId() != null) {
                 Challenger challenger = new Challenger(challenge, member, ChallengerRole.LEADER);
                 challengerRepository.save(challenger);
+                challenge.incrementAttendance();
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 성공", HttpStatus.CREATED);
             } else {
                 return new ChallengeCreateResponseDto("챌린지 이룸 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
