@@ -40,7 +40,7 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
 
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 1시간
+    private final long TOKEN_TIME = 20 * 1000L; // 1시간
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -98,9 +98,9 @@ public class JwtUtil {
     }
 
     //생성된 JWT를 Cookie에 저장
-    public void addJwtToCookie(String token, HttpServletResponse res, String value) throws UnsupportedEncodingException {
+    public void addJwtToCookie(String token, HttpServletResponse res, String tokenName) throws UnsupportedEncodingException {
         token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
-        Cookie cookie = new Cookie(value, token);
+        Cookie cookie = new Cookie(tokenName, token);
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -108,11 +108,11 @@ public class JwtUtil {
         cookie.setAttribute("SameSite", "None");
 
         int maxAgeInSeconds = 3600; // 1시간
-        if (value.equals(JwtUtil.AUTHORIZATION_HEADER)) {
+        if (tokenName.equals(JwtUtil.AUTHORIZATION_HEADER)) {
             cookie.setMaxAge(maxAgeInSeconds);
         }
 
-        if (value.equals(JwtUtil.REFRESH_TOKEN_HEADER)) {
+        if (tokenName.equals(JwtUtil.REFRESH_TOKEN_HEADER)) {
             cookie.setMaxAge(7 * 24 * maxAgeInSeconds);
         }
 
@@ -120,11 +120,11 @@ public class JwtUtil {
     }
 
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
-    public String getTokenFromRequest(HttpServletRequest req) throws UnsupportedEncodingException {
+    public String getTokenFromRequest(HttpServletRequest req, String tokenName) {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER) || cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
+                if (cookie.getName().equals(tokenName)) {
                     return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 }
             }

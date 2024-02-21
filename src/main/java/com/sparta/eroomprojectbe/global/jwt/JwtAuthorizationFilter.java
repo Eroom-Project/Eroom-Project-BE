@@ -29,7 +29,22 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String tokenValue = jwtUtil.getTokenFromRequest(req, JwtUtil.AUTHORIZATION_HEADER);
+
+        if(req.getRequestURI().equals("/api/token")){
+            tokenValue = jwtUtil.getTokenFromRequest(req, JwtUtil.REFRESH_TOKEN_HEADER);
+
+            if(!StringUtils.hasText(tokenValue)){
+                res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+
+            tokenValue = jwtUtil.substringToken(tokenValue);
+
+            jwtUtil.validateToken(tokenValue);
+            filterChain.doFilter(req, res);
+            return;
+        }
 
         if (StringUtils.hasText(tokenValue)) {
             tokenValue = jwtUtil.substringToken(tokenValue);
@@ -37,6 +52,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Invalid JWT Token");
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
