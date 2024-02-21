@@ -25,7 +25,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setType(ChatMessage.MessageType.JOIN);
+        chatMessage.setMessagesType(ChatMessage.MessagesType.JOIN);
 
         String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
 
@@ -41,7 +41,7 @@ public class WebSocketEventListener {
             logger.info("User Disconnected : " + nickname);
 
             ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setType(ChatMessage.MessageType.LEAVE);
+            chatMessage.setMessagesType(ChatMessage.MessagesType.LEAVE);
             chatMessage.setSender(nickname);
 
             // Session에서 challengeId 가져오기
