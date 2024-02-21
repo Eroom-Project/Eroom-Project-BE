@@ -8,11 +8,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ChatMessage {
-    private MessageType type;
+    private MessageType messagesType;
     private String message;
     private String sender;
     private LocalDateTime time;
     private String memberId;
+    private String challengeId;
 
     public enum MessageType {
         CHAT,
@@ -21,11 +22,11 @@ public class ChatMessage {
     }
 
     public MessageType getType() {
-        return type;
+        return messagesType;
     }
 
     public void setType(MessageType type) {
-        this.type = type;
+        this.messagesType = type;
     }
 
 //    public String getContent() {
