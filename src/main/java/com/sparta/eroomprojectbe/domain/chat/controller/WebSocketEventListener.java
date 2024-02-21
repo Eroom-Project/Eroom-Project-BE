@@ -51,6 +51,7 @@ public class WebSocketEventListener {
             // String 값을 Long으로 변환
             Long challengeId = Long.parseLong(challengeIdString);
             Long memberId = Long.parseLong(memberIdString);
+
             // 챌린지와 회원 엔터티를 찾음
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
             Optional<Member> memberOptional = memberRepository.findById(memberId);
@@ -58,6 +59,9 @@ public class WebSocketEventListener {
             // 챌린지와 회원이 존재하는 경우에만 처리
             if (challengeOptional.isPresent() && memberOptional.isPresent()) {
                 Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challengeOptional.get(), memberOptional.get());
+                // memberId와 challengeId를 세션에 저장
+                headerAccessor.getSessionAttributes().put("challengeId", challengeId);
+                headerAccessor.getSessionAttributes().put("memberId", memberId);
                 // 챌린저가 존재하는 경우 닉네임을 세션에 저장
                 challengerOptional.ifPresent(challenger -> headerAccessor.getSessionAttributes().put("nickname", challenger.getMember().getNickname()));
 
