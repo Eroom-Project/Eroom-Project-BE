@@ -67,8 +67,8 @@ public class MemberController {
 
     // 토큰 재발행
     @PostMapping("/api/token")
-    public ResponseEntity<BaseDto<String>> reissueToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
-        String message = memberService.reissueToken(userDetails, res);
+    public ResponseEntity<BaseDto<String>> reissueToken(@CookieValue(name = "Refresh-token") String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException, UnsupportedEncodingException {
+        String message = memberService.reissueToken(refreshToken, res);
         return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 

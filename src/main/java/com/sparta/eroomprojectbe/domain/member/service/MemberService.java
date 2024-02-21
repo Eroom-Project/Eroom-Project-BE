@@ -80,8 +80,10 @@ public class MemberService {
     }
 
     @Transactional
-    public String reissueToken(UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException {
-        String userEmail = userDetails.getMember().getEmail();
+    public String reissueToken(String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException {
+        refreshToken = jwtUtil.substringToken(refreshToken);
+        String userEmail = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
+
         Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
 
         if (storedRefreshToken.isPresent()) {
