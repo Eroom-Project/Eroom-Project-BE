@@ -14,19 +14,18 @@ import java.time.LocalDateTime;
 public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/sub/chat/challenge/{challengeId}")
-    public String sendMessage(@Payload ChatMessage chatMessage) {
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         chatMessage.setTime(LocalDateTime.now());
-        return "메시지";
-//        return chatMessage;
+        return chatMessage;
     }
 
     @MessageMapping("/chat.addUser")
     @SendTo("/sub/chat/challenge/{challengeId}")
-    public String addUser(@Payload ChatMessage chatMessage,
+    public ChatMessage addUser(@Payload ChatMessage chatMessage,
                                SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setTime(LocalDateTime.now());
         headerAccessor.getSessionAttributes().put("nickname", chatMessage.getSender());
-        return "nickname";
+        return chatMessage;
     }
 //    @MessageMapping("/chat.sendMessage")
 //    @SendTo("/sub/public")
