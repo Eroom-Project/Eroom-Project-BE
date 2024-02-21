@@ -78,8 +78,7 @@ public class ChallengeService {
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
-        Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
+        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(optionalChallenge.get()), findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
         ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId);
         ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeLoginResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
