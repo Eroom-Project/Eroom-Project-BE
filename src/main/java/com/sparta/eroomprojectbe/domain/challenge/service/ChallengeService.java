@@ -68,18 +68,19 @@ public class ChallengeService {
     /**
      * 선택한 챌린지 조회하는 서비스 메서드
      *
-     * @param challengeId 선택한 challenge 아이디
+     * @param challengeId   선택한 challenge 아이디
+     * @param loginMemberId
      * @return 선택한 챌린지 data, 성공여부 message, httpStatus
      */
-    public ChallengeDataResponseDto getChallenge(Long challengeId) {
+    public ChallengeDataResponseDto getChallenge(Long challengeId, String loginMemberId) {
         Optional<Challenge> optionalChallenge = challengeRepository.findById(challengeId);
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
-
         Long currentAttendance = challengerRepository.countByChallenge_ChallengeId(challengeId);
-        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge));
-        ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
+        ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, currentAttendance, findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
+        ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId);
+        ChallengeDataResponseDto responseDto = new ChallengeDataResponseDto(challengeLoginResponseDto, "선택한 첼린지 조회 성공", HttpStatus.OK);
         return responseDto;
     }
 
@@ -92,7 +93,7 @@ public class ChallengeService {
         try {
             List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
             List<ChallengeResponseDto> popularChallengeResponseDtoList = popularChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge)))
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge), findCurrentMemberIds(challenge)))
                     .collect(Collectors.toList());
             return new ChallengeAllResponseDto(popularChallengeResponseDtoList, "인기순으로 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class ChallengeService {
         try {
             List<Challenge> categoryChallenges = challengeRepository.findByCategory(category.name());
             List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge)))
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge), findCurrentMemberIds(challenge)))
                     .collect(Collectors.toList());
             return new ChallengeAllResponseDto(categoryChallengeResponseDtoList, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -129,7 +130,7 @@ public class ChallengeService {
         try {
             List<Challenge> queryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query);
             List<ChallengeResponseDto> queryChallengeResponseDtoList = queryChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge)))
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge), findCurrentMemberIds(challenge)))
                     .collect(Collectors.toList());
             return new ChallengeAllResponseDto(queryChallengeResponseDtoList, "키워드로 챌린지 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -146,7 +147,7 @@ public class ChallengeService {
         try {
             List<Challenge> latestChallenges = challengeRepository.findByOrderByCreatedAtDesc();
             List<ChallengeResponseDto> latestChallengeResponseDtoList = latestChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge)))
+                    .map(challenge -> new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), findLeaderId(challenge), findCurrentMemberIds(challenge)))
                     .collect(Collectors.toList());
             return new ChallengeAllResponseDto(latestChallengeResponseDtoList, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -177,8 +178,9 @@ public class ChallengeService {
                 saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
             }
             challenge.update(requestDto, saveFile);
-            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId());
-            return new ChallengeDataResponseDto(responseDto, "챌린지 수정 성공", HttpStatus.OK);
+            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId(),findCurrentMemberIds(challenge));
+            ChallengeLoginResponseDto loginResponseDto = new ChallengeLoginResponseDto(responseDto,""+member.getMemberId());
+            return new ChallengeDataResponseDto(loginResponseDto, "챌린지 수정 성공", HttpStatus.OK);
         } catch (Exception e) {
             return new ChallengeDataResponseDto(null, "챌린지 수정 중 오류 발생: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -224,5 +226,8 @@ public class ChallengeService {
      */
     private Long findLeaderId(Challenge challenge) {
         return challengerRepository.findCreatorMemberIdByChallengeId(challenge.getChallengeId()).orElse(null);
+    }
+    private List<Long> findCurrentMemberIds(Challenge challenge){
+        return challengerRepository.findMemberIdsByChallenge(challenge);
     }
 }

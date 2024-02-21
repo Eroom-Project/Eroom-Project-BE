@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.util.stream.Collectors;
@@ -88,8 +89,10 @@ public class MemberController {
 
     // 마이 페이지 개인 정보 수정
     @PutMapping("/api/member/profile")
-    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestBody ProfileRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProfileResponseDto data = memberService.updateProfile(requestDto, userDetails.getMember());
+    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
+                                                                     @RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
+                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ProfileResponseDto data = memberService.updateProfile(requestDto,file ,userDetails.getMember());
         return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
     }
 

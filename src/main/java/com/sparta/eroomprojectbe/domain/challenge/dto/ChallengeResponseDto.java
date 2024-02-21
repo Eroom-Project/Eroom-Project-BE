@@ -1,9 +1,11 @@
 package com.sparta.eroomprojectbe.domain.challenge.dto;
 
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 선택한 챌린지를 조회하여 반환하는 dto
@@ -12,7 +14,8 @@ import java.time.LocalDate;
 public class ChallengeResponseDto {
 
     private Long challengeId;
-    private Long memberId;
+    private Long createMemberId;
+    private List<Long> currentMemberIdList;
     private String category;
     private String title;
     private String description;
@@ -39,9 +42,10 @@ public class ChallengeResponseDto {
     }
 
 
-    public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Long leaderId) {
+    public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Long leaderId, List<Long> currentMemberIds) {
         this.challengeId = challenge.getChallengeId();
-        this.memberId = leaderId;
+        this.createMemberId = leaderId;
+        this.currentMemberIdList = currentMemberIds;
         this.title = challenge.getTitle();
         this.category = challenge.getCategory();
         this.description = challenge.getDescription();

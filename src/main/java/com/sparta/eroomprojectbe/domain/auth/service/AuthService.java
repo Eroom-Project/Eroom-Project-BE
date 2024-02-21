@@ -139,7 +139,7 @@ public class AuthService {
                     ()-> new IllegalArgumentException("멤버가 존재하지 않습니다.")
             );
             // Challenger 엔티티의 ChallengeId와 일치하는 Auth 리스트 조회
-            List<Auth> authList = authRepository.findByChallenger_Challenge(challenge);
+            List<Auth> authList = authRepository.findByChallenger_ChallengeOrderByModifiedAtDesc(challenge);
             Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge,member);
             if(challengerOptional.isPresent()){
                 if(challengerOptional.get().getMember().getMemberId() != member.getMemberId()){

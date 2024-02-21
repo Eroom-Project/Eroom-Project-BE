@@ -57,13 +57,14 @@ public class Member {
 
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
+        this.isSocialMember = true;
         return this;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto, String password) {
+    public void updateProfile(ProfileRequestDto requestDto, String password, String profileImageUrl) {
         this.email = requestDto.getEmail();
         this.password = password;
         this.nickname = requestDto.getNickname();
-        this.profileImageUrl = requestDto.getProfileImageUrl();
+        this.profileImageUrl = profileImageUrl;
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
+import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
@@ -21,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -37,8 +40,9 @@ public class MemberService {
     private final ChallengerRepository challengerRepository;
     private final MyroomRepository myroomRepository;
     private final BricksRepository bricksRepository;
+    private final ImageS3Service imageS3Service;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, MyroomRepository myroomRepository, BricksRepository bricksRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, MyroomRepository myroomRepository, BricksRepository bricksRepository, ImageS3Service imageS3Service) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -46,6 +50,7 @@ public class MemberService {
         this.challengerRepository = challengerRepository;
         this.myroomRepository = myroomRepository;
         this.bricksRepository = bricksRepository;
+        this.imageS3Service = imageS3Service;
     }
 
 
@@ -139,12 +144,21 @@ public class MemberService {
 
 
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, Member member) {
+    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
-
+        String updateFile;
+        if(file != null){
+            try {
+                updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(),file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            updateFile = findMember.getProfileImageUrl();
+        }
         String password = passwordEncoder.encode(requestDto.getPassword());
-        findMember.updateProfile(requestDto, password);
+        findMember.updateProfile(requestDto, password, updateFile);
 
         return new ProfileResponseDto(findMember);
     }
@@ -155,7 +169,7 @@ public class MemberService {
     }
 
     private void deleteCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("Refresh_token", null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
+        Cookie cookie = new Cookie(JwtUtil.REFRESH_TOKEN_HEADER, null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
