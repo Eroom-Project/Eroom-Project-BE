@@ -1,7 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -17,8 +16,8 @@ public class ChatController {
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setTime(LocalDateTime.now());
-        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
-        chatMessage.setSender(nickname);
+//        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
+//        chatMessage.setSender(nickname);
         return chatMessage;
     }
 }
