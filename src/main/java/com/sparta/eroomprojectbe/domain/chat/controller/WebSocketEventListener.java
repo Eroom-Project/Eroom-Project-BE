@@ -27,10 +27,9 @@ public class WebSocketEventListener {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setType(ChatMessage.MessageType.JOIN);
 
-        String memberId = headerAccessor.getFirstNativeHeader("memberId");
         String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
 
-        messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId + memberId, chatMessage);
+        messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId, chatMessage);
     }
 
     @EventListener

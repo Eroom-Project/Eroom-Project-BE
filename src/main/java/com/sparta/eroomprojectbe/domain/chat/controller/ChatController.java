@@ -29,7 +29,7 @@ public class ChatController {
         this.memberRepository = memberRepository;
     }
 
-    @MessageMapping("/chat.sendMessage/{challengeId}")
+    @MessageMapping("/chat.sendMessage")
     @SendTo("/sub/chat/challenge/{challengeId}")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    @DestinationVariable("challengeId") String challengeId){
