@@ -43,11 +43,14 @@ public class WebSocketEventListener {
         // 이벤트에서 Stomp 헤더 접근
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         // 챌린지 ID 가져오기
-        Long challengeId = (Long) headerAccessor.getSessionAttributes().get("challengeId");
+        String challengeIdString = (String) headerAccessor.getSessionAttributes().get("challengeId");
         // 회원 ID 가져오기
-        Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId");
+        String memberIdString = (String) headerAccessor.getSessionAttributes().get("memberId");
 
-        if (challengeId != null && memberId != null) {
+        if (challengeIdString != null && memberIdString != null) {
+            // String 값을 Long으로 변환
+            Long challengeId = Long.parseLong(challengeIdString);
+            Long memberId = Long.parseLong(memberIdString);
             // 챌린지와 회원 엔터티를 찾음
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
             Optional<Member> memberOptional = memberRepository.findById(memberId);

@@ -14,10 +14,7 @@ import java.time.LocalDateTime;
 public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/sub/chat/challenge/{challengeId}")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
-                                   @Header("memberId") Long memberId,
-                                   @Header("challengeId") Long challengeId) {
-        System.out.println(chatMessage.getMessage() + memberId + challengeId);
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         chatMessage.setTime(LocalDateTime.now());
         return chatMessage;
     }
