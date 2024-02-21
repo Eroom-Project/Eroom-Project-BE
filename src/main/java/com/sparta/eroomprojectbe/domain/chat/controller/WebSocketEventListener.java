@@ -1,12 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
-import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
-import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
-import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
-import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
-import com.sparta.eroomprojectbe.domain.member.entity.Member;
-import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +12,6 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Component
 public class WebSocketEventListener {
@@ -28,14 +21,14 @@ public class WebSocketEventListener {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
-    private ChallengerRepository challengerRepository;
-
-    @Autowired
-    private ChallengeRepository challengeRepository;
-
-    @Autowired
-    private MemberRepository memberRepository;
+//    @Autowired
+//    private ChallengerRepository challengerRepository;
+//
+//    @Autowired
+//    private ChallengeRepository challengeRepository;
+//
+//    @Autowired
+//    private MemberRepository memberRepository;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
