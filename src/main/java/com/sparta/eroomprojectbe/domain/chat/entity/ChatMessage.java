@@ -8,25 +8,26 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ChatMessage {
-    private MessagesType messagesType;
+    private MessageType type;
     private String message;
     private String sender;
     private LocalDateTime time;
     private String memberId;
     private String challengeId;
+    private String profileImageUrl;
 
-    public enum MessagesType {
+    public enum MessageType {
         CHAT,
         JOIN,
         LEAVE
     }
 
-    public MessagesType getMessagesType() {
-        return messagesType;
+    public MessageType getType() {
+        return type;
     }
 
-    public void setMessagesType(MessagesType messagesType) {
-        this.messagesType = messagesType;
+    public void setType(MessageType type) {
+        this.type = type;
     }
 
 //    public String getContent() {

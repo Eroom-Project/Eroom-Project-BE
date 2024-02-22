@@ -35,7 +35,7 @@ public class WebSocketEventListener {
             logger.info("User Disconnected : " + nickname);
 
             ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setMessagesType(ChatMessage.MessagesType.LEAVE);
+            chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setChallengeId(challengeId);
 
