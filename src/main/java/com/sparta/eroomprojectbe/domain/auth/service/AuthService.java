@@ -44,7 +44,7 @@ public class AuthService {
      * @return 린지 신청 성공여부 message, httpStatus
      */
     @Transactional
-    public ChallengerCreateResponseDto createChallenger(Long challengeId, Member loginMember) {
+    public CreateResponseDto createChallenger(Long challengeId, Member loginMember) {
         try {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("챌린지가 존재하지 않습니다.")
@@ -63,12 +63,12 @@ public class AuthService {
             Challenger savedChallenger = challengerRepository.save(challenger);
             if (savedChallenger.getChallengerId() != null) {
                 challenge.incrementAttendance();
-                return new ChallengerCreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
+                return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
-                return new ChallengerCreateResponseDto("챌린지 신청 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new CreateResponseDto("챌린지가 존재하지 않아 신청에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new CreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     /**
@@ -79,7 +79,7 @@ public class AuthService {
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
     @Transactional
-    public ChallengerCreateResponseDto createMemberAuth(AuthRequestDto requestDto, MultipartFile file, Long challengeId, Member loginMember) { // 챌린지 인증(member) 등록
+    public CreateResponseDto createMemberAuth(AuthRequestDto requestDto, MultipartFile file, Long challengeId, Member loginMember) { // 챌린지 인증(member) 등록
         try {
             // Challenge DB에 존재하는 Challenge인지 확인
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
@@ -95,16 +95,16 @@ public class AuthService {
                 String saveFile = (file != null)?imageS3Service.saveFile(file):"https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2zkAR%2FbtsEYKQRgO5%2FjD2MchKeMu7gNiPOt187gK%2Fimg.png";
                 Auth savedAuth = authRepository.save(new Auth(requestDto, saveFile ,challenger));
                 if (savedAuth != null && savedAuth.getAuthId() != null)
-                    return new ChallengerCreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
+                    return new CreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
                 else {
-                    return new ChallengerCreateResponseDto("챌린지 인증 등록 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new CreateResponseDto("챌린지 인증 등록 실패", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return new ChallengerCreateResponseDto("챌린지 인증 등록 실패", HttpStatus.BAD_REQUEST);
+                return new CreateResponseDto("챌린지 인증 등록 실패", HttpStatus.BAD_REQUEST);
             }
         } catch (
                 Exception e) {
-            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new CreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     /**
@@ -128,7 +128,7 @@ public class AuthService {
             Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challenge,member);
             if(challengerOptional.isPresent()){
                 if(challengerOptional.get().getMember().getMemberId() != member.getMemberId()){
-                    return new AuthAllResponseDto(null, "해당 챌린지를 신청한 멤버가 안닙니다.", HttpStatus.BAD_REQUEST);
+                    return new AuthAllResponseDto(null, "해당 챌린지를 신청한 멤버가 아닙니다.", HttpStatus.BAD_REQUEST);
                 }
                 // Auth 엔티티들을 AuthResponseDto로 매핑하고 리스트로 반환
                 List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
@@ -236,7 +236,7 @@ public class AuthService {
      * @param loginMember 작성자 id
      * @return 챌린지 인증 삭제 성공여부 data, HttpStatus
      */
-    public ChallengerCreateResponseDto deleteAuth(Long challengeId, Long authId, Member loginMember) {
+    public CreateResponseDto deleteAuth(Long challengeId, Long authId, Member loginMember) {
         try {
             // auth 존재 여부 확인
             Auth auth = authRepository.findById(authId).orElseThrow(
@@ -253,19 +253,19 @@ public class AuthService {
                 if (challengerOptional.get().getRole() == ChallengerRole.LEADER ){
                     imageS3Service.deleteFile(auth.getAuthImageUrl());
                     authRepository.delete(auth);
-                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
+                    return new CreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
                 }else if(challengerOptional.get().getMember().getMemberId() == member.getMemberId()){
                     imageS3Service.deleteFile(auth.getAuthImageUrl());
                     authRepository.delete(auth);
-                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
+                    return new CreateResponseDto("챌린지 인증 삭제 성공", HttpStatus.OK);
                 } else {
-                    return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패(리더가 아니거나, 작성자가 아닙니다)", HttpStatus.BAD_REQUEST);
+                    return new CreateResponseDto("챌린지 인증 삭제 실패(리더가 아니거나, 작성자가 아닙니다)", HttpStatus.BAD_REQUEST);
                 }
             }else {
-                return new ChallengerCreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.NOT_FOUND);
+                return new CreateResponseDto("챌린지 인증 삭제 실패", HttpStatus.NOT_FOUND);
             }
         }catch (Exception e){
-            return new ChallengerCreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new CreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -2,11 +2,8 @@ package com.sparta.eroomprojectbe.domain.auth.controller;
 
 import com.sparta.eroomprojectbe.domain.auth.dto.*;
 import com.sparta.eroomprojectbe.domain.auth.service.AuthService;
-import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +21,10 @@ public class AuthController {
      * @return 챌린지 신청 성공여부 message, httpStatus
      */
     @PostMapping("/{challengeId}")
-    public ResponseEntity<BaseResponseDto<ChallengerCreateResponseDto>> createChallenger( @PathVariable Long challengeId,
-                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ChallengerCreateResponseDto responseDto = authService.createChallenger(challengeId, userDetails.getMember());
-        return ResponseEntity.ok(new BaseResponseDto<>(null,responseDto.getMessage(),responseDto.getStatus()));
+    public ResponseEntity<BaseResponseDto<CreateResponseDto>> createChallenger(@PathVariable Long challengeId,
+                                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CreateResponseDto responseDto = authService.createChallenger(challengeId, userDetails.getMember());
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(null,responseDto.getMessage(),responseDto.getStatus()));
     }
     /**
      * 챌린지 인증 등록하는 컨트롤러 메서드
@@ -38,12 +35,12 @@ public class AuthController {
      * @return 챌린지 인증 등록 성공여부 message, httpStatus
      */
     @PostMapping("/{challengeId}/auth") // 챌린지 인증(member) 등록
-    public ResponseEntity<BaseResponseDto<ChallengerCreateResponseDto>> createMemberAuth(@RequestPart("authCreateData") AuthRequestDto requestDto,
-                                                                        @RequestParam(value = "authImageUrl", required = false) MultipartFile file,
-                                                                        @PathVariable Long challengeId,
-                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ChallengerCreateResponseDto responseDto = authService.createMemberAuth(requestDto, file ,challengeId, userDetails.getMember());
-        return ResponseEntity.ok(new BaseResponseDto<>(null,responseDto.getMessage(),responseDto.getStatus()));
+    public ResponseEntity<BaseResponseDto<CreateResponseDto>> createMemberAuth(@RequestPart("authCreateData") AuthRequestDto requestDto,
+                                                                               @RequestParam(value = "authImageUrl", required = false) MultipartFile file,
+                                                                               @PathVariable Long challengeId,
+                                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CreateResponseDto responseDto = authService.createMemberAuth(requestDto, file ,challengeId, userDetails.getMember());
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(null,responseDto.getMessage(),responseDto.getStatus()));
     }
     /**
      * 해당 챌린지 인증 전체 조회하는 컨트롤러 메서드
@@ -55,7 +52,7 @@ public class AuthController {
     public ResponseEntity<BaseResponseDto<AuthMemberInfoResponseDto>> getChallengerAuthList(@PathVariable Long challengeId,
                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         AuthAllResponseDto responseList = authService.getChallengerAuthList(challengeId, userDetails.getMember());
-        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+        return ResponseEntity.status(responseList.getStatus()).body(new BaseResponseDto<>(responseList.getData(),responseList.getMessage(),responseList.getStatus()));
     }
     /**
      * 리더가 챌린지 인증 허가 및 불가 처리하는 컨트롤러 메서드
@@ -71,7 +68,7 @@ public class AuthController {
                                                                 @PathVariable Long authId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         AuthDataResponseDto responseDto = authService.updateLeaderAuth(requestDto, challengeId, authId, userDetails.getMember());
-        return ResponseEntity.ok(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
     }
     /**
      * 챌린저가 챌린지인증 수정하는 컨트롤러 메서드
@@ -89,7 +86,7 @@ public class AuthController {
                                                                 @PathVariable Long authId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         AuthDataResponseDto responseDto = authService.updateMemberAuth(requestDto, file, challengeId, authId, userDetails.getMember());
-        return ResponseEntity.ok(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
     }
     /**
      * 챌린지인증 삭제하는 컨트롤러 메서드
@@ -99,11 +96,11 @@ public class AuthController {
      * @return 삭제 성공여부 message, status
      */
     @DeleteMapping("/{challengeId}/auth/{authId}") // 챌린지 인증 수정(member)
-    public ResponseEntity<BaseResponseDto<ChallengerCreateResponseDto>> updateMemberAuth(@PathVariable Long challengeId,
-                                                                @PathVariable Long authId,
-                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ChallengerCreateResponseDto responseDto = authService.deleteAuth(challengeId, authId, userDetails.getMember());
-        return ResponseEntity.ok(new BaseResponseDto<>(null, responseDto.getMessage(),responseDto.getStatus()));
+    public ResponseEntity<BaseResponseDto<CreateResponseDto>> updateMemberAuth(@PathVariable Long challengeId,
+                                                                               @PathVariable Long authId,
+                                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CreateResponseDto responseDto = authService.deleteAuth(challengeId, authId, userDetails.getMember());
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(null, responseDto.getMessage(),responseDto.getStatus()));
     }
 
 }
