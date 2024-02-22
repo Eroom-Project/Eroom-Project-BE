@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,7 +50,21 @@ public class ChallengeService {
             Member createMember = memberRepository.findById(member.getMemberId()).orElseThrow(
                     ()-> new IllegalArgumentException("해당 맴버가 존재하지 않습니다.")
             );
-            String saveFile = (file != null)?imageS3Service.saveFile(file):"https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2zkAR%2FbtsEYKQRgO5%2FjD2MchKeMu7gNiPOt187gK%2Fimg.png";
+            String saveFile;
+            if(file != null){
+               saveFile = imageS3Service.saveFile(file);
+            }else {
+                String[] randomImageUrls = {
+                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2Fadb78e8e-712b-4072-a191-bcfece13ae13%2FFrame_29110.png?table=block&id=cc384e85-dcb4-4d36-9551-93aae1eea8c8&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
+                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F70137af2-5d83-4f5f-8177-9de465950983%2FFrame_29103.png?table=block&id=1db5c5c8-3795-4085-a6f2-4a90320f525a&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
+                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2Fb819e917-fa65-415d-90cb-c0c678ce2f01%2FFrame_29109.png?table=block&id=8a5cb81b-7d6c-49fd-9ca6-70fdc2a25459&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
+                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F1999805c-6d9c-48c6-95e1-39de207e0138%2FFrame_29106.png?table=block&id=a9ee6992-63a8-42be-ac23-d883ba32f465&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
+                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F533b65fd-7968-43b8-883a-391d47014639%2FFrame_29105.png?table=block&id=8511f3b2-7c2e-41e5-beee-ace88b3efdb1&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png"
+                };
+
+                Random random = new Random();
+                saveFile = randomImageUrls[random.nextInt(randomImageUrls.length)];
+            }
             Challenge challenge = new Challenge(requestDto, saveFile);
             Challenge savedChallenge = challengeRepository.save(challenge);
 
@@ -168,7 +183,7 @@ public class ChallengeService {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
             );
-            if(member.getMemberId() != findLeaderId(challenge)){
+            if(member.getMemberId() != findLeaderId(challenge).getMemberId()){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
             String saveFile;
@@ -178,7 +193,7 @@ public class ChallengeService {
                 saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
             }
             challenge.update(requestDto, saveFile);
-            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId(),findCurrentMemberIds(challenge));
+            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge),member,findCurrentMemberIds(challenge));
             ChallengeLoginResponseDto loginResponseDto = new ChallengeLoginResponseDto(responseDto,""+member.getMemberId());
             return new ChallengeDataResponseDto(loginResponseDto, "챌린지 수정 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -197,7 +212,7 @@ public class ChallengeService {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지가 존재하지 않습니다.")
             );
-            if(member.getMemberId() != findLeaderId(challenge)){
+            if(member.getMemberId() != findLeaderId(challenge).getMemberId()){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
             imageS3Service.deleteFile(challenge.getThumbnailImageUrl());
@@ -224,8 +239,8 @@ public class ChallengeService {
      * @param challenge 조회하려는 챌린지
      * @return 선택한 챌린지의 생성자 memberid
      */
-    private Long findLeaderId(Challenge challenge) {
-        return challengerRepository.findCreatorMemberIdByChallengeId(challenge.getChallengeId()).orElse(null);
+    private Member findLeaderId(Challenge challenge) {
+        return challengerRepository.findCreatorMemberByChallengeId(challenge.getChallengeId()).orElse(null);
     }
     private List<Long> findCurrentMemberIds(Challenge challenge){
         return challengerRepository.findMemberIdsByChallenge(challenge);
