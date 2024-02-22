@@ -4,12 +4,12 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public abstract class BaseChallengeResponseDto<T> {
+public class BaseResponseDto<T> {
     private T data;
     private String message;
     private HttpStatus status;
 
-    public BaseChallengeResponseDto(T data, String message, HttpStatus status) {
+    public BaseResponseDto(T data, String message, HttpStatus status) {
         this.data = data;
         this.message = message;
         this.status = status;
