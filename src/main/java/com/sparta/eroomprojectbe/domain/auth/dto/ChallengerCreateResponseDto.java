@@ -4,8 +4,11 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class ChallengerCreateResponseDto extends BaseResponseDto<Void> {
+public class ChallengerCreateResponseDto {
+    private  String message;
+    private HttpStatus status;
     public ChallengerCreateResponseDto(String message, HttpStatus status){
-        super(null, message, status);
+        this.message = message;
+        this.status = status;
     }
 }

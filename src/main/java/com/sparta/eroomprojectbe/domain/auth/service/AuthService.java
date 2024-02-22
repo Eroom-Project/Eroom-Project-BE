@@ -136,7 +136,7 @@ public class AuthService {
                 AuthMemberInfoResponseDto authMemberInfoResponseDto = new AuthMemberInfoResponseDto(authResponseList, memberInfoResponseDto);
                 return new AuthAllResponseDto(authMemberInfoResponseDto, "인증 전체 조회 성공", HttpStatus.OK);
             }else {
-                return new AuthAllResponseDto(null, "인증 전체 조회 실패", HttpStatus.BAD_REQUEST);
+                return new AuthAllResponseDto(null, "해당 챌린지를 신청한 사용자가 아닙니다 ", HttpStatus.BAD_REQUEST);
             }
 
         } catch (Exception e) {
