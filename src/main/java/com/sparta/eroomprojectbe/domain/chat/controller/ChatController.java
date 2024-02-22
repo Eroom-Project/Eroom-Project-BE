@@ -36,6 +36,21 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage/{challengeId}")
     public void sendMessage(@Payload ChatMessage chatMessage,
                             @DestinationVariable("challengeId") String challengeId) {
+//        switch (chatMessage.getMessagesType()) {
+//            case JOIN -> {
+//                System.out.println("MessagesType : JOIN");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//            case CHAT -> {
+//                System.out.println("MessagesType : CHAT");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//            case LEAVE -> {
+//                System.out.println("MessagesType : LEAVE");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//        }
+//
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
@@ -58,7 +73,6 @@ public class ChatController {
                     chatMessage.setSender(senderNickname);
                 });
                 chatMessage.setTime(LocalDateTime.now());
-                chatMessage.setMessagesType(ChatMessage.MessagesType.CHAT);
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
