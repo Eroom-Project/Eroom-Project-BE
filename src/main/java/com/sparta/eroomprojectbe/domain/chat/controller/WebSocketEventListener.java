@@ -22,14 +22,6 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setMessagesType(ChatMessage.MessagesType.JOIN);
-
-        String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
-
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
     }
 
     @EventListener
@@ -37,19 +29,17 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
-        if (nickname != null) {
+        String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
+
+        if (nickname != null && challengeId != null) {
             logger.info("User Disconnected : " + nickname);
 
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setMessagesType(ChatMessage.MessagesType.LEAVE);
             chatMessage.setSender(nickname);
+            chatMessage.setChallengeId(challengeId);
 
-            // Session에서 challengeId 가져오기
-            String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
-
-            if (challengeId != null) {
-                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-            }
+            messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
         }
     }
 }
