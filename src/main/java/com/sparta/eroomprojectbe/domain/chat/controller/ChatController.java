@@ -60,20 +60,30 @@ public class ChatController {
                 Optional<Challenger> challengerOptional = challengerRepository.findByChallengeAndMember(challengeOptional.get(), memberOptional.get());
 
                 challengerOptional.ifPresent(challenger -> {
+                    // 닉네임 가져오기
                     String senderNickname = challenger.getMember().getNickname();
                     chatMessage.setSender(senderNickname);
+
+                    // 프로필 이미지 URL 가져오기
+                    String profileImageUrl = challenger.getMember().getProfileImageUrl();
+                    chatMessage.setProfileImageUrl(profileImageUrl);
 
                     // WebSocket 세션에 속성 저장
                     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
                     headerAccessor.getSessionAttributes().put("challengeId", challengeId);
                     headerAccessor.getSessionAttributes().put("nickname", senderNickname);
+
+                    // 메시지 보낸 시간 저장
+                    chatMessage.setTime(LocalDateTime.now());
                 });
-                chatMessage.setTime(LocalDateTime.now());
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
     }
 }
+
+
+
 //        switch (chatMessage.getMessagesType()) {
 //            case JOIN -> {
 //                System.out.println("MessagesType : JOIN");
