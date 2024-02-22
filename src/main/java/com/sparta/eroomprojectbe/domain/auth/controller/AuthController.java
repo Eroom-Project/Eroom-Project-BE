@@ -17,22 +17,6 @@ public class AuthController {
     public AuthController(AuthService authService){this.authService = authService;}
 
     /**
-     * 챌린지 인증 전체 조회하는 컨트롤러 메서드
-     * @return 챌린지 List, 조회 성공여부 message, httpStatus
-     */
-    //이건 어디다 쓰는 걸까용?
-//    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
-//    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
-//        AuthAllResponseDto responseList = authService.getMemberAuthList();
-//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
-//    }
-//    @GetMapping("/details") // 챌린지 인증(member) 전체 조회
-//    @Secured("ROLE_Member")
-//    public ResponseEntity<AuthAllResponseDto> getMemberAuthList() {
-//        AuthAllResponseDto responseList = authService.getMemberAuthList();
-//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
-//    }
-    /**
      * 유저가 챌린지를 신청하는 컨트롤러 메서드
      * @param challengeId 신청하려는 챌린지 id
      * @param userDetails 로그인한 유저

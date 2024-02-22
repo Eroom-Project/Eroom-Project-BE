@@ -37,21 +37,6 @@ public class AuthService {
         this.memberRepository = memberRepository;
         this.imageS3Service = imageS3Service;
     }
-
-    /**
-     * 챌린지 전체 조회
-     *
-     * @return 챌린지 인증 List, message, httpStatus
-     */
-//    public AuthAllResponseDto getMemberAuthList() { // 챌린지 인증(member) 전체 조회
-//        try {
-//            List<Auth> authList = authRepository.findAllByOrderByCreatedAtDesc();
-//            List<AuthResponseDto> authResponseList = authList.stream().map(AuthResponseDto::new).toList();
-//            return new AuthAllResponseDto(authResponseList, "챌린지 인증 전체 조회 성공", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new AuthAllResponseDto(null, "챌린지 인증 전체 조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     /**
      * 유저가 챌린지를 신청하는 서비스 메서드
      * @param challengeId 신청하려는 챌린지 id
