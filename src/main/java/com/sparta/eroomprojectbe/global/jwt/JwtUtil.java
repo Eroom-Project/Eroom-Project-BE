@@ -40,7 +40,7 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
 
     // 토큰 만료시간
-    private final long TOKEN_TIME = 20 * 1000L; // 1시간
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 1시간
 
     private final RefreshTokenRepository refreshTokenRepository;
 
