@@ -55,11 +55,11 @@ public class ChallengeService {
                saveFile = imageS3Service.saveFile(file);
             }else {
                 String[] randomImageUrls = {
-                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2Fadb78e8e-712b-4072-a191-bcfece13ae13%2FFrame_29110.png?table=block&id=cc384e85-dcb4-4d36-9551-93aae1eea8c8&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
-                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F70137af2-5d83-4f5f-8177-9de465950983%2FFrame_29103.png?table=block&id=1db5c5c8-3795-4085-a6f2-4a90320f525a&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
-                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2Fb819e917-fa65-415d-90cb-c0c678ce2f01%2FFrame_29109.png?table=block&id=8a5cb81b-7d6c-49fd-9ca6-70fdc2a25459&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
-                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F1999805c-6d9c-48c6-95e1-39de207e0138%2FFrame_29106.png?table=block&id=a9ee6992-63a8-42be-ac23-d883ba32f465&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png",
-                        "https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe666087a-e845-4016-aa8a-e43cbf3c59cb%2F533b65fd-7968-43b8-883a-391d47014639%2FFrame_29105.png?table=block&id=8511f3b2-7c2e-41e5-beee-ace88b3efdb1&spaceId=e666087a-e845-4016-aa8a-e43cbf3c59cb&width=2000&userId=2a921a7e-1f77-46aa-b24d-eb58ef3c2eaa&cache=v2.png"
+                        "https://github.com/Eroom-Project/Eroom-Project-BE/assets/148944859/32d9e5fb-6c72-4bb0-a212-151b4dedbe46",
+                        "https://github.com/Eroom-Project/Eroom-Project-BE/assets/148944859/58ffd7e2-3626-40f7-9cdd-3b44f277b0cf",
+                        "https://github.com/Eroom-Project/Eroom-Project-BE/assets/148944859/34bcaa30-85cb-4aa5-9ec9-16cfffaf42fb",
+                        "https://github.com/Eroom-Project/Eroom-Project-BE/assets/148944859/39c2edbb-630d-4789-a665-0153d596eab5",
+                        "https://github.com/Eroom-Project/Eroom-Project-BE/assets/148944859/2f74e8d5-826a-4770-a991-77d72015339e"
                 };
 
                 Random random = new Random();
