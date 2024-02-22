@@ -91,14 +91,13 @@ public class MemberService {
 
             // JWT 유효성 검사
             if (jwtUtil.validateToken(storedToken)) {
-                Claims claims = jwtUtil.getUserInfoFromToken(storedToken);
-                MemberRoleEnum userRole = (MemberRoleEnum) claims.get("roles");
-
                 // 새로운 Access Token 생성
-                String newAccessToken = jwtUtil.createAccessToken(userEmail, userRole);
+                String newAccessToken = jwtUtil.createAccessToken(userEmail, MemberRoleEnum.USER);
                 jwtUtil.addJwtToCookie(newAccessToken, res, JwtUtil.AUTHORIZATION_HEADER);
 
                 return "토큰 재발급 성공";
+            } else {
+                refreshTokenRepository.delete(storedRefreshToken.get());
             }
         }
 
