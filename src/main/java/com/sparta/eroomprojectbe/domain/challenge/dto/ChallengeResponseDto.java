@@ -14,6 +14,7 @@ import java.util.List;
 public class ChallengeResponseDto {
 
     private Long challengeId;
+    private String nickname;
     private Long createMemberId;
     private List<Long> currentMemberIdList;
     private String category;
@@ -42,9 +43,10 @@ public class ChallengeResponseDto {
     }
 
 
-    public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Long leaderId, List<Long> currentMemberIds) {
+    public ChallengeResponseDto(Challenge challenge, Long currentAttendance, Member member, List<Long> currentMemberIds) {
         this.challengeId = challenge.getChallengeId();
-        this.createMemberId = leaderId;
+        this.createMemberId = member.getMemberId();
+        this.nickname = member.getNickname();
         this.currentMemberIdList = currentMemberIds;
         this.title = challenge.getTitle();
         this.category = challenge.getCategory();

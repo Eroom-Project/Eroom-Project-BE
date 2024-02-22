@@ -168,7 +168,7 @@ public class ChallengeService {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지는 존재하지 않습니다.")
             );
-            if(member.getMemberId() != findLeaderId(challenge)){
+            if(member.getMemberId() != findLeaderId(challenge).getMemberId()){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
             String saveFile;
@@ -178,7 +178,7 @@ public class ChallengeService {
                 saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
             }
             challenge.update(requestDto, saveFile);
-            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge), member.getMemberId(),findCurrentMemberIds(challenge));
+            ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge, calculateCurrentAttendance(challenge),member,findCurrentMemberIds(challenge));
             ChallengeLoginResponseDto loginResponseDto = new ChallengeLoginResponseDto(responseDto,""+member.getMemberId());
             return new ChallengeDataResponseDto(loginResponseDto, "챌린지 수정 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -197,7 +197,7 @@ public class ChallengeService {
             Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                     () -> new IllegalArgumentException("선택한 챌린지가 존재하지 않습니다.")
             );
-            if(member.getMemberId() != findLeaderId(challenge)){
+            if(member.getMemberId() != findLeaderId(challenge).getMemberId()){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
             imageS3Service.deleteFile(challenge.getThumbnailImageUrl());
@@ -224,8 +224,8 @@ public class ChallengeService {
      * @param challenge 조회하려는 챌린지
      * @return 선택한 챌린지의 생성자 memberid
      */
-    private Long findLeaderId(Challenge challenge) {
-        return challengerRepository.findCreatorMemberIdByChallengeId(challenge.getChallengeId()).orElse(null);
+    private Member findLeaderId(Challenge challenge) {
+        return challengerRepository.findCreatorMemberByChallengeId(challenge.getChallengeId()).orElse(null);
     }
     private List<Long> findCurrentMemberIds(Challenge challenge){
         return challengerRepository.findMemberIdsByChallenge(challenge);
