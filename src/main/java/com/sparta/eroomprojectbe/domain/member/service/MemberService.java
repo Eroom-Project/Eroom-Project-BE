@@ -80,8 +80,10 @@ public class MemberService {
     }
 
     @Transactional
-    public String reissueToken(UserDetailsImpl userDetails, HttpServletResponse res) throws UnsupportedEncodingException {
-        String userEmail = userDetails.getMember().getEmail();
+    public String reissueToken(String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException {
+        refreshToken = jwtUtil.substringToken(refreshToken);
+        String userEmail = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
+
         Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
 
         if (storedRefreshToken.isPresent()) {
@@ -118,7 +120,8 @@ public class MemberService {
             if (storedRefreshToken.isPresent() && storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
                 refreshTokenRepository.delete(storedRefreshToken.get());
 
-                deleteCookie(response);
+                deleteJwtCookie(response, JwtUtil.AUTHORIZATION_HEADER);
+                deleteJwtCookie(response, JwtUtil.REFRESH_TOKEN_HEADER);
 
                 return "로그아웃 성공";
             }
@@ -174,8 +177,8 @@ public class MemberService {
         return passwordEncoder.matches(rawPassword, member.getPassword());
     }
 
-    private void deleteCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(JwtUtil.REFRESH_TOKEN_HEADER, null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
+    private void deleteJwtCookie(HttpServletResponse response, String tokenName) {
+        Cookie cookie = new Cookie(tokenName, null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);

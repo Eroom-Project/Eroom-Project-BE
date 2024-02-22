@@ -22,6 +22,14 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setMessagesType(ChatMessage.MessagesType.JOIN);
+
+        String challengeId = headerAccessor.getFirstNativeHeader("challengeId");
+
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
     }
 
     @EventListener
@@ -33,14 +41,14 @@ public class WebSocketEventListener {
             logger.info("User Disconnected : " + nickname);
 
             ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setType(ChatMessage.MessageType.LEAVE);
+            chatMessage.setMessagesType(ChatMessage.MessagesType.LEAVE);
             chatMessage.setSender(nickname);
 
             // Session에서 challengeId 가져오기
             String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
 
             if (challengeId != null) {
-                messagingTemplate.convertAndSend("/sub/chat/challenge/" + challengeId, chatMessage);
+                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
     }
