@@ -8,10 +8,14 @@ import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
@@ -35,22 +39,9 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage/{challengeId}")
     public void sendMessage(@Payload ChatMessage chatMessage,
-                            @DestinationVariable("challengeId") String challengeId) {
-//        switch (chatMessage.getMessagesType()) {
-//            case JOIN -> {
-//                System.out.println("MessagesType : JOIN");
-//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-//            }
-//            case CHAT -> {
-//                System.out.println("MessagesType : CHAT");
-//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-//            }
-//            case LEAVE -> {
-//                System.out.println("MessagesType : LEAVE");
-//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-//            }
-//        }
-//
+                            @DestinationVariable("challengeId") String challengeId,
+                            Message<?> message) {
+
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
@@ -71,6 +62,11 @@ public class ChatController {
                 challengerOptional.ifPresent(challenger -> {
                     String senderNickname = challenger.getMember().getNickname();
                     chatMessage.setSender(senderNickname);
+
+                    // WebSocket 세션에 속성 저장
+                    StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
+                    headerAccessor.getSessionAttributes().put("challengeId", challengeId);
+                    headerAccessor.getSessionAttributes().put("nickname", senderNickname);
                 });
                 chatMessage.setTime(LocalDateTime.now());
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
@@ -78,7 +74,21 @@ public class ChatController {
         }
     }
 }
-
+//        switch (chatMessage.getMessagesType()) {
+//            case JOIN -> {
+//                System.out.println("MessagesType : JOIN");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//            case CHAT -> {
+//                System.out.println("MessagesType : CHAT");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//            case LEAVE -> {
+//                System.out.println("MessagesType : LEAVE");
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//        }
+//
 //    @MessageMapping("/chat.sendMessage")
 //    @SendTo("/sub/chat/challenge/{challengeId}")
 //    public ChatMessage sendMessage(@Payload ChatMessage chatMessage){
