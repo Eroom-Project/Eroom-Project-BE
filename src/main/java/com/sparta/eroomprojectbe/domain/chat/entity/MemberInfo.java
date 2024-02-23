@@ -6,15 +6,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberInfo {
-    private String sender;
+    private String nickname;
     private String profileImageUrl;
 
-    public MemberInfo(String sender, String profileImageUrl) {
-        this.sender = sender;
+    public MemberInfo(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
     }
 
-    public String getSender() {
-        return sender;
+    public String getNickname() {
+        return nickname;
     }
 }
