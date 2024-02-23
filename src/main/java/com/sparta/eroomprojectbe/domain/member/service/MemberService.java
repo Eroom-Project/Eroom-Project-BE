@@ -3,7 +3,9 @@ package com.sparta.eroomprojectbe.domain.member.service;
 import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
+import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
@@ -14,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,28 +24,37 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ChallengerRepository challengerRepository;
     private final ImageS3Service imageS3Service;
+    private final EmailService emailService;
+    private final EmailVerificationRepository emailVerificationRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service, EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.refreshTokenRepository = refreshTokenRepository;
         this.challengerRepository = challengerRepository;
         this.imageS3Service = imageS3Service;
+        this.emailService = emailService;
+        this.emailVerificationRepository = emailVerificationRepository;
     }
 
 
@@ -135,6 +147,12 @@ public class MemberService {
         return new MypageResponseDto(memberInfo, challengeList);
     }
 
+    @Transactional
+    public String updateNickname(String nickname, Member member) {
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        return findMember.updateNickname(nickname);
+    }
 
     @Transactional
     public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
@@ -175,6 +193,5 @@ public class MemberService {
         cookie.setMaxAge(0); // max-age를 0으로 설정하여 쿠키 삭제
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
-
 
 }

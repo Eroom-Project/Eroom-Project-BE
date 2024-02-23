@@ -87,6 +87,14 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>(data, "", HttpStatus.OK));
     }
 
+     // 마이 페이지 닉네임 수정
+    @PutMapping("/api/member/profile/nickname")
+    public ResponseEntity<BaseDto<String>> updateNickname(@RequestParam String nickname,
+                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String updatedNickname = memberService.updateNickname(nickname, userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
+    }
+
     // 마이 페이지 개인 정보 수정
     @PutMapping("/api/member/profile")
     public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
@@ -105,5 +113,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
         }
     }
+
+
 
 }
