@@ -1,12 +1,25 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
+import com.sparta.eroomprojectbe.domain.auth.dto.BaseResponseDto;
+import com.sparta.eroomprojectbe.domain.chat.dto.EnterRequestDto;
+import com.sparta.eroomprojectbe.domain.chat.dto.ResponseDto;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.chat.service.ChatMessageService;
+import com.sparta.eroomprojectbe.domain.chat.service.ChatRoomService;
+import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
+import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
@@ -23,6 +36,12 @@ public class ChatController {
                             @DestinationVariable("challengeId") String challengeId,
                             Message<?> message) {
         chatMessageService.saveMessage(challengeId, chatMessage, message);
+    }
+
+    @GetMapping("/api/chat/dupuser")
+    public ResponseEntity<ResponseDto<String>> getChatMember(@Valid @RequestBody EnterRequestDto requestDto) {
+        String message = ChatMessageService.getChattingMember(requestDto);
+        return ResponseEntity.ok(new ResponseDto<>(null, message, HttpStatus.OK));
     }
 }
 
