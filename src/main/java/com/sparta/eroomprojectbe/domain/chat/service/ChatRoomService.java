@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatRoomService {
@@ -15,7 +18,11 @@ public class ChatRoomService {
     private SimpMessageSendingOperations messagingTemplate;
 
     public void userJoinedRoom(String challengeId, String senderNickname, String profileImageUrl) {
-        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.computeIfAbsent(challengeId, k -> new ArrayList<>());
+        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
+        if (currentMemberList == null) {
+            currentMemberList = new ArrayList<>(); // 채팅방에 처음 입장하는 경우 새 리스트 생성
+            challengeRoomMemberLists.put(challengeId, currentMemberList);
+        }
         ChatMessage.MemberInfo memberInfo = new ChatMessage.MemberInfo(senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
         broadcastCurrentMemberList(challengeId);
@@ -24,13 +31,7 @@ public class ChatRoomService {
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
-            Iterator<ChatMessage.MemberInfo> iterator = currentMemberList.iterator();
-            while (iterator.hasNext()) {
-                ChatMessage.MemberInfo memberInfo = iterator.next();
-                if (memberInfo.getNickname().equals(senderNickname)) {
-                    iterator.remove(); // 해당 멤버 삭제
-                }
-            }
+            currentMemberList.removeIf(memberInfo -> memberInfo.getNickname().equals(senderNickname));
             broadcastCurrentMemberList(challengeId);
         }
     }
