@@ -4,7 +4,6 @@ import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
-import com.sparta.eroomprojectbe.domain.chat.dto.EnterRequestDto;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
