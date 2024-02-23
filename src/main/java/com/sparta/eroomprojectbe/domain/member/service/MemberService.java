@@ -5,14 +5,9 @@ import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerReposito
 import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.domain.myroom.entity.Bricks;
-import com.sparta.eroomprojectbe.domain.myroom.entity.Myroom;
-import com.sparta.eroomprojectbe.domain.myroom.repository.BricksRepository;
-import com.sparta.eroomprojectbe.domain.myroom.repository.MyroomRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
-import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,18 +33,14 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ChallengerRepository challengerRepository;
-    private final MyroomRepository myroomRepository;
-    private final BricksRepository bricksRepository;
     private final ImageS3Service imageS3Service;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, MyroomRepository myroomRepository, BricksRepository bricksRepository, ImageS3Service imageS3Service) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.refreshTokenRepository = refreshTokenRepository;
         this.challengerRepository = challengerRepository;
-        this.myroomRepository = myroomRepository;
-        this.bricksRepository = bricksRepository;
         this.imageS3Service = imageS3Service;
     }
 
@@ -132,16 +123,10 @@ public class MemberService {
     public MypageResponseDto getMypage(Member member) {
         MemberInfoDto memberInfo = new MemberInfoDto(member);
 
-        Myroom myroom = myroomRepository.findByMemberId(member.getMemberId());
-        MyroomInfoDto myroomInfo = new MyroomInfoDto(myroom);
-
         List<ChallengeWithRoleDto> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
         List<MypageChallengeDto> challengeList = challenges.stream().map(MypageChallengeDto::new).toList();
 
-        List<Bricks> bricks = bricksRepository.findByRoomId(myroom.getRoomId());
-        List<BricksInfoDto> bricksInfo = bricks.stream().map(BricksInfoDto::new).toList();
-
-        return new MypageResponseDto(memberInfo, myroomInfo, bricksInfo, challengeList);
+        return new MypageResponseDto(memberInfo, challengeList);
     }
 
 

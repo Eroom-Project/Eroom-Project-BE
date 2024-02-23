@@ -92,7 +92,7 @@ public class JwtUtil {
         if (findToken.isPresent()){
             findToken.get().updateToken(refreshToken);
         } else {
-            refreshTokenRepository.save(new RefreshToken(refreshToken, email));
+            refreshTokenRepository.save(new RefreshToken(email, refreshToken));
         }
         return BEARER_PREFIX + refreshToken;
     }
