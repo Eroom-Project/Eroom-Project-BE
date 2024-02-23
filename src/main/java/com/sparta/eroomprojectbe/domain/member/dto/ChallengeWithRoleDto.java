@@ -13,4 +13,8 @@ public class ChallengeWithRoleDto {
         this.challenge = challenge;
         this.challengerRole = challengerRole;
     }
+
+    public Long getChallengeId() {
+        return challenge.getChallengeId();
+    }
 }
