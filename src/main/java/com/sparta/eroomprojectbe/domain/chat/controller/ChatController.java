@@ -24,6 +24,12 @@ public class ChatController {
                             Message<?> message) {
         chatMessageService.saveMessage(challengeId, chatMessage, message);
     }
+
+//    @GetMapping("/api/chat/dupuser")
+//    public ResponseEntity<ResponseDto<String>> getChatMember(@Valid @RequestBody EnterRequestDto requestDto) {
+//        String message = ChatMessageService.getChattingMember(requestDto);
+//        return ResponseEntity.ok(new ResponseDto<>(null, message, HttpStatus.OK));
+//    }
 }
 
 
