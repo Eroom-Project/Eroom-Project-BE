@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.dto;
 
 import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 public class MypageChallengeDto {
     private Long challengeId;
     private String title;
+    private String creatorNickname;
     private LocalDate startDate;
     private LocalDate dueDate;
     private String frequency;
@@ -29,8 +31,9 @@ public class MypageChallengeDto {
         this.thumbnailImageUrl = challenge.getThumbnailImageUrl();
     }
 
-    public MypageChallengeDto(ChallengeWithRoleDto challengeWithRoleDto) {
+    public MypageChallengeDto(ChallengeWithRoleDto challengeWithRoleDto, String creatorNickname) {
         this(challengeWithRoleDto.getChallenge());
         this.challengerRole = challengeWithRoleDto.getChallengerRole();
+        this.creatorNickname = creatorNickname;
     }
 }

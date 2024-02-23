@@ -11,11 +11,13 @@ public class MemberInfoDto {
     private String email;
     private String nickname;
     private String profileImageUrl;
+    private Long bricksCount;
 
     public MemberInfoDto(Member member) {
         this.memberId = member.getMemberId();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.profileImageUrl = member.getProfileImageUrl();
+        this.bricksCount = member.getBricksCount();
     }
 }
