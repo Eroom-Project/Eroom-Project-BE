@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -124,7 +125,12 @@ public class MemberService {
         MemberInfoDto memberInfo = new MemberInfoDto(member);
 
         List<ChallengeWithRoleDto> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
-        List<MypageChallengeDto> challengeList = challenges.stream().map(MypageChallengeDto::new).toList();
+        List<MypageChallengeDto> challengeList = challenges.stream().map(challengeWithRoleDto -> {
+            Long challengeId = challengeWithRoleDto.getChallengeId();
+            Optional<Member> creator = challengerRepository.findCreatorMemberByChallengeId(challengeId);
+            String creatorNickname = creator.map(Member::getNickname).orElse("Unknown");
+            return new MypageChallengeDto(challengeWithRoleDto, creatorNickname);
+        }).collect(Collectors.toList());
 
         return new MypageResponseDto(memberInfo, challengeList);
     }

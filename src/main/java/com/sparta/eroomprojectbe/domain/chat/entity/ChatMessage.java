@@ -47,16 +47,19 @@ public class ChatMessage {
 
 
     public static class MemberInfo {
-        private String nickname;
+        private String sender;
         private String profileImageUrl;
 
-        public MemberInfo(String nickname, String profileImageUrl) {
-            this.nickname = nickname;
+        public MemberInfo(String sender, String profileImageUrl) {
+            this.sender = sender;
             this.profileImageUrl = profileImageUrl;
         }
 
-        public String getNickname() {
-            return nickname;
+        public String getSender() {
+            return sender;
         }
     }
+        public String getProfileImageUrl() {
+            return profileImageUrl;
+        }
 }

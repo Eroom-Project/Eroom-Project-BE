@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatRoomService {
@@ -15,33 +18,25 @@ public class ChatRoomService {
     private SimpMessageSendingOperations messagingTemplate;
 
     public void userJoinedRoom(String challengeId, String senderNickname, String profileImageUrl) {
-        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.computeIfAbsent(challengeId, k -> new ArrayList<>());
+        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
+
+        // 현재 멤버 리스트가 없는 경우 새로운 리스트 생성
+        if (currentMemberList == null) {
+            currentMemberList = new ArrayList<>();
+            challengeRoomMemberLists.put(challengeId, currentMemberList);
+        }
+
         ChatMessage.MemberInfo memberInfo = new ChatMessage.MemberInfo(senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
-        broadcastCurrentMemberList(challengeId);
+
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
 
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
-            Iterator<ChatMessage.MemberInfo> iterator = currentMemberList.iterator();
-            while (iterator.hasNext()) {
-                ChatMessage.MemberInfo memberInfo = iterator.next();
-                if (memberInfo.getNickname().equals(senderNickname)) {
-                    iterator.remove(); // 해당 멤버 삭제
-                }
-            }
-            broadcastCurrentMemberList(challengeId);
-        }
-    }
-
-    private void broadcastCurrentMemberList(String challengeId) {
-        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
-        if (currentMemberList != null) {
+            currentMemberList.removeIf(memberInfo -> memberInfo.getSender().equals(senderNickname));
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
-        } else {
-            // 현재 멤버 리스트가 null인 경우 빈 리스트를 전송
-            messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), new ArrayList<>());
         }
     }
 }
