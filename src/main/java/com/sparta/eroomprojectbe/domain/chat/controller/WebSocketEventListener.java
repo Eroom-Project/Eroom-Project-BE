@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.chat.service.ChatRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class WebSocketEventListener {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
+    @Autowired
+    private ChatRoomService chatRoomService;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
@@ -34,10 +38,16 @@ public class WebSocketEventListener {
         if (nickname != null && challengeId != null) {
             logger.info("User Disconnected : " + nickname);
 
+            // 채팅방에서 사용자를 제거하는 로직 호출
+            chatRoomService.userLeftRoom(challengeId, nickname);
+
+            // 사용자가 나갔음을 다른 클라이언트에 알리는 메시지 전송
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setChallengeId(challengeId);
+
+
 
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
         }

@@ -70,11 +70,6 @@ public class ChatMessageService {
                             // 사용자가 챌린지 방에 입장할 때 ChatRoomService를 통해 currentMemberList에 추가
                             chatRoomService.userJoinedRoom(challengeId, senderNickname, profileImageUrl);
                         }
-                        case LEAVE -> {
-                            System.out.println("MessagesType : LEAVE");
-                            // 사용자가 챌린지 방을 떠날 때 ChatRoomService를 통해 currentMemberList에서 제거
-                            chatRoomService.userLeftRoom(challengeId, senderNickname);
-                        }
                     }
                 });
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
