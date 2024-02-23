@@ -8,14 +8,10 @@ import java.util.List;
 public class MypageResponseDto {
 
     private MemberInfoDto memberInfo;
-    private MyroomInfoDto myroomInfo;
-    private List<BricksInfoDto> bricksInfoList;
     private List<MypageChallengeDto> challengeList;
 
-    public MypageResponseDto(MemberInfoDto memberInfo, MyroomInfoDto myroomInfoDto, List<BricksInfoDto> bricksInfoDtoList, List<MypageChallengeDto> challengeDto) {
+    public MypageResponseDto(MemberInfoDto memberInfo, List<MypageChallengeDto> challengeDto) {
         this.memberInfo = memberInfo;
-        this.myroomInfo = myroomInfoDto;
-        this.bricksInfoList = bricksInfoDtoList;
         this.challengeList = challengeDto;
     }
 }
