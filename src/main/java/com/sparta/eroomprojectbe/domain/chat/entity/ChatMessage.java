@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ public class ChatMessage {
     private String memberId;
     private String challengeId;
     private String profileImageUrl;
+    private List<MemberInfo> currentMemberList;
 
     public enum MessageType {
         CHAT,
@@ -40,5 +42,21 @@ public class ChatMessage {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+
+
+    public static class MemberInfo {
+        private String nickname;
+        private String profileImageUrl;
+
+        public MemberInfo(String nickname, String profileImageUrl) {
+            this.nickname = nickname;
+            this.profileImageUrl = profileImageUrl;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
     }
 }
