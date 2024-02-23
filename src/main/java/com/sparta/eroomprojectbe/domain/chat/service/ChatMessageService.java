@@ -60,6 +60,7 @@ public class ChatMessageService {
                     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
                     headerAccessor.getSessionAttributes().put("challengeId", challengeId);
                     headerAccessor.getSessionAttributes().put("nickname", senderNickname);
+                    headerAccessor.getSessionAttributes().put("profileImageUrl", profileImageUrl);
 
                     // 메시지 보낸 시간 저장
                     chatMessage.setTime(LocalDateTime.now());
