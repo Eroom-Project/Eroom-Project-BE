@@ -13,9 +13,6 @@ import java.util.Optional;
 
 public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
-    Long countByChallenge_ChallengeId(Long challengeId);
-
-    Long countByChallenge(Challenge challenge);
 
     @Query("SELECT c.member FROM Challenger c WHERE c.challenge.challengeId = :challengeId AND c.role = 'LEADER'")
     Optional<Member> findCreatorMemberByChallengeId(@Param("challengeId") Long challengeId);

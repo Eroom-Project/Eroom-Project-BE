@@ -23,6 +23,15 @@ public class ImageS3Service {
 
     //String 타입으로 MultipartFile을 바꿔주는 작업 + putObject메소드를 통해 S3에 넣어주는 작업
     public String saveFile(MultipartFile multipartFile) throws IOException {
+        // 파일 크기 체크
+        if (multipartFile.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException("파일의 크기는 10mb이하여야 합니다.");
+        }
+        // 파일 형식 체크 (PNG 또는 JPEG 허용)
+        String contentType = multipartFile.getContentType();
+        if (!contentType.equals("image/png") && !contentType.equals("image/jpeg")) {
+            throw new IllegalArgumentException("파일형식은 png파일과 jpeg파일만 가능합니다.");
+        }
         // 파일의 원본 이름을 얻어오고 이후 S3버킷에 저장할 때 사용.
         String originalFileName = multipartFile.getOriginalFilename();
         // 파일명을 랜덤으로 작성

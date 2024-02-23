@@ -40,7 +40,7 @@ public class Challenge extends Timestamped{
     @Column(nullable = false)
     private String frequency;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 25)
     private String authExplanation;
 
     @Column(nullable = false)

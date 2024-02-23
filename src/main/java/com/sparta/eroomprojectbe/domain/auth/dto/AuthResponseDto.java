@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * 인증글에 대한 정보를 전달하는 Dto
+ */
 @Getter
 public class AuthResponseDto {
     private Long authId;
