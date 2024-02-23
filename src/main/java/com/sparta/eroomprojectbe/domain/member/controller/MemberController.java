@@ -95,14 +95,22 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
-    // 마이 페이지 개인 정보 수정
-    @PutMapping("/api/member/profile")
-    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
-                                                                     @RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
-                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProfileResponseDto data = memberService.updateProfile(requestDto,file ,userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
+    // 마이 페이지 프로필 이미지 수정
+    @PutMapping("/api/member/profile/image")
+    public ResponseEntity<BaseDto<String>> updateProfileImage(@RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String updatedNickname = memberService.updateProfileImage(file, userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(updatedNickname, "프로필 이미지 수정 성공", HttpStatus.OK));
     }
+
+//    // 마이 페이지 개인 정보 수정
+//    @PutMapping("/api/member/profile")
+//    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
+//
+//                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        ProfileResponseDto data = memberService.updateProfile(requestDto,file ,userDetails.getMember());
+//        return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
+//    }
 
     @GetMapping("/api/member/password")
     public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {

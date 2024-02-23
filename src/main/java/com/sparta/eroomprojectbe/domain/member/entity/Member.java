@@ -76,4 +76,9 @@ public class Member {
         this.nickname = nickname;
         return nickname;
     }
+
+    public String updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+        return profileImageUrl;
+    }
 }

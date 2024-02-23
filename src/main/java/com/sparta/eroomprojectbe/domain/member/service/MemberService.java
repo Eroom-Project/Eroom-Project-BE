@@ -155,7 +155,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
+    public String updateProfileImage(MultipartFile file, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
         // 썸네일 이미지 업데이트 유무
@@ -169,16 +169,23 @@ public class MemberService {
         }else{
             updateFile = findMember.getProfileImageUrl();
         }
-        // 패스워드 변경 유무
-        String password;
-        if(requestDto.getPassword() != ""){
-            password = passwordEncoder.encode(requestDto.getPassword());
-        }else{
-            password = findMember.getPassword();
-        }
-        findMember.updateProfile(requestDto, password, updateFile);
-        return new ProfileResponseDto(findMember);
+        return findMember.updateProfileImage(updateFile);
     }
+
+//    @Transactional
+//    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
+//        Member findMember = memberRepository.findByEmail(member.getEmail())
+//                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+//        // 패스워드 변경 유무
+//        String password;
+//        if(requestDto.getPassword() != ""){
+//            password = passwordEncoder.encode(requestDto.getPassword());
+//        }else{
+//            password = findMember.getPassword();
+//        }
+//        findMember.updateProfile(requestDto, password, updateFile);
+//        return new ProfileResponseDto(findMember);
+//    }
 
 
     public boolean checkPassword(Member member, String rawPassword) {
