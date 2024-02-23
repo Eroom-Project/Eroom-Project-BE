@@ -35,6 +35,9 @@ public class ChatRoomService {
         List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
+        } else {
+            // 현재 멤버 리스트가 null인 경우 빈 리스트를 전송
+            messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), new ArrayList<>());
         }
     }
 }
