@@ -16,11 +16,11 @@ public class Challenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long challengerId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 

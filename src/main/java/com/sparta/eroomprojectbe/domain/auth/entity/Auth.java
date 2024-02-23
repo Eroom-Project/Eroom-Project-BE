@@ -29,7 +29,7 @@ public class Auth extends Timestamped{
     @Column
     private String authStatus;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "challenger_id")
     private Challenger challenger;
 
