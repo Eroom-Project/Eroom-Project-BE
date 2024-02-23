@@ -29,18 +29,10 @@ public class Auth extends Timestamped{
     @Column
     private String authStatus;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "challenger_id")
     private Challenger challenger;
 
-
-//    public Auth(AuthRequestDto requestDto, Challenger challenger) {
-//        this.authContents= requestDto.getAuthContents();
-//        this.authImageUrl= requestDto.getAuthImageUrl();
-//        this.authVideoUrl= requestDto.getAuthVideoUrl();
-//        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : requestDto.getAuthStatus();
-//        this.challenger=challenger;
-//    }
 
     public Auth(AuthRequestDto requestDto, String saveFile, Challenger challenger) {
         this.authContents= (requestDto.getAuthContents()!= null)?requestDto.getAuthContents():"비어있음";

@@ -40,7 +40,7 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
 
     // 토큰 만료시간
-    private final long TOKEN_TIME = 20 * 1000L; // 1시간
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 1시간
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -92,7 +92,7 @@ public class JwtUtil {
         if (findToken.isPresent()){
             findToken.get().updateToken(refreshToken);
         } else {
-            refreshTokenRepository.save(new RefreshToken(refreshToken, email));
+            refreshTokenRepository.save(new RefreshToken(email, refreshToken));
         }
         return BEARER_PREFIX + refreshToken;
     }
