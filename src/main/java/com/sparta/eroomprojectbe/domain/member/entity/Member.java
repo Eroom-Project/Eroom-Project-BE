@@ -71,4 +71,9 @@ public class Member {
         this.nickname = requestDto.getNickname();
         this.profileImageUrl = profileImageUrl;
     }
+
+    public String updateNickname(String nickname) {
+        this.nickname = nickname;
+        return nickname;
+    }
 }
