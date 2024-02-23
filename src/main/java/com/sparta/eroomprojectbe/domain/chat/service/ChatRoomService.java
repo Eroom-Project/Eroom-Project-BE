@@ -30,10 +30,15 @@ public class ChatRoomService {
         boolean isExisting = currentMemberList.stream()
                 .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
 
+
+
         // senderNickname이 이미 존재하지 않는 경우에만 추가
         if (!isExisting) {
             MemberInfo memberInfo = new MemberInfo(senderNickname, profileImageUrl);
             currentMemberList.add(memberInfo);
+        }else {
+            // 중복된 멤버이므로 클라이언트에게 메시지를 보냄
+            messagingTemplate.convertAndSendToUser(senderNickname, "/queue/duplicate-member", "중복된 멤버입니다");
         }
 
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
