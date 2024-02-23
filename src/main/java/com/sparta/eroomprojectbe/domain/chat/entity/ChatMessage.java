@@ -59,4 +59,7 @@ public class ChatMessage {
             return sender;
         }
     }
+        public String getProfileImageUrl() {
+            return profileImageUrl;
+        }
 }
