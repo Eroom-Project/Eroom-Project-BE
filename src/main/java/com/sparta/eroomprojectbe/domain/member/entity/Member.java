@@ -36,6 +36,8 @@ public class Member {
 
     private Boolean isSocialMember;
 
+    private Long bricksCount;
+
     public Member(String email, String password, String nickname){
         this.email = email;
         this.password = password;
@@ -43,6 +45,7 @@ public class Member {
         this.role = MemberRoleEnum.USER;
         this.isSocialMember = false;
         this.profileImageUrl ="https://github.com/Eroom-Project/Eroom-Project-FE/assets/151543350/e026bdc5-2a06-4578-b561-739d26097db2";
+        this.bricksCount = 0L;
     }
 
     public Member(String kakaoEmail, String password, String nickname, Long kakaoId, String profileImageUrl) {
@@ -53,6 +56,7 @@ public class Member {
         this.kakaoId = kakaoId;
         this.isSocialMember = true;
         this.profileImageUrl = profileImageUrl;
+        this.bricksCount = 0L;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {

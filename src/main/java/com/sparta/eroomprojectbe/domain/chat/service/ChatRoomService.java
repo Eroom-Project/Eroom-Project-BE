@@ -35,7 +35,7 @@ public class ChatRoomService {
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
-            currentMemberList.removeIf(memberInfo -> memberInfo.getSender().equals(senderNickname));
+            currentMemberList.removeIf(memberInfo -> memberInfo.getNickname().equals(senderNickname));
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
         }
     }
