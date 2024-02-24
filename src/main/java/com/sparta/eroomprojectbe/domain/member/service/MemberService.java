@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +53,10 @@ public class MemberService {
         this.emailVerificationRepository = emailVerificationRepository;
     }
 
+    private static final String EMAIL_PATTERN =
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+    private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
     @Transactional
     public SignupResponseDto signup(SignupRequestDto requestDto) {
@@ -68,12 +74,16 @@ public class MemberService {
     }
 
     // 이메일 중복 확인
-    public String emailCheck(String email) {
+    public String checkEmail(String email) {
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            return "유효하지 않은 이메일 형식입니다.";
+        }
         return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
     }
 
     // 닉네임 중복 확인
-    public String nicknameCheck(String nickname) {
+    public String checkNickname(String nickname) {
         return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
     }
 
