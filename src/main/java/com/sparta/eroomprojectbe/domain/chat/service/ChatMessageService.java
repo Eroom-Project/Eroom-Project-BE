@@ -64,6 +64,7 @@ public class ChatMessageService {
                     // WebSocket 세션에 속성 저장
                     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
                     headerAccessor.getSessionAttributes().put("challengeId", challengeId);
+                    headerAccessor.getSessionAttributes().put("memberId", memberIdString);
                     headerAccessor.getSessionAttributes().put("nickname", senderNickname);
                     headerAccessor.getSessionAttributes().put("profileImageUrl", profileImageUrl);
 
@@ -74,7 +75,7 @@ public class ChatMessageService {
                         case JOIN -> {
                             System.out.println("MessagesType : JOIN");
                             // 사용자가 챌린지 방에 입장할 때 ChatRoomService를 통해 currentMemberList에 추가
-                            chatRoomService.userJoinedRoom(challengeId, senderNickname, profileImageUrl);
+                            chatRoomService.userJoinedRoom(challengeId, memberIdString, senderNickname, profileImageUrl);
                         }
                     }
                 });
