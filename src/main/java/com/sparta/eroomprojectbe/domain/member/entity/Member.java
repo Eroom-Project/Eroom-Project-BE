@@ -65,10 +65,17 @@ public class Member {
         return this;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto, String password, String profileImageUrl) {
-        this.email = requestDto.getEmail();
-        this.password = password;
-        this.nickname = requestDto.getNickname();
+    public String updateNickname(String nickname) {
+        this.nickname = nickname;
+        return nickname;
+    }
+
+    public String updateProfileImage(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        return profileImageUrl;
+    }
+
+    public void updatePassword(String updatePassword) {
+        this.password = updatePassword;
     }
 }

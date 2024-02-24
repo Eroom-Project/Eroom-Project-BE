@@ -4,6 +4,7 @@ import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
+import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
 import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
@@ -29,20 +30,25 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ChallengerRepository challengerRepository;
     private final ImageS3Service imageS3Service;
+    private final EmailService emailService;
+    private final EmailVerificationRepository emailVerificationRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service, EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.refreshTokenRepository = refreshTokenRepository;
         this.challengerRepository = challengerRepository;
         this.imageS3Service = imageS3Service;
+        this.emailService = emailService;
+        this.emailVerificationRepository = emailVerificationRepository;
     }
 
 
@@ -62,7 +68,7 @@ public class MemberService {
     }
 
     // 이메일 중복 확인
-    public String emailCheck(String email){
+    public String emailCheck(String email) {
         return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
     }
 
@@ -135,33 +141,39 @@ public class MemberService {
         return new MypageResponseDto(memberInfo, challengeList);
     }
 
-
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
+    public String updateNickname(String nickname, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
-        // 썸네일 이미지 업데이트 유무
-        String updateFile;
-        if(file != null){
-            try {
-                updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(),file);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }else{
-            updateFile = findMember.getProfileImageUrl();
-        }
-        // 패스워드 변경 유무
-        String password;
-        if(requestDto.getPassword() != ""){
-            password = passwordEncoder.encode(requestDto.getPassword());
-        }else{
-            password = findMember.getPassword();
-        }
-        findMember.updateProfile(requestDto, password, updateFile);
-        return new ProfileResponseDto(findMember);
+        return findMember.updateNickname(nickname);
     }
 
+    @Transactional
+    public String updateProfileImage(MultipartFile file, Member member) {
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        String updateFile = findMember.getProfileImageUrl();
+        if (file != null) {
+            try {
+                updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(), file);
+            } catch (IOException e) {
+                throw new RuntimeException("프로필 이미지 저장 중 문제가 발생하였습니다", e);
+            }
+        }
+        return findMember.updateProfileImage(updateFile);
+    }
+
+    @Transactional
+    public void updatePassword(String password, Member member) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("비밀번호는 빈 값일 수 없습니다.");
+        }
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        String encodedPassword = passwordEncoder.encode(password);
+        findMember.updatePassword(encodedPassword);
+        memberRepository.save(findMember);
+    }
 
     public boolean checkPassword(Member member, String rawPassword) {
         return passwordEncoder.matches(rawPassword, member.getPassword());
@@ -175,6 +187,5 @@ public class MemberService {
         cookie.setMaxAge(0); // max-age를 0으로 설정하여 쿠키 삭제
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
-
 
 }
