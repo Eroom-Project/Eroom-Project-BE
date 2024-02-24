@@ -20,15 +20,15 @@ public class Challenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long challengerId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @OneToMany(mappedBy = "challenger", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "challenger", orphanRemoval = true)
     @JsonBackReference
     private List<Auth> authList;
 
