@@ -93,9 +93,9 @@ public class MemberController {
 
     // 마이 페이지 닉네임 수정
     @PutMapping("/api/member/profile/nickname")
-    public ResponseEntity<BaseDto<String>> updateNickname(@RequestBody Map<String, String> nickname,
+    public ResponseEntity<BaseDto<String>> updateNickname(@RequestParam("profileNickname") String nickname,
                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String updatedNickname = memberService.updateNickname(nickname.get("profileNickname"), userDetails.getMember());
+        String updatedNickname = memberService.updateNickname(nickname, userDetails.getMember());
         return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
