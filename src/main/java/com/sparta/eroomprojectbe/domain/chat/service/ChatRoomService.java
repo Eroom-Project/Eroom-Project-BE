@@ -25,16 +25,18 @@ public class ChatRoomService {
             currentMemberList = new ArrayList<>();
             challengeRoomMemberLists.put(challengeId, currentMemberList);
         }
+        MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
+        currentMemberList.add(memberInfo);
 
-        // senderNickname이 이미 존재하는지 확인
-        boolean isExisting = currentMemberList.stream()
-                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
-
-        // senderNickname이 이미 존재하지 않는 경우에만 추가
-        if (!isExisting) {
-            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
-            currentMemberList.add(memberInfo);
-        }
+//        // senderNickname이 이미 존재하는지 확인
+//        boolean isExisting = currentMemberList.stream()
+//                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
+//
+//        // senderNickname이 이미 존재하지 않는 경우에만 추가
+//        if (!isExisting) {
+//            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
+//            currentMemberList.add(memberInfo);
+//        }
 
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
