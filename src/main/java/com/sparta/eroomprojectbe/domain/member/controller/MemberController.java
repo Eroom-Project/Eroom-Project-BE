@@ -58,14 +58,14 @@ public class MemberController {
     }
 
     @GetMapping("/api/signup/email")
-    public ResponseEntity<BaseDto<String>> emailCheck(@RequestParam String email) {
-        String message = memberService.emailCheck(email);
+    public ResponseEntity<BaseDto<String>> checkEmail(@RequestParam String email) {
+        String message = memberService.checkEmail(email);
         return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     @GetMapping("/api/signup/nickname")
-    public ResponseEntity<BaseDto<String>> nicknameCheck(@RequestParam String nickname) {
-        String message = memberService.nicknameCheck(nickname);
+    public ResponseEntity<BaseDto<String>> checkNickname(@RequestParam String nickname) {
+        String message = memberService.checkNickname(nickname);
         return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
