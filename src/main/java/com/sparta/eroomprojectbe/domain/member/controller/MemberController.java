@@ -1,7 +1,10 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.MypageResponseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
@@ -88,11 +91,11 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>(data, "", HttpStatus.OK));
     }
 
-     // 마이 페이지 닉네임 수정
+    // 마이 페이지 닉네임 수정
     @PutMapping("/api/member/profile/nickname")
     public ResponseEntity<BaseDto<String>> updateNickname(@RequestBody Map<String, String> nickname,
                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String updatedNickname = memberService.updateNickname(nickname.get("nickname"), userDetails.getMember());
+        String updatedNickname = memberService.updateNickname(nickname.get("profileNickname"), userDetails.getMember());
         return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
