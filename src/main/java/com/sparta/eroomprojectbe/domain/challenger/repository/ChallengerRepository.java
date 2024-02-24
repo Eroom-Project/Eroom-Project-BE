@@ -19,8 +19,8 @@ public interface ChallengerRepository extends JpaRepository<Challenger, Long> {
 
     Optional<Challenger> findByChallengeAndMember(Challenge challenge, Member member);
 
-    @Query("SELECT new com.sparta.eroomprojectbe.domain.member.dto.ChallengeWithRoleDto(c.challenge, c.role) FROM Challenger c WHERE c.member.memberId = :memberId")
-    List<ChallengeWithRoleDto> findAllChallengesByMemberId(@Param("memberId") Long memberId);
+    @Query("SELECT new com.sparta.eroomprojectbe.domain.member.dto.ChallengeWithRoleDto(c.challenge, c.role) FROM Challenger c WHERE c.member.memberId = :memberId ORDER BY c.challenge.createdAt DESC")
+    List<ChallengeWithRoleDto> findAllChallengesByMemberIdOrderByChallengeCreatedAtDesc(@Param("memberId") Long memberId);
 
     @Query("SELECT c.member.memberId FROM Challenger c WHERE c.challenge = :challenge")
     List<Long> findMemberIdsByChallenge(@Param("challenge") Challenge challenge);

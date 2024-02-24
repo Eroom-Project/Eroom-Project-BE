@@ -145,7 +145,7 @@ public class MemberService {
     public MypageResponseDto getMypage(Member member) {
         MemberInfoDto memberInfo = new MemberInfoDto(member);
 
-        List<ChallengeWithRoleDto> challenges = challengerRepository.findAllChallengesByMemberId(member.getMemberId());
+        List<ChallengeWithRoleDto> challenges = challengerRepository.findAllChallengesByMemberIdOrderByChallengeCreatedAtDesc(member.getMemberId());
         List<MypageChallengeDto> challengeList = challenges.stream().map(challengeWithRoleDto -> {
             Long challengeId = challengeWithRoleDto.getChallengeId();
             Optional<Member> creator = challengerRepository.findCreatorMemberByChallengeId(challengeId);
