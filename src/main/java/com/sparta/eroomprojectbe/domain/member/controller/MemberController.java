@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -103,14 +104,13 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>(updatedNickname, "프로필 이미지 수정 성공", HttpStatus.OK));
     }
 
-//    // 마이 페이지 개인 정보 수정
-//    @PutMapping("/api/member/profile")
-//    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
-//
-//                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        ProfileResponseDto data = memberService.updateProfile(requestDto,file ,userDetails.getMember());
-//        return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
-//    }
+    // 마이 페이지 비밀번호 수정
+    @PutMapping("/api/member/profile/password")
+    public ResponseEntity<BaseDto<String>> updatePassword(@RequestBody Map<String, String> password,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        memberService.updatePassword(password.get("password"), userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>("", "비밀번호 수정 성공", HttpStatus.OK));
+    }
 
     @GetMapping("/api/member/password")
     public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {

@@ -3,7 +3,6 @@ package com.sparta.eroomprojectbe.domain.member.service;
 import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
-import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
@@ -16,7 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +68,7 @@ public class MemberService {
     }
 
     // 이메일 중복 확인
-    public String emailCheck(String email){
+    public String emailCheck(String email) {
         return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
     }
 
@@ -158,35 +152,28 @@ public class MemberService {
     public String updateProfileImage(MultipartFile file, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
-        // 썸네일 이미지 업데이트 유무
-        String updateFile;
-        if(file != null){
+        String updateFile = findMember.getProfileImageUrl();
+        if (file != null) {
             try {
-                updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(),file);
+                updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(), file);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("프로필 이미지 저장 중 문제가 발생하였습니다", e);
             }
-        }else{
-            updateFile = findMember.getProfileImageUrl();
         }
         return findMember.updateProfileImage(updateFile);
     }
 
-//    @Transactional
-//    public ProfileResponseDto updateProfile(ProfileRequestDto requestDto, MultipartFile file, Member member) {
-//        Member findMember = memberRepository.findByEmail(member.getEmail())
-//                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
-//        // 패스워드 변경 유무
-//        String password;
-//        if(requestDto.getPassword() != ""){
-//            password = passwordEncoder.encode(requestDto.getPassword());
-//        }else{
-//            password = findMember.getPassword();
-//        }
-//        findMember.updateProfile(requestDto, password, updateFile);
-//        return new ProfileResponseDto(findMember);
-//    }
-
+    @Transactional
+    public void updatePassword(String password, Member member) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("비밀번호는 빈 값일 수 없습니다.");
+        }
+        Member findMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+        String encodedPassword = passwordEncoder.encode(password);
+        findMember.updatePassword(encodedPassword);
+        memberRepository.save(findMember);
+    }
 
     public boolean checkPassword(Member member, String rawPassword) {
         return passwordEncoder.matches(rawPassword, member.getPassword());
