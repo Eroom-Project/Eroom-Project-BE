@@ -1,11 +1,16 @@
 package com.sparta.eroomprojectbe.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sparta.eroomprojectbe.domain.auth.entity.Auth;
+import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +33,10 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MemberRoleEnum role;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    @JsonBackReference
+    private List<Challenger> challengers;
 
     @Column
     private String profileImageUrl;
@@ -65,10 +74,17 @@ public class Member {
         return this;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto, String password, String profileImageUrl) {
-        this.email = requestDto.getEmail();
-        this.password = password;
-        this.nickname = requestDto.getNickname();
+    public String updateNickname(String nickname) {
+        this.nickname = nickname;
+        return nickname;
+    }
+
+    public String updateProfileImage(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        return profileImageUrl;
+    }
+
+    public void updatePassword(String updatePassword) {
+        this.password = updatePassword;
     }
 }

@@ -52,7 +52,7 @@ public class Challenge extends Timestamped{
     @Column(nullable = false, length = 512)
     private String thumbnailImageUrl;
 
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "challenge", orphanRemoval = true)
     @JsonBackReference
     private List<Challenger> challengers;
 

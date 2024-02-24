@@ -1,7 +1,10 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.MypageResponseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
+import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -87,17 +91,33 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>(data, "", HttpStatus.OK));
     }
 
-    // 마이 페이지 개인 정보 수정
-    @PutMapping("/api/member/profile")
-    public ResponseEntity<BaseDto<ProfileResponseDto>> updateProfile(@RequestPart(value = "data") ProfileRequestDto requestDto,
-                                                                     @RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
+    // 마이 페이지 닉네임 수정
+    @PutMapping("/api/member/profile/nickname")
+    public ResponseEntity<BaseDto<String>> updateNickname(@RequestParam("profileNickname") String nickname,
                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProfileResponseDto data = memberService.updateProfile(requestDto,file ,userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(data, "회원 프로필 수정 성공", HttpStatus.OK));
+        String updatedNickname = memberService.updateNickname(nickname, userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
+    // 마이 페이지 프로필 이미지 수정
+    @PutMapping("/api/member/profile/image")
+    public ResponseEntity<BaseDto<String>> updateProfileImage(@RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String updatedNickname = memberService.updateProfileImage(file, userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>(updatedNickname, "프로필 이미지 수정 성공", HttpStatus.OK));
+    }
+
+    // 마이 페이지 비밀번호 수정
+    @PutMapping("/api/member/profile/password")
+    public ResponseEntity<BaseDto<String>> updatePassword(@RequestBody Map<String, String> password,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        memberService.updatePassword(password.get("password"), userDetails.getMember());
+        return ResponseEntity.ok(new BaseDto<>("", "비밀번호 수정 성공", HttpStatus.OK));
+    }
+
+    // 비밀번호 확인
     @GetMapping("/api/member/password")
-    public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {
+    public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String password) {
         boolean isMatch = memberService.checkPassword(userDetails.getMember(), password);
         if (isMatch) {
             return ResponseEntity.ok(new BaseDto<>(null, "비밀번호가 일치합니다.", HttpStatus.OK));
@@ -105,5 +125,4 @@ public class MemberController {
             return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
         }
     }
-
 }
