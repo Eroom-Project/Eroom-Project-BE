@@ -90,9 +90,9 @@ public class MemberController {
 
      // 마이 페이지 닉네임 수정
     @PutMapping("/api/member/profile/nickname")
-    public ResponseEntity<BaseDto<String>> updateNickname(@RequestParam String nickname,
+    public ResponseEntity<BaseDto<String>> updateNickname(@RequestBody Map<String, String> nickname,
                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String updatedNickname = memberService.updateNickname(nickname, userDetails.getMember());
+        String updatedNickname = memberService.updateNickname(nickname.get("nickname"), userDetails.getMember());
         return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
@@ -112,8 +112,9 @@ public class MemberController {
         return ResponseEntity.ok(new BaseDto<>("", "비밀번호 수정 성공", HttpStatus.OK));
     }
 
+    // 비밀번호 확인
     @GetMapping("/api/member/password")
-    public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {
+    public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String password) {
         boolean isMatch = memberService.checkPassword(userDetails.getMember(), password);
         if (isMatch) {
             return ResponseEntity.ok(new BaseDto<>(null, "비밀번호가 일치합니다.", HttpStatus.OK));
@@ -121,7 +122,4 @@ public class MemberController {
             return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
         }
     }
-
-
-
 }
