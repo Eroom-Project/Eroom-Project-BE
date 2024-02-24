@@ -32,34 +32,9 @@ public class ChatMessage {
         this.type = type;
     }
 
-//    public String getContent() {
-//        return message;
-//    }
-//
-//    public void setContent(String content) {
-//        this.message = content;
-//    }
-
     public void setSender(String sender) {
         this.sender = sender;
     }
 
 
-
-    public static class MemberInfo {
-        private String sender;
-        private String profileImageUrl;
-
-        public MemberInfo(String sender, String profileImageUrl) {
-            this.sender = sender;
-            this.profileImageUrl = profileImageUrl;
-        }
-
-        public String getSender() {
-            return sender;
-        }
-    }
-        public String getProfileImageUrl() {
-            return profileImageUrl;
-        }
 }

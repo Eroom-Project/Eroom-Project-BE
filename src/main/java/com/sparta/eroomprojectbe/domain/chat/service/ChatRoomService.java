@@ -1,6 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.service;
 
-import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -12,13 +12,13 @@ import java.util.Map;
 
 @Service
 public class ChatRoomService {
-    private Map<String, List<ChatMessage.MemberInfo>> challengeRoomMemberLists = new HashMap<>();
+    private Map<String, List<MemberInfo>> challengeRoomMemberLists = new HashMap<>();
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    public void userJoinedRoom(String challengeId, String senderNickname, String profileImageUrl) {
-        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
+    public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
+        List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
 
         // 현재 멤버 리스트가 없는 경우 새로운 리스트 생성
         if (currentMemberList == null) {
@@ -26,16 +26,23 @@ public class ChatRoomService {
             challengeRoomMemberLists.put(challengeId, currentMemberList);
         }
 
-        ChatMessage.MemberInfo memberInfo = new ChatMessage.MemberInfo(senderNickname, profileImageUrl);
-        currentMemberList.add(memberInfo);
+        // senderNickname이 이미 존재하는지 확인
+        boolean isExisting = currentMemberList.stream()
+                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
+
+        // senderNickname이 이미 존재하지 않는 경우에만 추가
+        if (!isExisting) {
+            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
+            currentMemberList.add(memberInfo);
+        }
 
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
 
     public void userLeftRoom(String challengeId, String senderNickname) {
-        List<ChatMessage.MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
+        List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
-            currentMemberList.removeIf(memberInfo -> memberInfo.getSender().equals(senderNickname));
+            currentMemberList.removeIf(memberInfo -> memberInfo.getNickname().equals(senderNickname));
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
         }
     }

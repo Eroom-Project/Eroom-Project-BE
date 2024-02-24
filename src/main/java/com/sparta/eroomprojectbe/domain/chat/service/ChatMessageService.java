@@ -4,10 +4,12 @@ import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
+import com.sparta.eroomprojectbe.domain.chat.dto.ResponseDto;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -29,6 +31,9 @@ public class ChatMessageService {
     }
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
+
+
+
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
@@ -59,7 +64,9 @@ public class ChatMessageService {
                     // WebSocket 세션에 속성 저장
                     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
                     headerAccessor.getSessionAttributes().put("challengeId", challengeId);
+                    headerAccessor.getSessionAttributes().put("memberId", memberIdString);
                     headerAccessor.getSessionAttributes().put("nickname", senderNickname);
+                    headerAccessor.getSessionAttributes().put("profileImageUrl", profileImageUrl);
 
                     // 메시지 보낸 시간 저장
                     chatMessage.setTime(LocalDateTime.now());
@@ -68,7 +75,7 @@ public class ChatMessageService {
                         case JOIN -> {
                             System.out.println("MessagesType : JOIN");
                             // 사용자가 챌린지 방에 입장할 때 ChatRoomService를 통해 currentMemberList에 추가
-                            chatRoomService.userJoinedRoom(challengeId, senderNickname, profileImageUrl);
+                            chatRoomService.userJoinedRoom(challengeId, memberIdString, senderNickname, profileImageUrl);
                         }
                     }
                 });
@@ -76,4 +83,8 @@ public class ChatMessageService {
             }
         }
     }
+
+//    public static String getChattingMember(EnterRequestDto requestDto) {
+//
+//    }
 }
