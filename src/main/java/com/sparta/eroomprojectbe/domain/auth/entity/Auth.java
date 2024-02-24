@@ -23,7 +23,7 @@ public class Auth extends Timestamped{
     @Column
     private String authImageUrl;
 
-    @Column
+    @Column (length = 500)
     private String authVideoUrl;
 
     @Column
