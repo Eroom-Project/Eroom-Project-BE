@@ -15,6 +15,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +86,9 @@ public class MemberService {
 
     // 닉네임 중복 확인
     public String checkNickname(String nickname) {
+        if (nickname.length() < 3 || nickname.length() > 10) {
+            return "닉네임은 3자 이상 10자 이하로 입력해 주세요.";
+        }
         return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
     }
 
