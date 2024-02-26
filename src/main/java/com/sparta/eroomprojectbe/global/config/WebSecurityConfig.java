@@ -30,10 +30,16 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-@RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+        this.authenticationConfiguration = authenticationConfiguration;
+    }
+
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -63,11 +69,11 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://eroom-challenge.com", "https://www.eroom-challenge.com"));
-        configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
-        configuration.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
+//        configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+//        configuration.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT", "PATCH", "DELETE","OPTIONS"));
-        configuration.setMaxAge(3600L);
+        configuration.setMaxAge(60L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
