@@ -45,7 +45,7 @@ public class EmailConfig {
         Properties mailProperties = new Properties();
         mailProperties.put("mail.transport.protocol", "smtp"); // 구글의 smtp 프로토콜로 전송
         mailProperties.put("mail.smtp.auth", "true"); // smtp 서버에 이메일을 보낼 때 인증이 필요함. 무단 액세스로부터 계정 보호
-        mailProperties.put("mail.smtp.socktFactory.class", "javax.net.ssl.SSLSocketFactory"); // 메일 전송에 ssl 기반 소켓 사용하는 설정
+        mailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // 메일 전송에 ssl 기반 소켓 사용하는 설정
         mailProperties.put("mail.smtp.starttls.enable", "true"); // tls 관련 설정. 메일 클라이언트와 서버 사이 연결 암호화. 데이터 안전 전송
         mailProperties.put("mail.smtp.debug", "true"); // 디버깅 가능
         mailProperties.put("mail.smtp.ssl.trust", "smtp.gmail.com"); // ssl 인증서 유효함을 인증함
