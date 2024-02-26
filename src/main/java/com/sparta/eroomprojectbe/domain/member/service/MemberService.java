@@ -209,26 +209,26 @@ public class MemberService {
     }
 
     @Transactional
-    public void sendCodeToEmail(String toEmail) {
-        this.checkDuplicatedEmail(toEmail);
+    public String sendCodeToEmail(String toEmail) {
+        boolean memberIsPresent = memberRepository.existsByEmail(toEmail);
+        if (memberIsPresent) {
+            return "이미 가입된 사용자입니다.";
+        }
         String authCode = this.createCode();
 
         // 이메일 내용 정의
         String title = "eroom 이메일 인증 번호";
         String content =
-                "<div style='margin:30px;'>"
-                        + "<h2>안녕하세요.</h2>"
-                        + "<h2>이룸에 오신 것을 환영합니다.</h2>"
-                        + "<br>"
-                        + "<p>아래 인증번호를 복사해 인증번호 확인란에 입력해주세요.<p>"
-                        + "<br>"
-                        + "<p>감사합니다!<p>"
-                        + "<br>"
-                        + "<div align='center' style='border:1px solid black; font-family:verdana;'>"
-                        + "<h3 style='color:blue;'>회원가입 인증번호입니다.</h3>"
-                        + "<div style='font-size:130%'>"
-                        + "인증 번호 : <strong>" + authCode + "</strong></div><br/>"
+                "<div style='font-family: \"Comic Sans MS\", cursive, sans-serif; color: #333; background-color: #f9f9f9; padding: 40px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center;'>"
+                        + "<h2 style='color: #ff69b4; font-size: 22px;'>🎉 안녕하세요, 이룸에 오신 것을 환영합니다! 🎉</h2>"
+                        + "<p style='font-size: 16px;'>아래 <strong>인증번호</strong>를 복사하여 인증번호 확인란에 입력해주세요.</p>"
+                        + "<div style='margin: 30px auto; padding: 20px; border: 2px dashed #ff69b4; display: inline-block;'>"
+                        + "<h3 style='color: #333; font-size: 20px;'>회원가입 인증번호입니다.</h3>"
+                        + "<p style='background-color: #ffefff; color: #d6336c; font-size: 24px; padding: 10px 20px; border-radius: 10px; display: inline-block; margin: 0;'>" + authCode + "</p>"
+                        + "</div>"
+                        + "<p style='font-size: 16px; margin-top: 40px;'>감사합니다! 💖</p>"
                         + "</div>";
+
 
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
@@ -236,18 +236,16 @@ public class MemberService {
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
         EmailVerification verification = new EmailVerification(toEmail, authCode, expirationTime);
         emailVerificationRepository.save(verification);
+        // 인증이 끝나면 삭제를 해야 하는데
+        // return 값 어떠케하지? 그냥 try catch?
+        return "인증 메일을 전송하였습니다.";
     }
 
-    private void checkDuplicatedEmail(String email) {
-        Optional<Member> member = memberRepository.findByEmail(email);
-        if (member.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + email);
-        }
-    }
 
     private String createCode() {
         int length = 6;
         try {
+            // 인증 번호를 만들 때 그냥 무작위 번호가 아닐 텐데
             Random random = SecureRandom.getInstanceStrong();
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < length; i++) {
@@ -259,11 +257,12 @@ public class MemberService {
         }
     }
 
-    @Transactional
     public boolean verifiedCode(String email, String authCode) {
         Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
 
+        // 인증 시간이 지난 경우를 따로 표시
         boolean authResult = verification.isPresent() && verification.get().getExpirationTime().isAfter(LocalDateTime.now());
+        emailVerificationRepository.deleteByEmail(email);
         return authResult;
     }
 
