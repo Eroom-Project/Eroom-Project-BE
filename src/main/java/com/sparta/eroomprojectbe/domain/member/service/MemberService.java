@@ -3,6 +3,7 @@ package com.sparta.eroomprojectbe.domain.member.service;
 import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
@@ -24,8 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -202,5 +207,65 @@ public class MemberService {
         cookie.setMaxAge(0); // max-age를 0으로 설정하여 쿠키 삭제
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
+
+    @Transactional
+    public void sendCodeToEmail(String toEmail) {
+        this.checkDuplicatedEmail(toEmail);
+        String authCode = this.createCode();
+
+        // 이메일 내용 정의
+        String title = "eroom 이메일 인증 번호";
+        String content =
+                "<div style='margin:30px;'>"
+                        + "<h2>안녕하세요.</h2>"
+                        + "<h2>이룸에 오신 것을 환영합니다.</h2>"
+                        + "<br>"
+                        + "<p>아래 인증번호를 복사해 인증번호 확인란에 입력해주세요.<p>"
+                        + "<br>"
+                        + "<p>감사합니다!<p>"
+                        + "<br>"
+                        + "<div align='center' style='border:1px solid black; font-family:verdana;'>"
+                        + "<h3 style='color:blue;'>회원가입 인증번호입니다.</h3>"
+                        + "<div style='font-size:130%'>"
+                        + "인증 번호 : <strong>" + authCode + "</strong></div><br/>"
+                        + "</div>";
+
+        String sendMail = "eroom.challenge@gmail.com";
+        emailService.sendEmail(sendMail, toEmail, title, content);
+
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
+        EmailVerification verification = new EmailVerification(toEmail, authCode, expirationTime);
+        emailVerificationRepository.save(verification);
+    }
+
+    private void checkDuplicatedEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + email);
+        }
+    }
+
+    private String createCode() {
+        int length = 6;
+        try {
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("인증번호를 만들던 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Transactional
+    public boolean verifiedCode(String email, String authCode) {
+        Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
+
+        boolean authResult = verification.isPresent() && verification.get().getExpirationTime().isAfter(LocalDateTime.now());
+        return authResult;
+    }
+
 
 }
