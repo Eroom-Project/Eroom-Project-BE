@@ -1,9 +1,9 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +28,7 @@ public class EmailService {
             // true로 전달해야 html형식으로 전송. 그렇지 않으면 단순 텍스트로 전송
             helper.setText(content, true);
             emailSender.send(message);
-        } catch (MessagingException e) {
+        } catch (MessagingException | jakarta.mail.MessagingException e) {
             e.printStackTrace();
         }
     }
