@@ -26,6 +26,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
