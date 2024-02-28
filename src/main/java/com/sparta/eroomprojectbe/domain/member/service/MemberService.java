@@ -239,6 +239,7 @@ public class MemberService {
         EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
                 .orElse(new EmailVerification(toEmail, authCode, expirationTime));
 
+        verification.upate(authCode, expirationTime);
         emailVerificationRepository.save(verification);
         return "인증 메일을 전송하였습니다.";
     }
