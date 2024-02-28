@@ -67,6 +67,13 @@ public class Member {
         this.profileImageUrl = profileImageUrl;
         this.bricksCount = 0L;
     }
+    //테스트 코드를 위한 생성자
+    public Member(long l, String mail, String password, String nickname) {
+        this.memberId = l;
+        this.email = mail;
+        this.password = password;
+        this.nickname = nickname;
+    }
 
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
