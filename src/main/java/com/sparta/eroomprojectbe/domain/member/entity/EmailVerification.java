@@ -30,7 +30,7 @@ public class EmailVerification {
         this.expirationTime = expirationTime;
     }
 
-    public void upate(String authCode, LocalDateTime expirationTime) {
+    public void update(String authCode, LocalDateTime expirationTime) {
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
