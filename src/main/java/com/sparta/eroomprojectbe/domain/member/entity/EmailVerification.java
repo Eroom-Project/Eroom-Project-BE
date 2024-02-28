@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -22,15 +23,15 @@ public class EmailVerification {
     private String authCode;
 
     @Column(nullable = false)
-    private LocalDateTime expirationTime;
+    private ZonedDateTime expirationTime;
 
-    public EmailVerification(String toEmail, String authCode, LocalDateTime expirationTime) {
+    public EmailVerification(String toEmail, String authCode, ZonedDateTime expirationTime) {
         this.email = toEmail;
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
 
-    public void upate(String authCode, LocalDateTime expirationTime) {
+    public void update(String authCode, ZonedDateTime expirationTime) {
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
