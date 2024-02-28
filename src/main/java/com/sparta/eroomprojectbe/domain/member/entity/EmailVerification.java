@@ -23,15 +23,15 @@ public class EmailVerification {
     private String authCode;
 
     @Column(nullable = false)
-    private ZonedDateTime expirationTime;
+    private LocalDateTime expirationTime;
 
-    public EmailVerification(String toEmail, String authCode, ZonedDateTime expirationTime) {
+    public EmailVerification(String toEmail, String authCode, LocalDateTime expirationTime) {
         this.email = toEmail;
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
 
-    public void update(String authCode, ZonedDateTime expirationTime) {
+    public void update(String authCode, LocalDateTime expirationTime) {
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
