@@ -5,9 +5,11 @@ import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -22,15 +24,19 @@ public class ChatMessageService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
-    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService) {
+    private final RedisTemplate<String, ChatMessage> redisTemplate;
+    private final ChatRoomRepository chatRoomRepository;
+
+    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService, RedisTemplate<String, ChatMessage> redisTemplate, ChatRoomRepository chatRoomRepository) {
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
         this.chatRoomService = chatRoomService;
+        this.redisTemplate = redisTemplate;
+        this.chatRoomRepository=chatRoomRepository;
     }
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
-
 
 
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
@@ -69,6 +75,9 @@ public class ChatMessageService {
 
                     // 메시지 보낸 시간 저장
                     chatMessage.setTime(LocalDateTime.now());
+
+                    // Redis에 채팅 메시지 저장
+                    chatRoomRepository.saveChatMessage(challengeId, chatMessage);
 
                     switch (chatMessage.getType()) {
                         case JOIN -> {
