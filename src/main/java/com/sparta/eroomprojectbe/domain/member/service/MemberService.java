@@ -268,8 +268,9 @@ public class MemberService {
         if (!verification.isPresent()) {
             return "인증 메일이 정상적으로 전송되지 않았습니다.";
         }
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        if (verification.get().getExpirationTime().isBefore(LocalDateTime.now())) {
+        if (verification.get().getExpirationTime().isBefore(now)) {
             emailVerificationRepository.deleteByEmail(email);
             return "인증이 완료되었습니다.";
         } else {
