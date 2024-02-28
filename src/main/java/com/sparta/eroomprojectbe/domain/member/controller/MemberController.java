@@ -128,14 +128,14 @@ public class MemberController {
 
     @PostMapping("/emails/verification-requests")
     public ResponseEntity<BaseDto<String>> sendMessage(@RequestParam("email") @Valid String email) {
-        memberService.sendCodeToEmail(email);
-        return ResponseEntity.ok(new BaseDto<>(null, "이메일이 전송되었습니다.", HttpStatus.OK));
+        String message = memberService.sendCodeToEmail(email);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     @GetMapping("/emails/verifications")
-    public ResponseEntity<BaseDto<Boolean>> verificationEmail(@RequestParam("email") @Valid String email,
+    public ResponseEntity<BaseDto<String>> verificationEmail(@RequestParam("email") @Valid String email,
                                                               @RequestParam("code") String authCode) {
-        boolean authResult = memberService.verifiedCode(email, authCode);
-        return ResponseEntity.ok(new BaseDto<>(authResult, "이메일 인증이 완료되었습니다.", HttpStatus.OK));
+        String message = memberService.verifiedCode(email, authCode);
+            return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
     }
 }
