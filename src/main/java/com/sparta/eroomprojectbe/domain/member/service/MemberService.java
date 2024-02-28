@@ -236,7 +236,7 @@ public class MemberService {
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
 
-        ZonedDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(5);
+        LocalDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusMinutes(5);
 
         EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
                 .orElse(new EmailVerification(toEmail, authCode, expirationTime));
@@ -268,7 +268,7 @@ public class MemberService {
         if (!verification.isPresent()) {
             return "인증 메일이 정상적으로 전송되지 않았습니다.";
         }
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
         if (verification.get().getExpirationTime().isBefore(now)) {
             emailVerificationRepository.deleteByEmail(email);
