@@ -28,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -234,12 +236,12 @@ public class MemberService {
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
 
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
+        ZonedDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(5);
 
         EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
                 .orElse(new EmailVerification(toEmail, authCode, expirationTime));
 
-        verification.upate(authCode, expirationTime);
+        verification.update(authCode, expirationTime);
         emailVerificationRepository.save(verification);
         return "인증 메일을 전송하였습니다.";
     }
@@ -266,11 +268,12 @@ public class MemberService {
         if (!verification.isPresent()) {
             return "인증 메일이 정상적으로 전송되지 않았습니다.";
         }
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        if (verification.get().getExpirationTime().isBefore(LocalDateTime.now())) {
+        if (verification.get().getExpirationTime().isBefore(now)) {
+            emailVerificationRepository.deleteByEmail(email);
             return "인증이 완료되었습니다.";
         } else {
-            emailVerificationRepository.deleteByEmail(email);
             return "인증 시간이 초과되었습니다.";
         }
     }
