@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import com.sparta.eroomprojectbe.domain.chat.service.ChatRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,26 @@ public class WebSocketEventListener {
     @Autowired
     private ChatRoomService chatRoomService;
 
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
+
+        // WebSocket 연결이 시작될 때 채팅 내역을 불러와 사용자에게 전송
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
+
+        if (challengeId != null) {
+            // 채팅 내역 불러오기
+            Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+
+            // 채팅 내역을 사용자에게 전송
+            for (ChatMessage chatMessage : chatHistory) {
+                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+            }
+        }
     }
 
     @EventListener
@@ -46,8 +64,6 @@ public class WebSocketEventListener {
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setChallengeId(challengeId);
-
-
 
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
         }
