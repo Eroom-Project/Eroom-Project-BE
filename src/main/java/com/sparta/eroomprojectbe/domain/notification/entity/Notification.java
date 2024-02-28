@@ -1,9 +1,12 @@
 package com.sparta.eroomprojectbe.domain.notification.entity;
 
+import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -15,10 +18,13 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private Long groupId;
+    private Long challengeId;
 
     @Column(nullable = false)
     private String content;
+
+//    @Embedded
+//    private NotificationContent content;
 
     @Column(nullable = false)
     private Boolean isRead;
@@ -27,17 +33,16 @@ public class Notification {
     @Column(nullable = false)
     private NotificationType notificationType;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Member member;
-//
-//    @Builder
-//    public Notification(String content, Long groupId, Boolean isRead, NotificationType notificationType, Member member) {
-//        this.content = content;
-//        this.groupId = groupId;
-//        this.isRead = isRead;
-//        this.notificationType = notificationType;
-//        this.member = member;
-//    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member receiver;
+
+    public Notification(String content, Long challengeId, Boolean isRead, NotificationType notificationType, Member member) {
+        this.content = content;
+        this.challengeId = challengeId;
+        this.isRead = isRead;
+        this.notificationType = notificationType;
+        this.receiver = member;
+    }
 }
