@@ -67,6 +67,19 @@ public class Challenge extends Timestamped{
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = file;
     }
+    //테스트 코드
+    public Challenge(long l, ChallengeRequestDto requestDto, String file) {
+        this.challengeId = l;
+        this.title = requestDto.getTitle();
+        this.category = requestDto.getCategory();
+        this.description = requestDto.getDescription();
+        this.startDate = LocalDate.parse(requestDto.getStartDate());
+        this.dueDate = LocalDate.parse(requestDto.getDueDate());
+        this.frequency = requestDto.getFrequency();
+        this.authExplanation = requestDto.getAuthExplanation();
+        this.limitAttendance = requestDto.getLimitAttendance();
+        this.thumbnailImageUrl = file;
+    }
 
     public void update(ChallengeRequestDto requestDto, String file) {
         this.title = requestDto.getTitle();
