@@ -28,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -212,32 +214,35 @@ public class MemberService {
     public String sendCodeToEmail(String toEmail) {
         boolean memberIsPresent = memberRepository.existsByEmail(toEmail);
         if (memberIsPresent) {
-            return "이미 가입된 사용자입니다.";
+            return "이미 가입된 아이디입니다.";
         }
         String authCode = this.createCode();
 
         // 이메일 내용 정의
         String title = "eroom 이메일 인증 번호";
         String content =
-                "<div style='font-family: \"Comic Sans MS\", cursive, sans-serif; color: #333; background-color: #f9f9f9; padding: 40px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center;'>"
-                        + "<h2 style='color: #ff69b4; font-size: 22px;'>🎉 안녕하세요, 이룸에 오신 것을 환영합니다! 🎉</h2>"
-                        + "<p style='font-size: 16px;'>아래 <strong>인증번호</strong>를 복사하여 인증번호 확인란에 입력해주세요.</p>"
-                        + "<div style='margin: 30px auto; padding: 20px; border: 2px dashed #ff69b4; display: inline-block;'>"
-                        + "<h3 style='color: #333; font-size: 20px;'>회원가입 인증번호입니다.</h3>"
-                        + "<p style='background-color: #ffefff; color: #d6336c; font-size: 24px; padding: 10px 20px; border-radius: 10px; display: inline-block; margin: 0;'>" + authCode + "</p>"
+                "<div style='font-family: Arial, Helvetica, sans-serif; color: #333; background-color: #ffffff; padding: 40px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center;'>"
+                        + "<h2 style='color: #4a7c59; font-size: 22px;'>🎉 안녕하세요, 이룸에 오신 것을 환영합니다! 🎉</h2>"
+                        + "<p style='font-size: 16px;'>5분 내에 아래 <strong>인증번호</strong>를 복사하여 인증번호 확인란에 입력해주세요.</p>"
+                        + "<div style='margin: 30px auto; padding: 20px; background-color: #e6f9d4; display: inline-block;'>"
+                        + "<h3 style='color: #333; font-size: 18px;'>회원가입 인증번호입니다.</h3>"
+                        + "<p style='background-color: #d4f7c5; color: #4a7c59; font-size: 24px; padding: 10px 20px; border-radius: 10px; display: inline-block; margin: 0;'>" + authCode + "</p>"
                         + "</div>"
-                        + "<p style='font-size: 16px; margin-top: 40px;'>감사합니다! 💖</p>"
+                        + "<p style='font-size: 16px; margin-top: 40px;'>이 코드를 요청하지 않은 경우, 이 이메일을 무시해도 됩니다.<br>다른 사용자가 실수로 이메일 주소를 입력했을 수 있습니다.</p>"
                         + "</div>";
+
 
 
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
 
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
-        EmailVerification verification = new EmailVerification(toEmail, authCode, expirationTime);
+        LocalDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusMinutes(5);
+
+        EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
+                .orElse(new EmailVerification(toEmail, authCode, expirationTime));
+
+        verification.update(authCode, expirationTime);
         emailVerificationRepository.save(verification);
-        // 인증이 끝나면 삭제를 해야 하는데
-        // return 값 어떠케하지? 그냥 try catch?
         return "인증 메일을 전송하였습니다.";
     }
 
@@ -257,14 +262,19 @@ public class MemberService {
         }
     }
 
-    public boolean verifiedCode(String email, String authCode) {
+    public String verifiedCode(String email, String authCode) {
         Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
 
-        // 인증 시간이 지난 경우를 따로 표시
-        boolean authResult = verification.isPresent() && verification.get().getExpirationTime().isAfter(LocalDateTime.now());
-        emailVerificationRepository.deleteByEmail(email);
-        return authResult;
+        if (!verification.isPresent()) {
+            return "인증 메일이 정상적으로 전송되지 않았습니다.";
+        }
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+
+        if (verification.get().getExpirationTime().isBefore(now)) {
+            emailVerificationRepository.deleteByEmail(email);
+            return "인증이 완료되었습니다.";
+        } else {
+            return "인증 시간이 초과되었습니다.";
+        }
     }
-
-
 }
