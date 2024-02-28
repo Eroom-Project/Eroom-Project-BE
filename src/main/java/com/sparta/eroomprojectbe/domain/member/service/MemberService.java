@@ -3,6 +3,7 @@ package com.sparta.eroomprojectbe.domain.member.service;
 import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
@@ -24,8 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -203,4 +208,69 @@ public class MemberService {
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
 
+    @Transactional
+    public String sendCodeToEmail(String toEmail) {
+        boolean memberIsPresent = memberRepository.existsByEmail(toEmail);
+        if (memberIsPresent) {
+            return "이미 가입된 아이디입니다.";
+        }
+        String authCode = this.createCode();
+
+        // 이메일 내용 정의
+        String title = "eroom 이메일 인증 번호";
+        String content =
+                "<div style='font-family: Arial, Helvetica, sans-serif; color: #333; background-color: #ffffff; padding: 40px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); text-align: center;'>"
+                        + "<h2 style='color: #4a7c59; font-size: 22px;'>🎉 안녕하세요, 이룸에 오신 것을 환영합니다! 🎉</h2>"
+                        + "<p style='font-size: 16px;'>5분 내에 아래 <strong>인증번호</strong>를 복사하여 인증번호 확인란에 입력해주세요.</p>"
+                        + "<div style='margin: 30px auto; padding: 20px; background-color: #e6f9d4; display: inline-block;'>"
+                        + "<h3 style='color: #333; font-size: 18px;'>회원가입 인증번호입니다.</h3>"
+                        + "<p style='background-color: #d4f7c5; color: #4a7c59; font-size: 24px; padding: 10px 20px; border-radius: 10px; display: inline-block; margin: 0;'>" + authCode + "</p>"
+                        + "</div>"
+                        + "<p style='font-size: 16px; margin-top: 40px;'>이 코드를 요청하지 않은 경우, 이 이메일을 무시해도 됩니다.<br>다른 사용자가 실수로 이메일 주소를 입력했을 수 있습니다.</p>"
+                        + "</div>";
+
+
+
+        String sendMail = "eroom.challenge@gmail.com";
+        emailService.sendEmail(sendMail, toEmail, title, content);
+
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
+
+        EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
+                .orElse(new EmailVerification(toEmail, authCode, expirationTime));
+
+        emailVerificationRepository.save(verification);
+        return "인증 메일을 전송하였습니다.";
+    }
+
+
+    private String createCode() {
+        int length = 6;
+        try {
+            // 인증 번호를 만들 때 그냥 무작위 번호가 아닐 텐데
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("인증번호를 만들던 중 오류가 발생했습니다.");
+        }
+    }
+
+    public String verifiedCode(String email, String authCode) {
+        Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
+
+        if (!verification.isPresent()) {
+            return "인증 메일이 정상적으로 전송되지 않았습니다.";
+        }
+
+        if (verification.get().getExpirationTime().isBefore(LocalDateTime.now())) {
+            return "인증이 완료되었습니다.";
+        } else {
+            emailVerificationRepository.deleteByEmail(email);
+            return "인증 시간이 초과되었습니다.";
+        }
+    }
 }

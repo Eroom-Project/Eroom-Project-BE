@@ -125,4 +125,17 @@ public class MemberController {
             return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
         }
     }
+
+    @PostMapping("/emails/verification-requests")
+    public ResponseEntity<BaseDto<String>> sendMessage(@RequestParam("email") @Valid String email) {
+        String message = memberService.sendCodeToEmail(email);
+        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity<BaseDto<String>> verificationEmail(@RequestParam("email") @Valid String email,
+                                                              @RequestParam("code") String authCode) {
+        String message = memberService.verifiedCode(email, authCode);
+            return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+    }
 }
