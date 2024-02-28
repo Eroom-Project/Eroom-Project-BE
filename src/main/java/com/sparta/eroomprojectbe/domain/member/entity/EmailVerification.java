@@ -29,4 +29,9 @@ public class EmailVerification {
         this.authCode = authCode;
         this.expirationTime = expirationTime;
     }
+
+    public void upate(String authCode, LocalDateTime expirationTime) {
+        this.authCode = authCode;
+        this.expirationTime = expirationTime;
+    }
 }
