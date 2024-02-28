@@ -28,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -234,7 +236,7 @@ public class MemberService {
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
 
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // 이메일 5분 후 만료
+        ZonedDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(5);
 
         EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
                 .orElse(new EmailVerification(toEmail, authCode, expirationTime));
