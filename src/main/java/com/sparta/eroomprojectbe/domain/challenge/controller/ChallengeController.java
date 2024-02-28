@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -111,13 +112,10 @@ public class ChallengeController {
     public ResponseEntity<BaseResponseDto<ChallengeLoginResponseDto>> updateChallenge(@PathVariable Long challengeId,
                                                            @RequestPart(value = "thumbnailImageUrl", required = false) MultipartFile file,
                                                            @RequestPart("ChallengeUpdateData") ChallengeRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
-        try {
-            ChallengeLoginResponseDto responseDto = challengeService.updateChallenge(challengeId, requestDto,file, userDetails.getMember());
-            return ResponseEntity.ok(new BaseResponseDto<>(responseDto,"챌린지 수정 성공", HttpStatus.OK));
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponseDto<>(null,"챌린지 수정 중 오류가 발생했습니다."+e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR));
-        }
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+
+        ChallengeUpdateDto responseDto = challengeService.updateChallenge(challengeId, requestDto,file, userDetails.getMember());
+        return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
     }
     /**
      * 챌린지 삭제하는 컨트롤러 메서드
