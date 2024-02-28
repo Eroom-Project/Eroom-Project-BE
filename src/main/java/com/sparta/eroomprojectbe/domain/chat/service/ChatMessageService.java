@@ -4,13 +4,10 @@ import com.sparta.eroomprojectbe.domain.challenge.entity.Challenge;
 import com.sparta.eroomprojectbe.domain.challenge.repository.ChallengeRepository;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
-import com.sparta.eroomprojectbe.domain.chat.dto.ResponseDto;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -18,20 +15,18 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 @Service
 public class ChatMessageService {
     private final ChallengerRepository challengerRepository;
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
-    private final RedisTemplate<String, ChatMessage> redisTemplate; // RedisTemplate 추가
-
-    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService, RedisTemplate<String, ChatMessage> redisTemplate) {
+    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService) {
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
         this.chatRoomService = chatRoomService;
-        this.redisTemplate = redisTemplate;
     }
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -75,9 +70,6 @@ public class ChatMessageService {
                     // 메시지 보낸 시간 저장
                     chatMessage.setTime(LocalDateTime.now());
 
-                    // 채팅 메시지를 Redis에 저장
-                    saveChatMessageToRedis(challengeId, chatMessage);
-
                     switch (chatMessage.getType()) {
                         case JOIN -> {
                             System.out.println("MessagesType : JOIN");
@@ -89,10 +81,5 @@ public class ChatMessageService {
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
-    }
-    // 채팅 메시지를 Redis에 저장하는 메서드
-    private void saveChatMessageToRedis(String challengeId, ChatMessage chatMessage) {
-        String chatRoomKey = String.format("chat_room:%s", challengeId); // 채팅방의 Redis 키
-        redisTemplate.opsForList().rightPush(chatRoomKey, chatMessage); // 채팅 메시지를 리스트에 추가
     }
 }
