@@ -270,7 +270,7 @@ public class MemberService {
         }
         LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-        if (verification.get().getExpirationTime().isBefore(now)) {
+        if (verification.get().getExpirationTime().isAfter(now)) {
             emailVerificationRepository.deleteByEmail(email);
             return "인증이 완료되었습니다.";
         } else {
