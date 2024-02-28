@@ -1,41 +1,41 @@
-//package com.sparta.eroomprojectbe.global.config;
-//
-//import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.data.redis.connection.RedisConnectionFactory;
-//import org.springframework.data.redis.core.RedisTemplate;
-//import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-//import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-//import org.springframework.data.redis.serializer.StringRedisSerializer;
-//
-//@Configuration
-//public class RedisConfig {
-//
-//    /**
-//     * redis pub/sub 메시지를 처리하는 listener 설정
-//     */
-//    @Bean
-//    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(connectionFactory);
-//        return container;
-//    }
-//
-//    /**
-//     * 어플리케이션에서 사용할 redisTemplate 설정
-//     */
-//    @Bean
-//    public RedisTemplate<String, ChatMessage> redisTemplate(RedisConnectionFactory connectionFactory) {
-//        RedisTemplate<String, ChatMessage> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(connectionFactory);
-//
-//        // Key와 Value의 Serializer 설정
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-//
-//        return redisTemplate;
-//    }
-//}
-//
-//
+package com.sparta.eroomprojectbe.global.config;
+
+import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+@Configuration
+public class RedisConfig {
+
+    /**
+     * redis pub/sub 메시지를 처리하는 listener 설정
+     */
+    @Bean
+    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+
+    /**
+     * 어플리케이션에서 사용할 redisTemplate 설정
+     */
+    @Bean
+    public RedisTemplate<String, ChatMessage> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, ChatMessage> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        // Key와 Value의 Serializer 설정
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return redisTemplate;
+    }
+}
+
+
