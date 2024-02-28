@@ -9,6 +9,7 @@ import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -23,11 +24,14 @@ public class ChatMessageService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
-    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService) {
+    private final RedisTemplate<String, ChatMessage> redisTemplate; // RedisTemplate 추가
+
+    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService, RedisTemplate<String, ChatMessage> redisTemplate) {
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
         this.chatRoomService = chatRoomService;
+        this.redisTemplate = redisTemplate;
     }
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -71,6 +75,9 @@ public class ChatMessageService {
                     // 메시지 보낸 시간 저장
                     chatMessage.setTime(LocalDateTime.now());
 
+                    // 채팅 메시지를 Redis에 저장
+                    saveChatMessageToRedis(challengeId, chatMessage);
+
                     switch (chatMessage.getType()) {
                         case JOIN -> {
                             System.out.println("MessagesType : JOIN");
@@ -83,8 +90,9 @@ public class ChatMessageService {
             }
         }
     }
-
-//    public static String getChattingMember(EnterRequestDto requestDto) {
-//
-//    }
+    // 채팅 메시지를 Redis에 저장하는 메서드
+    private void saveChatMessageToRedis(String challengeId, ChatMessage chatMessage) {
+        String chatRoomKey = String.format("chat_room:%s", challengeId); // 채팅방의 Redis 키
+        redisTemplate.opsForList().rightPush(chatRoomKey, chatMessage); // 채팅 메시지를 리스트에 추가
+    }
 }
