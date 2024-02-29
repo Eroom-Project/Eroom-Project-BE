@@ -1,7 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.repository;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
