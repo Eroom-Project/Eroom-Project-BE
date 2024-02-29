@@ -13,11 +13,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
-
+    private Set<String> connectedChallengeIds = new HashSet<>();
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -31,19 +34,30 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
 
-        // WebSocket 연결이 시작될 때 채팅 내역을 불러와 사용자에게 전송
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
+        if (headerAccessor.getSessionAttributes().containsKey("challengeId")) {
+            String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
 
-        if (challengeId != null) {
-            // 채팅 내역 불러오기
-            Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+            // 해당 challengeId에 대한 연결이 처음 발생한 것인지 확인
+            if (!isConnectionForChallengeIdEstablished(challengeId)) {
+                // 처음 연결된 경우에만 채팅 내역 불러와 전송
+                Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+                for (ChatMessage chatMessage : chatHistory) {
+                    messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+                }
 
-            // 채팅 내역을 사용자에게 전송
-            for (ChatMessage chatMessage : chatHistory) {
-                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+                // 연결이 처음 발생했음을 기록
+                recordConnectionForChallengeId(challengeId);
             }
         }
+    }
+
+    private boolean isConnectionForChallengeIdEstablished(String challengeId) {
+        return connectedChallengeIds.contains(challengeId);
+    }
+
+    private void recordConnectionForChallengeId(String challengeId) {
+        connectedChallengeIds.add(challengeId);
     }
 
     @EventListener
