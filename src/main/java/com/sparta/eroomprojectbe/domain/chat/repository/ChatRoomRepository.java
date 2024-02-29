@@ -1,12 +1,17 @@
 package com.sparta.eroomprojectbe.domain.chat.repository;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Slf4j
+@Repository
 @Component
 public class ChatRoomRepository {
 
