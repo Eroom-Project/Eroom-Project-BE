@@ -20,6 +20,9 @@ public class Notification {
     @Column(nullable = false)
     private Long challengeId;
 
+    @Column
+    private Long authId;
+
     @Column(nullable = false)
     private String content;
 
@@ -41,6 +44,15 @@ public class Notification {
     public Notification(String content, Long challengeId, Boolean isRead, NotificationType notificationType, Member member) {
         this.content = content;
         this.challengeId = challengeId;
+        this.isRead = isRead;
+        this.notificationType = notificationType;
+        this.receiver = member;
+    }
+
+    public Notification(String content, Long challengeId, Long authId, Boolean isRead, NotificationType notificationType, Member member) {
+        this.content = content;
+        this.challengeId = challengeId;
+        this.authId = authId;
         this.isRead = isRead;
         this.notificationType = notificationType;
         this.receiver = member;
