@@ -1,8 +1,6 @@
 package com.sparta.eroomprojectbe.domain.notification.controller;
 
-import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
 import com.sparta.eroomprojectbe.domain.notification.service.NotificationService;
-import com.sparta.eroomprojectbe.domain.notification.dto.IsReadResponseDto;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +23,5 @@ public class NotificationController {
         return new ResponseEntity<>(notificationService.subscribe(userDetails.getMember(), lastEventId, response), HttpStatus.OK);
     }
 
-    @PostMapping("/send-data/{id}")
-    public ResponseEntity<?> sendDataTest(@PathVariable Long id, @RequestBody Object data) {
-        notificationService.notify(String.valueOf(id), data);
-        return ResponseEntity.ok().build();
-    }
 
 }
