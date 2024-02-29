@@ -2,7 +2,6 @@ package com.sparta.eroomprojectbe.domain.notification.service;
 
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.notification.dto.IsReadResponseDto;
-import com.sparta.eroomprojectbe.domain.notification.repository.EmitterRepository;
 import com.sparta.eroomprojectbe.domain.notification.repository.EmitterRepositoryImpl;
 import com.sparta.eroomprojectbe.domain.notification.repository.NotificationRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -64,7 +63,7 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public IsReadResponseDto readFindNotification(Member member) {
-        boolean isRead = !notificationRepository.existsByIsReadAndMember(false, member);
+        boolean isRead = !notificationRepository.existsByIsReadAndReceiver(false, member);
         return new IsReadResponseDto(isRead);
     }
 
