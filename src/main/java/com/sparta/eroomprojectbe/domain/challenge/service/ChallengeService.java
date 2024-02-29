@@ -177,13 +177,13 @@ public class ChallengeService {
             if(member.getMemberId() != findLeaderId(challenge).getMemberId()){
                   throw new IllegalArgumentException("해당 챌린지를 생성한 사용자가 아닙니다");
             }
-            String saveFile;
-            if(file.isEmpty()){
-                saveFile = challenge.getThumbnailImageUrl();
+            String updateFile;
+            if(file==null){
+                updateFile = challenge.getThumbnailImageUrl();
             }else {
-                saveFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
+                updateFile = imageS3Service.updateFile(challenge.getThumbnailImageUrl(), file);
             }
-            challenge.update(requestDto, saveFile);
+            challenge.update(requestDto, updateFile);
             ChallengeResponseDto responseDto = new ChallengeResponseDto(challenge,member,findCurrentMemberIds(challenge));
             ChallengeLoginResponseDto loginResponseDto = new ChallengeLoginResponseDto(responseDto,""+member.getMemberId());
             return loginResponseDto;
