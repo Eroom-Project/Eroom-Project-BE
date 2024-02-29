@@ -2,14 +2,16 @@ package com.sparta.eroomprojectbe.domain.notification.entity;
 
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.net.ssl.SSLSession;
+
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 왜 protected인가?
 public class Notification {
     @Id
@@ -56,5 +58,9 @@ public class Notification {
         this.isRead = isRead;
         this.notificationType = notificationType;
         this.receiver = member;
+    }
+
+    public Member getMember() {
+        return receiver;
     }
 }

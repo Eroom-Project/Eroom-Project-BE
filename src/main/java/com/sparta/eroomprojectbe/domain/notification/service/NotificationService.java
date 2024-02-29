@@ -1,14 +1,16 @@
 package com.sparta.eroomprojectbe.domain.notification.service;
 
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
-import com.sparta.eroomprojectbe.domain.notification.dto.IsReadResponseDto;
+import com.sparta.eroomprojectbe.domain.notification.dto.NotificationRequestDto;
+import com.sparta.eroomprojectbe.domain.notification.dto.NotificationResponseDto;
+import com.sparta.eroomprojectbe.domain.notification.entity.Notification;
 import com.sparta.eroomprojectbe.domain.notification.repository.EmitterRepositoryImpl;
 import com.sparta.eroomprojectbe.domain.notification.repository.NotificationRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -43,11 +45,31 @@ public class NotificationService {
         return emitter;
     }
 
-    public void notify(String emitterId, Object event) {
-        sendToClient(emitterId, event);
+    public void send(NotificationRequestDto requestDto) {
+        sendNotification(requestDto, saveNotification(requestDto));
     }
 
-    private void sendToClient(String emitterId, Object data) {
+    // 알림 보내기
+    @Async
+    public void sendNotification(NotificationRequestDto request, Notification notification) {
+        String receiverId = String.valueOf(request.getReceiver().getMemberId());
+        String eventId = receiverId + "_" + System.currentTimeMillis();
+        // 유저의 모든 SseEmitter 가져옴
+        Map<String, SseEmitter> emitters = emitterRepository
+                .findAllEmitterStartWithByMemberId(receiverId);
+        emitters.forEach(
+                (key, emitter) -> {
+                    // 데이터 캐시 저장 (유실된 데이터 처리 위함)
+                    // 적절한 데이터 변환 로직 필요 (예: NotificationResponseDto.of(notification)을 캐시에 저장)
+                    emitterRepository.saveEventCache(key, NotificationResponseDto.of(notification));
+                    // 데이터 전송
+                    sendToClient(key, NotificationResponseDto.of(notification)); // 수정된 부분
+                }
+        );
+    }
+
+    // 데이터 전송 로직 수정 (오버로딩 또는 기존 메서드 수정)
+    private void sendToClient(String emitterId, NotificationResponseDto data) {
         SseEmitter emitter = emitterRepository.findByEmitterId(emitterId);
         if (emitter != null) {
             try {
@@ -61,11 +83,6 @@ public class NotificationService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public IsReadResponseDto readFindNotification(Member member) {
-        boolean isRead = !notificationRepository.existsByIsReadAndReceiver(false, member);
-        return new IsReadResponseDto(isRead);
-    }
 
     private String makeTimeIncludeId(Member member) {
         return member.getMemberId() + "_" + System.currentTimeMillis();
@@ -100,5 +117,19 @@ public class NotificationService {
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
         }
+    }
+
+    // 알람 저장
+    private Notification saveNotification(NotificationRequestDto requestDto) {
+        Notification notification = Notification.builder()
+                .receiver(requestDto.getReceiver())
+                .notificationType(requestDto.getNotificationType())
+                .content(requestDto.getContent())
+                .challengeId(requestDto.getChallengeId())
+                .authId(requestDto.getAuthId())
+                .isRead(false)
+                .build();
+        notificationRepository.save(notification);
+        return notification;
     }
 }
