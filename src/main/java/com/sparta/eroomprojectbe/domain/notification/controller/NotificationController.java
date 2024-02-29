@@ -19,32 +19,16 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @GetMapping(value = "/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @PathVariable Long eventId, HttpServletResponse response) {
-        return notificationService.subscribe(userDetails.getMember(), eventId);
+    @GetMapping(value = "/api/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, HttpServletResponse response) {
+        return new ResponseEntity<>(notificationService.subscribe(userDetails.getMember(), lastEventId, response), HttpStatus.OK);
     }
-
-//    @GetMapping(value = "/api/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId,
-//                                HttpServletResponse response){
-//
-//        response.setHeader("Connection", "keep-alive");
-//        response.setHeader("Cache-Control", "no-cache");
-//        response.setHeader("X-Accel-Buffering", "no");
-//
-//        return notificationService.subscribe(userDetails.getMember(), lastEventId);
-//    }
 
     @PostMapping("/send-data/{id}")
-    public void sendDataTest(@PathVariable Long id) {
-        notificationService.notify(id, "data");
+    public ResponseEntity<?> sendDataTest(@PathVariable Long id, @RequestBody Object data) {
+        notificationService.notify(String.valueOf(id), data);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/api/member/notification/read")
-    public ResponseEntity<BaseDto<IsReadResponseDto>> readFindNotification(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        IsReadResponseDto response = notificationService.readFindNotification(userDetails.getMember());
-        return new ResponseEntity<>(new BaseDto<>("알림 수신", response), HttpStatus.OK);
-    }
 }
