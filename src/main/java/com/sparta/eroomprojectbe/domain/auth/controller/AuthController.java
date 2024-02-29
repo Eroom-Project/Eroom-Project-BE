@@ -3,15 +3,20 @@ package com.sparta.eroomprojectbe.domain.auth.controller;
 import com.sparta.eroomprojectbe.domain.auth.dto.*;
 import com.sparta.eroomprojectbe.domain.auth.service.AuthService;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 @RestController
 @RequestMapping("/api/challenge")
 public class AuthController {
     private final AuthService authService;
+    private final AtomicLong lastRequestTime = new AtomicLong(0);
+    private static final long MIN_REQUEST_INTERVAL = 1500;
     public AuthController(AuthService authService){this.authService = authService;}
 
     /**
@@ -39,6 +44,13 @@ public class AuthController {
                                                                                @RequestParam(value = "authImageUrl", required = false) MultipartFile file,
                                                                                @PathVariable Long challengeId,
                                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        long currentTime = System.currentTimeMillis();
+        // 마지막 요청 시간에서 MIN_REQUEST_INTERVAL 이상 지났을 때만 처리
+        if (currentTime - lastRequestTime.get() < MIN_REQUEST_INTERVAL) {
+            CreateResponseDto responseDto = new CreateResponseDto("이전 요청이 아직 처리 중입니다.", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(null, responseDto.getMessage(), responseDto.getStatus()));
+        }
+        lastRequestTime.set(currentTime);
         CreateResponseDto responseDto = authService.createMemberAuth(requestDto, file ,challengeId, userDetails.getMember());
         return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(null,responseDto.getMessage(),responseDto.getStatus()));
     }
