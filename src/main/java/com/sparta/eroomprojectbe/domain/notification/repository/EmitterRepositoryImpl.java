@@ -1,59 +1,60 @@
 package com.sparta.eroomprojectbe.domain.notification.repository;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@Repository
 public class EmitterRepositoryImpl implements EmitterRepository {
-    private final Map<Long, SseEmitter> emitterMap = new ConcurrentHashMap<>();
-    private final Map<Long, Object> eventCache = new ConcurrentHashMap<>();
-
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
 
     @Override
-    public SseEmitter save(Long memberId, SseEmitter emitter) {
-        emitterMap.put(memberId, emitter);
-        return emitter;
+    public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
+        emitters.put(emitterId, sseEmitter);
+        return sseEmitter;
     }
 
     @Override
-    public void saveEventCache(Long memberId, Object event) {
-        eventCache.put(memberId, event);
+    public void saveEventCache(String eventCacheId, Object event) {
+        eventCache.put(eventCacheId, event);
     }
 
     @Override
-    public Map<Long, SseEmitter> findAllEmitterStartWithByMemberId(Long memberId) {
-        return emitterMap.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(memberId))
+    public Map<String, SseEmitter> findAllEmitterStartWithByMemberId(String memberId) {
+        return emitters.entrySet().stream()
+                .filter(entry -> entry.getKey().split("_")[0].equals(memberId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override
-    public Map<Long, Object> findAllEventCacheStartWithByMemberId(Long memberId) {
+    public Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId) {
         return eventCache.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(memberId))
+                .filter(entry -> entry.getKey().split("_")[0].equals(memberId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override
-    public void deleteById(Long memberId) {
-        emitterMap.remove(memberId);
+    public void deleteById(String id) {
+        emitters.remove(id);
     }
 
     @Override
-    public void deleteAllEmitterStartWithId(Long memberId) {
-        emitterMap.forEach(
+    public void deleteAllEmitterStartWithId(String memberId) {
+        emitters.forEach(
                 (key, emitter) -> {
                     if (key.startsWith(memberId)) {
-                        emitterMap.remove(key);
+                        emitters.remove(key);
                     }
                 }
         );
     }
 
     @Override
-    public void deleteAllEventCacheStartWithId(Long memberId) {
+    public void deleteAllEventCacheStartWithId(String memberId) {
         eventCache.forEach(
                 (key, emitter) -> {
                     if (key.startsWith(memberId)) {
@@ -61,5 +62,9 @@ public class EmitterRepositoryImpl implements EmitterRepository {
                     }
                 }
         );
+    }
+
+    public SseEmitter findByEmitterId(String emitterId) {
+        return null;
     }
 }
