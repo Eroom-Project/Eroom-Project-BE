@@ -22,4 +22,8 @@ public abstract class Timestamped {
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
+
+    public void setCreatedAt(LocalDateTime now) {
+        this.createdAt = now;
+    }
 }
