@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class AuthController {
     private final AuthService authService;
     private final AtomicLong lastRequestTime = new AtomicLong(0);
-    private static final long MIN_REQUEST_INTERVAL = 1500;
+    private static final long MIN_REQUEST_INTERVAL = 2000;
     public AuthController(AuthService authService){this.authService = authService;}
 
     /**
