@@ -5,7 +5,6 @@ import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
 import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,9 +19,6 @@ public class ChatRoomService {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
-    private ChatRoomRepository chatRoomRepository;
-
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
 
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
@@ -35,13 +31,8 @@ public class ChatRoomService {
         MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
 
-        // 채팅 내역 불러오기
-        Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
 
-        // 채팅 내역을 사용자에게 전송
-        for (ChatMessage chatMessage : chatHistory) {
-            messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
-        }
 //        // senderNickname이 이미 존재하는지 확인
 //        boolean isExisting = currentMemberList.stream()
 //                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
@@ -51,8 +42,6 @@ public class ChatRoomService {
 //            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
 //            currentMemberList.add(memberInfo);
 //        }
-
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
 
     public void userLeftRoom(String challengeId, String senderNickname) {
