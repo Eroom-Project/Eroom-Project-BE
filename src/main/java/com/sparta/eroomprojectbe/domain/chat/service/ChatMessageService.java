@@ -73,8 +73,6 @@ public class ChatMessageService {
                     headerAccessor.getSessionAttributes().put("nickname", senderNickname);
                     headerAccessor.getSessionAttributes().put("profileImageUrl", profileImageUrl);
 
-                    // 메시지 보낸 시간 저장
-                    chatMessage.setTime(LocalDateTime.now());
 
                     // Redis에 채팅 메시지 저장
                     chatRoomRepository.saveChatMessage(challengeId, chatMessage);

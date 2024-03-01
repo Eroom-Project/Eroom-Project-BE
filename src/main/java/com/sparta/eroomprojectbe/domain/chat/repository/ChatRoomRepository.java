@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -34,5 +35,8 @@ public class ChatRoomRepository {
     public void saveChatMessage(String challengeId, ChatMessage chatMessage) {
         String key = CHAT_ROOM_PREFIX + challengeId;
         listOperations.rightPush(key, chatMessage);
+
+        // 키의 TTL을 30일로 설정
+        redisTemplate.expire(key, Duration.ofDays(30));
     }
 }

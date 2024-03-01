@@ -1,6 +1,7 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
+import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import com.sparta.eroomprojectbe.domain.chat.service.ChatRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class WebSocketEventListener {
 
     @Autowired
     private ChatRoomService chatRoomService;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -46,6 +50,9 @@ public class WebSocketEventListener {
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setChallengeId(challengeId);
+
+            // Redis에 채팅 메시지 저장
+            chatRoomRepository.saveChatMessage(challengeId, chatMessage);
 
             messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
         }
