@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.List;
+
 @Component
 public class WebSocketEventListener {
 
@@ -30,20 +32,31 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
-
-        // WebSocket 연결이 시작될 때 채팅 내역을 불러와 사용자에게 전송
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
 
         if (challengeId != null) {
-            // 채팅 내역 불러오기
-            Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+            // 채팅 내역을 Redis에서 가져와서 클라이언트에게 전송
+            List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
-            // 채팅 내역을 사용자에게 전송
-            for (ChatMessage chatMessage : chatHistory) {
-                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+            // Redis에서 가져온 채팅 내역이 비어있지 않은 경우에만 전송
+            if (!chatHistory.isEmpty()) {
+                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatHistory);
             }
         }
+//        // WebSocket 연결이 시작될 때 채팅 내역을 불러와 사용자에게 전송
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//        String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
+//
+//        if (challengeId != null) {
+//            // 채팅 내역 불러오기
+//            Iterable<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+//
+//            // 채팅 내역을 사용자에게 전송
+//            for (ChatMessage chatMessage : chatHistory) {
+//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
+//            }
+//        }
     }
 
     @EventListener

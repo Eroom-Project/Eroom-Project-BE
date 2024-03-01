@@ -1,6 +1,8 @@
 package com.sparta.eroomprojectbe.domain.chat.service;
 
+import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
+import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ChatRoomService {
     private SimpMessageSendingOperations messagingTemplate;
 
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
+
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
 
         // 현재 멤버 리스트가 없는 경우 새로운 리스트 생성
@@ -28,6 +31,8 @@ public class ChatRoomService {
         MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
 
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
+
 //        // senderNickname이 이미 존재하는지 확인
 //        boolean isExisting = currentMemberList.stream()
 //                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
@@ -37,8 +42,6 @@ public class ChatRoomService {
 //            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
 //            currentMemberList.add(memberInfo);
 //        }
-
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
 
     public void userLeftRoom(String challengeId, String senderNickname) {
