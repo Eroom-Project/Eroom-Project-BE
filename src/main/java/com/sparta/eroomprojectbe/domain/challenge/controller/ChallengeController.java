@@ -51,13 +51,19 @@ public class ChallengeController {
     public ResponseEntity<BaseResponseDto<ChallengeLoginResponseDto>> getChallenge(@PathVariable Long challengeId,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String loginMemberId;
+        String loginMemberProfileImageUrl;
+        String loginMemberNickname;
         if(userDetails != null){
             loginMemberId = ""+userDetails.getMember().getMemberId();
+            loginMemberProfileImageUrl = ""+userDetails.getMember().getProfileImageUrl();
+            loginMemberNickname = ""+userDetails.getMember().getNickname();
         }else{
             loginMemberId = "No members logged in";
+            loginMemberProfileImageUrl ="No members logged in";
+            loginMemberNickname="No members logged in";
         }
         try {
-            ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId);
+            ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId,loginMemberProfileImageUrl,loginMemberNickname);
             return ResponseEntity.ok(new BaseResponseDto<>(responseDto,"선택한 챌린지 조회 성공", HttpStatus.OK));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponseDto<>(null, e.getMessage(), HttpStatus.NOT_FOUND));
