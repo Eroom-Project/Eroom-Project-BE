@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
 import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
@@ -22,6 +23,9 @@ public class ChatRoomService {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
 
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
@@ -34,10 +38,20 @@ public class ChatRoomService {
         // 새로운 멤버 정보 추가
         MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
+
         // 해당 채팅방의 이전 대화 내용 불러오기
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+
+        // ChatMessage 객체의 시간 필드를 역직렬화하여 LocalDateTime 형식으로 변환합니다.
+        List<Map<String, Object>> serializedChatHistory = new ArrayList<>();
+        for (ChatMessage chatMessage : chatHistory) {
+            Map<String, Object> serializedMessage = objectMapper.convertValue(chatMessage, Map.class);
+            serializedMessage.put("time", chatMessage.getTime().toString()); // 시간 필드를 문자열로 변환하여 추가합니다.
+            serializedChatHistory.add(serializedMessage);
+        }
+
         // 채팅방의 구독자들에게 이전 대화 내용 전송
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), serializedChatHistory);
         // 채팅방의 구독자들에게 현재 멤버 리스트 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
