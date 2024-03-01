@@ -38,7 +38,6 @@ public class ChatMessageService {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
@@ -90,5 +89,10 @@ public class ChatMessageService {
                 messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatMessage);
             }
         }
+    }
+
+    public boolean deleteChatMessage(String challengeId, Long messageNumber) {
+        // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
+        return chatRoomRepository.deleteMessageByNumber(challengeId, messageNumber);
     }
 }

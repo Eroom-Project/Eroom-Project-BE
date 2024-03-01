@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -38,5 +39,18 @@ public class ChatRoomRepository {
 
         // 키의 TTL을 30일로 설정
         redisTemplate.expire(key, Duration.ofDays(30));
+    }
+
+    // 특정 챌린지방에서 메시지 번호를 사용하여 메시지를 삭제하는 메서드
+    public boolean deleteMessageByNumber(String challengeId, Long messageNumber) {
+        String key = CHAT_ROOM_PREFIX + challengeId;
+        try {
+            // Redis 리스트에서 해당 번호의 메시지를 제거합니다.
+            listOperations.trim(key, messageNumber, messageNumber);
+            return true; // 삭제 성공
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // 삭제 실패
+        }
     }
 }
