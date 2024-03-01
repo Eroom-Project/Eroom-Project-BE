@@ -1,7 +1,6 @@
 package com.sparta.eroomprojectbe.domain.chat.controller;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
-import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import com.sparta.eroomprojectbe.domain.chat.service.ChatRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +11,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
-import java.util.List;
 
 @Component
 public class WebSocketEventListener {
@@ -26,24 +23,9 @@ public class WebSocketEventListener {
     @Autowired
     private ChatRoomService chatRoomService;
 
-    @Autowired
-    private ChatRoomRepository chatRoomRepository;
-
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
-//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-//        String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
-//
-//        if (challengeId != null) {
-//            // 채팅 내역을 Redis에서 가져와서 클라이언트에게 전송
-//            List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
-//
-//            // Redis에서 가져온 채팅 내역이 비어있지 않은 경우에만 전송
-//            if (!chatHistory.isEmpty()) {
-//                messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), chatHistory);
-//            }
-//        }
     }
 
     @EventListener
