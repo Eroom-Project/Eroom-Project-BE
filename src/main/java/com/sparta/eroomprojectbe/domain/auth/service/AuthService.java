@@ -10,6 +10,9 @@ import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.domain.notification.dto.NotificationRequestDto;
+import com.sparta.eroomprojectbe.domain.notification.entity.NotificationType;
+import com.sparta.eroomprojectbe.domain.notification.service.NotificationService;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,14 +30,15 @@ public class AuthService {
     private final ChallengerRepository challengerRepository;
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
-
+    private final NotificationService notificationService;
     private final ImageS3Service imageS3Service;
 
-    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ImageS3Service imageS3Service) {
+    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, NotificationService notificationService, ImageS3Service imageS3Service) {
         this.authRepository = authRepository;
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
+        this.notificationService = notificationService;
         this.imageS3Service = imageS3Service;
     }
     /**
@@ -63,6 +67,16 @@ public class AuthService {
             Challenger savedChallenger = challengerRepository.save(challenger);
             if (savedChallenger.getChallengerId() != null) {
                 challenge.incrementAttendance();
+
+                // 알림 전송 로직
+                NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
+                        .receiver(member) // 알림을 받을 멤버
+                        .notificationType(NotificationType.REGISTER) // 알림 유형
+                        .content(member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.") // 알림 내용
+                        .challengeId(challengeId) // 챌린지 ID
+                        .build();
+                notificationService.send(notificationRequest); // 알림 전송
+
                 return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
                 return new CreateResponseDto("챌린지가 존재하지 않아 신청에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,6 +108,9 @@ public class AuthService {
                 Challenger challenger = challengerOptional.get();
                 String saveFile = (file != null)?imageS3Service.saveFile(file):"https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2zkAR%2FbtsEYKQRgO5%2FjD2MchKeMu7gNiPOt187gK%2Fimg.png";
                 Auth savedAuth = authRepository.save(new Auth(requestDto, saveFile ,challenger));
+                if(ChallengerRole.LEADER == challenger.getRole()){
+                    challenger.getMember().incrementBricksCount();
+                }
                 if (savedAuth != null && savedAuth.getAuthId() != null)
                     return new CreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
                 else {
@@ -170,6 +187,7 @@ public class AuthService {
                 }
                 if(challengerOptional.get().getRole() == ChallengerRole.LEADER){
                     auth.leaderUpdate(auth,requestDto);
+                    auth.getChallenger().getMember().incrementBricksCount();
                     AuthResponseDto responseDto = new AuthResponseDto(auth);
                     return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
                 }else {
