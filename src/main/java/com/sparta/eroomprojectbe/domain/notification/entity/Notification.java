@@ -31,9 +31,6 @@ public class Notification {
 //    @Embedded
 //    private NotificationContent content;
 
-    @Column(nullable = false)
-    private Boolean isRead;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationType notificationType;
@@ -43,19 +40,17 @@ public class Notification {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
 
-    public Notification(String content, Long challengeId, Boolean isRead, NotificationType notificationType, Member member) {
+    public Notification(String content, Long challengeId, NotificationType notificationType, Member member) {
         this.content = content;
         this.challengeId = challengeId;
-        this.isRead = isRead;
         this.notificationType = notificationType;
         this.receiver = member;
     }
 
-    public Notification(String content, Long challengeId, Long authId, Boolean isRead, NotificationType notificationType, Member member) {
+    public Notification(String content, Long challengeId, Long authId, NotificationType notificationType, Member member) {
         this.content = content;
         this.challengeId = challengeId;
         this.authId = authId;
-        this.isRead = isRead;
         this.notificationType = notificationType;
         this.receiver = member;
     }
