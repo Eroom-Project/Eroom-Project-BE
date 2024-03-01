@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -46,26 +47,23 @@ public class NotificationService {
     }
 
     public void send(NotificationRequestDto requestDto) {
-        sendNotification(requestDto, saveNotification(requestDto));
+        Notification notification = saveNotification(requestDto);
+        sendNotification(requestDto, notification);
     }
 
     // 알림 보내기
-    @Async
-    public void sendNotification(NotificationRequestDto request, Notification notification) {
+    private void sendNotification(NotificationRequestDto request, Notification notification) {
         String receiverId = String.valueOf(request.getReceiver().getMemberId());
-        String eventId = receiverId + "_" + System.currentTimeMillis();
         // 유저의 모든 SseEmitter 가져옴
         Map<String, SseEmitter> emitters = emitterRepository
                 .findAllEmitterStartWithByMemberId(receiverId);
-        emitters.forEach(
-                (key, emitter) -> {
-                    // 데이터 캐시 저장 (유실된 데이터 처리 위함)
-                    // 적절한 데이터 변환 로직 필요 (예: NotificationResponseDto.of(notification)을 캐시에 저장)
-                    emitterRepository.saveEventCache(key, NotificationResponseDto.of(notification));
-                    // 데이터 전송
-                    sendToClient(key, NotificationResponseDto.of(notification)); // 수정된 부분
-                }
-        );
+        emitters.forEach((key, emitter) -> {
+            NotificationResponseDto responseDto = NotificationResponseDto.of(notification);
+            // 데이터 캐시 저장 (유실된 데이터 처리 위함)
+            emitterRepository.saveEventCache(key, responseDto);
+            // 데이터 전송
+            sendToClient(key, responseDto);
+        });
     }
 
     // 데이터 전송 로직 수정 (오버로딩 또는 기존 메서드 수정)
@@ -73,13 +71,16 @@ public class NotificationService {
         SseEmitter emitter = emitterRepository.findByEmitterId(emitterId);
         if (emitter != null) {
             try {
+                log.info("Sending notification to client: {}", data);
                 emitter.send(SseEmitter.event().id(emitterId).name("sse").data(data));
+                log.info("Notification sent successfully");
             } catch (IOException e) {
-                // IOException이 발생하면 저장된 SseEmitter를 삭제하고 예외를 발생시킨다.
                 emitterRepository.deleteById(emitterId);
-                log.error("SSE 연결 오류 발생", e);
-                throw new RuntimeException("연결 오류!");
+                log.error("Failed to send notification", e);
+                throw new RuntimeException("Connection error!");
             }
+        } else {
+            log.warn("No emitter found for ID: {}", emitterId);
         }
     }
 
@@ -120,7 +121,8 @@ public class NotificationService {
     }
 
     // 알람 저장
-    private Notification saveNotification(NotificationRequestDto requestDto) {
+    @Transactional
+    protected Notification saveNotification(NotificationRequestDto requestDto) {
         Notification notification = Notification.builder()
                 .receiver(requestDto.getReceiver())
                 .notificationType(requestDto.getNotificationType())
@@ -129,7 +131,6 @@ public class NotificationService {
                 .authId(requestDto.getAuthId())
                 .isRead(false)
                 .build();
-        notificationRepository.save(notification);
-        return notification;
+        return notificationRepository.save(notification);
     }
 }
