@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +44,7 @@ public class ChatRoomService {
 
         // 해당 채팅방의 이전 대화 내용 불러오기
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+
 
         // 채팅방의 구독자들에게 이전 대화 내용 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
