@@ -1,6 +1,5 @@
 package com.sparta.eroomprojectbe.domain.chat.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
 import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
@@ -8,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +21,6 @@ public class ChatRoomService {
 
     @Autowired
     private ChatRoomRepository chatRoomRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
 
@@ -44,27 +38,12 @@ public class ChatRoomService {
         // 해당 채팅방의 이전 대화 내용 불러오기
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
-//        // 이전 대화 내용의 시간을 ISO 형식으로 변환하여 업데이트
-//        for (ChatMessage chatMessage : chatHistory) {
-//            LocalDateTime time = chatMessage.getTime();
-//            String isoString = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//            chatMessage.setTime(LocalDateTime.parse(isoString));
-//        }
-
         // 채팅방의 구독자들에게 이전 대화 내용 전송
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history/%s", challengeId, memberId), chatHistory);
         // 채팅방의 구독자들에게 현재 멤버 리스트 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
-//        // senderNickname이 이미 존재하는지 확인
-//        boolean isExisting = currentMemberList.stream()
-//                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
-//
-//        // senderNickname이 이미 존재하지 않는 경우에만 추가
-//        if (!isExisting) {
-//            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
-//            currentMemberList.add(memberInfo);
-//        }
+
 
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
@@ -74,3 +53,15 @@ public class ChatRoomService {
         }
     }
 }
+
+
+//참여 리스트에서 중복 제거 시 코드
+//        // senderNickname이 이미 존재하는지 확인
+//        boolean isExisting = currentMemberList.stream()
+//                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
+//
+//        // senderNickname이 이미 존재하지 않는 경우에만 추가
+//        if (!isExisting) {
+//            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
+//            currentMemberList.add(memberInfo);
+//        }
