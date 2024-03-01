@@ -94,4 +94,8 @@ public class Member {
     public void updatePassword(String updatePassword) {
         this.password = updatePassword;
     }
+
+    public void incrementBricksCount() {
+        this.bricksCount++;
+    }
 }

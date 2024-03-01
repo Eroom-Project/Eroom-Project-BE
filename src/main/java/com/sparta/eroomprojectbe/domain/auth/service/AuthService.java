@@ -108,6 +108,9 @@ public class AuthService {
                 Challenger challenger = challengerOptional.get();
                 String saveFile = (file != null)?imageS3Service.saveFile(file):"https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2zkAR%2FbtsEYKQRgO5%2FjD2MchKeMu7gNiPOt187gK%2Fimg.png";
                 Auth savedAuth = authRepository.save(new Auth(requestDto, saveFile ,challenger));
+                if(ChallengerRole.LEADER == challenger.getRole()){
+                    challenger.getMember().incrementBricksCount();
+                }
                 if (savedAuth != null && savedAuth.getAuthId() != null)
                     return new CreateResponseDto("챌린지 인증 등록 성공", HttpStatus.CREATED);
                 else {
@@ -184,6 +187,7 @@ public class AuthService {
                 }
                 if(challengerOptional.get().getRole() == ChallengerRole.LEADER){
                     auth.leaderUpdate(auth,requestDto);
+                    auth.getChallenger().getMember().incrementBricksCount();
                     AuthResponseDto responseDto = new AuthResponseDto(auth);
                     return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
                 }else {
