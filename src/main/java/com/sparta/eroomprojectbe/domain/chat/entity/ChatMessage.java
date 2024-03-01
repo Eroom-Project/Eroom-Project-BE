@@ -36,5 +36,12 @@ public class ChatMessage {
         this.sender = sender;
     }
 
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 
 }
