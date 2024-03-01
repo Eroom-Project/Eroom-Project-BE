@@ -33,6 +33,7 @@ public class ChatController {
         chatMessageService.saveMessage(challengeId, chatMessage, message);
     }
 
+
     @DeleteMapping("/api/chat/{challengeId}/{messageNumber}")
     public ResponseEntity<BaseResponseDto<String>> deleteChatMessage(@PathVariable String challengeId,
                                                                      @PathVariable Long messageNumber) {
