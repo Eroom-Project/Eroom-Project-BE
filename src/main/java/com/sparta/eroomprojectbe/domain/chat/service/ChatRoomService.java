@@ -19,6 +19,9 @@ public class ChatRoomService {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
 
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
@@ -28,11 +31,16 @@ public class ChatRoomService {
             currentMemberList = new ArrayList<>();
             challengeRoomMemberLists.put(challengeId, currentMemberList);
         }
+        // 새로운 멤버 정보 추가
         MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
         currentMemberList.add(memberInfo);
-
+        // 해당 채팅방의 이전 대화 내용 불러오기
+        List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+        // 채팅방의 구독자들에게 이전 대화 내용 전송
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
+        // 채팅방의 구독자들에게 현재 멤버 리스트 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
-
+    }
 //        // senderNickname이 이미 존재하는지 확인
 //        boolean isExisting = currentMemberList.stream()
 //                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
@@ -42,7 +50,6 @@ public class ChatRoomService {
 //            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
 //            currentMemberList.add(memberInfo);
 //        }
-    }
 
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
