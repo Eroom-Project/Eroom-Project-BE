@@ -42,16 +42,8 @@ public class ChatRoomService {
         // 해당 채팅방의 이전 대화 내용 불러오기
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
-        // ChatMessage 객체의 시간 필드를 역직렬화하여 LocalDateTime 형식으로 변환합니다.
-        List<Map<String, Object>> serializedChatHistory = new ArrayList<>();
-        for (ChatMessage chatMessage : chatHistory) {
-            Map<String, Object> serializedMessage = objectMapper.convertValue(chatMessage, Map.class);
-            serializedMessage.put("time", chatMessage.getTime().toString()); // 시간 필드를 문자열로 변환하여 추가합니다.
-            serializedChatHistory.add(serializedMessage);
-        }
-
         // 채팅방의 구독자들에게 이전 대화 내용 전송
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), serializedChatHistory);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
         // 채팅방의 구독자들에게 현재 멤버 리스트 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
