@@ -39,7 +39,7 @@ public class ChatRoomService {
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
         // 채팅방의 구독자들에게 이전 대화 내용 전송
-        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
+        messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history/%s", challengeId, memberId), chatHistory);
         // 채팅방의 구독자들에게 현재 멤버 리스트 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
