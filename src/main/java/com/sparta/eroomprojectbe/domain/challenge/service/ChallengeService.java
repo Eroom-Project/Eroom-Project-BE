@@ -89,13 +89,13 @@ public class ChallengeService {
      * @param loginMemberId
      * @return 선택한 챌린지 data, 성공여부 message, httpStatus
      */
-    public ChallengeLoginResponseDto getChallenge(Long challengeId, String loginMemberId) {
+    public ChallengeLoginResponseDto getChallenge(Long challengeId, String loginMemberId, String loginMemberProfileImageUrl, String loginMemberNickname) {
         Optional<Challenge> optionalChallenge = challengeRepository.findById(challengeId);
         Challenge challenge = optionalChallenge.orElseThrow(
                 () -> new IllegalArgumentException("해당 챌린지가 존재하지 않습니다.")
         );
         ChallengeResponseDto challengeResponseDto = new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(optionalChallenge.get()));
-        ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId);
+        ChallengeLoginResponseDto challengeLoginResponseDto = new ChallengeLoginResponseDto(challengeResponseDto, loginMemberId, loginMemberProfileImageUrl, loginMemberNickname);
         return challengeLoginResponseDto;
     }
 

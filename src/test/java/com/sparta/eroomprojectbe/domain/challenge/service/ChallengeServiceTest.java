@@ -8,7 +8,6 @@ import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -90,6 +88,8 @@ class ChallengeServiceTest {
         // given
         Long challengeId = 1L;
         String loginMemberId = "1L";
+        String loginMemberProfileImageUrl ="No members logged in";
+        String loginMemberNickname="No members logged in";
         Member member = new Member(1L, "test@email.com", "admin1234!", "testNickname");
         ChallengeRequestDto requestDto = new ChallengeRequestDto("title", "category", "decription", "2024-02-28",
                 "2024-03-04", "주 1회", (short) 4, "아무거나");
@@ -98,7 +98,7 @@ class ChallengeServiceTest {
         when(challengerRepository.findCreatorMemberByChallengeId(challengeId)).thenReturn(Optional.of(member));
         when(challengerRepository.findMemberIdsByChallenge(challenge)).thenReturn(Arrays.asList(1L, 2L, 3L));
         // when
-        ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId);
+        ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId,loginMemberProfileImageUrl,loginMemberNickname);
         // then
         assertNotNull(responseDto);
         assertNotNull(responseDto.getResponseDto().getChallengeId());
