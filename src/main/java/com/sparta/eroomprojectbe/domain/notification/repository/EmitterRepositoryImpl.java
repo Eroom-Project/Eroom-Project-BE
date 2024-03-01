@@ -1,9 +1,11 @@
 package com.sparta.eroomprojectbe.domain.notification.repository;
 
+import com.amazonaws.services.s3.transfer.Copy;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -44,27 +46,22 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 
     @Override
     public void deleteAllEmitterStartWithId(String memberId) {
-        emitters.forEach(
-                (key, emitter) -> {
-                    if (key.startsWith(memberId)) {
-                        emitters.remove(key);
-                    }
-                }
-        );
+        Set<String> keysToDelete = emitters.keySet().stream()
+                .filter(key -> key.startsWith(memberId))
+                .collect(Collectors.toSet());
+        keysToDelete.forEach(emitters::remove);
     }
 
     @Override
     public void deleteAllEventCacheStartWithId(String memberId) {
-        eventCache.forEach(
-                (key, emitter) -> {
-                    if (key.startsWith(memberId)) {
-                        eventCache.remove(key);
-                    }
-                }
-        );
+        Set<String> keysToDelete = eventCache.keySet().stream()
+                .filter(key -> key.startsWith(memberId))
+                .collect(Collectors.toSet());
+        keysToDelete.forEach(eventCache::remove);
     }
 
     public SseEmitter findByEmitterId(String emitterId) {
-        return null;
+        return emitters.get(emitterId);
     }
+
 }
