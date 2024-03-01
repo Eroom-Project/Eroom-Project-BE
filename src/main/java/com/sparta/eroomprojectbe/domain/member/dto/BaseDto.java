@@ -14,4 +14,9 @@ public class BaseDto<T> {
         this.message = message;
         this.status = status;
     }
+
+    public BaseDto(String message, T data) {
+        this.message = message;
+        this.data = data;
+    }
 }

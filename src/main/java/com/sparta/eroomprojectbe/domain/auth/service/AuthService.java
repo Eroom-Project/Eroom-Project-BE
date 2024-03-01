@@ -10,6 +10,9 @@ import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.domain.notification.dto.NotificationRequestDto;
+import com.sparta.eroomprojectbe.domain.notification.entity.NotificationType;
+import com.sparta.eroomprojectbe.domain.notification.service.NotificationService;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,14 +30,15 @@ public class AuthService {
     private final ChallengerRepository challengerRepository;
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
-
+    private final NotificationService notificationService;
     private final ImageS3Service imageS3Service;
 
-    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ImageS3Service imageS3Service) {
+    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, NotificationService notificationService, ImageS3Service imageS3Service) {
         this.authRepository = authRepository;
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
+        this.notificationService = notificationService;
         this.imageS3Service = imageS3Service;
     }
     /**
@@ -63,6 +67,16 @@ public class AuthService {
             Challenger savedChallenger = challengerRepository.save(challenger);
             if (savedChallenger.getChallengerId() != null) {
                 challenge.incrementAttendance();
+
+                // 알림 전송 로직
+                NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
+                        .receiver(member) // 알림을 받을 멤버
+                        .notificationType(NotificationType.REGISTER) // 알림 유형
+                        .content(member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.") // 알림 내용
+                        .challengeId(challengeId) // 챌린지 ID
+                        .build();
+                notificationService.send(notificationRequest); // 알림 전송
+
                 return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
                 return new CreateResponseDto("챌린지가 존재하지 않아 신청에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
