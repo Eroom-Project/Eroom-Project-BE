@@ -44,12 +44,12 @@ public class ChatRoomService {
         // 해당 채팅방의 이전 대화 내용 불러오기
         List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
-        // 이전 대화 내용의 시간을 ISO 형식으로 변환하여 업데이트
-        for (ChatMessage chatMessage : chatHistory) {
-            LocalDateTime time = chatMessage.getTime();
-            String isoString = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            chatMessage.setTime(LocalDateTime.parse(isoString));
-        }
+//        // 이전 대화 내용의 시간을 ISO 형식으로 변환하여 업데이트
+//        for (ChatMessage chatMessage : chatHistory) {
+//            LocalDateTime time = chatMessage.getTime();
+//            String isoString = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//            chatMessage.setTime(LocalDateTime.parse(isoString));
+//        }
 
         // 채팅방의 구독자들에게 이전 대화 내용 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history", challengeId), chatHistory);
