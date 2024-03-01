@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +29,16 @@ public class ChatRoomRepository {
     // challengeId에 해당하는 채팅방의 채팅 내역을 불러오는 메서드
     public List<ChatMessage> getChatHistory(String challengeId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
-        return listOperations.range(key, 0, -1);
+        List<ChatMessage> chatHistory = listOperations.range(key, 0, -1);
+
+        for (ChatMessage chatMessage : chatHistory) {
+            // Redis에 저장된 LocalDateTime 데이터를 ISO 형식의 문자열로 변환하여 ChatMessage의 time 필드에 설정
+            LocalDateTime time = chatMessage.getTime();
+            String formattedTime = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            chatMessage.setTime(LocalDateTime.parse(formattedTime));
+        }
+
+        return chatHistory;
     }
 
     // challengeId에 해당하는 채팅방에 채팅 메시지를 저장하는 메서드
