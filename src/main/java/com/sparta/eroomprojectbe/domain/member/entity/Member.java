@@ -73,6 +73,7 @@ public class Member {
         this.email = mail;
         this.password = password;
         this.nickname = nickname;
+        this.bricksCount = 0L;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {
