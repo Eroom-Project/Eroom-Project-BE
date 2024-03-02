@@ -23,6 +23,10 @@ public class HealthCheckController {
     @Value("${serverName}")
     private String serverName;
 
+    /**
+     * 서버의 health check하는 엔드포인트
+     * @return 서버의 상태 및 환경 설정 정보를 담은 응답 엔터티
+     */
     @GetMapping("/health")
     public ResponseEntity<?> healthCheck() {
         Map<String, String> responseData = new TreeMap<>();
@@ -33,6 +37,10 @@ public class HealthCheckController {
         return ResponseEntity.ok(responseData);
     }
 
+    /**
+     * 서버의 환경 설정 정보를 확인하는 엔드포인트
+     * @return 서버의 환경 설정 정보를 담은 응답 엔터티
+     */
     @GetMapping("/env")
     public ResponseEntity<?> getEnv() {
         return ResponseEntity.ok(env);

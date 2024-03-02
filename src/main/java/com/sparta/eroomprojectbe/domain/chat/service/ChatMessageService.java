@@ -38,6 +38,12 @@ public class ChatMessageService {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
+    /**
+     * 채팅 메시지를 저장하고 처리하는 메서드
+     * @param challengeId 챌린지 식별자
+     * @param chatMessage 저장할 채팅 메시지
+     * @param message WebSocket 메시지
+     */
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
@@ -91,6 +97,12 @@ public class ChatMessageService {
         }
     }
 
+    /**
+     * 채팅 메시지를 삭제하는 메서드
+     * @param challengeId 챌린지 식별자
+     * @param messageNumber 삭제할 메시지 번호
+     * @return 삭제 성공 여부
+     */
     public boolean deleteChatMessage(String challengeId, Long messageNumber) {
         // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
         return chatRoomRepository.deleteMessageByNumber(challengeId, messageNumber);

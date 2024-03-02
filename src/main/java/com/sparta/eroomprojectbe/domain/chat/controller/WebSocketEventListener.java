@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+/**
+ * WebSocket 이벤트를 처리하는 리스너 클래스입니다.
+ */
 @Component
 public class WebSocketEventListener {
 
@@ -27,11 +30,19 @@ public class WebSocketEventListener {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
+    /**
+     * 웹 소켓 연결 이벤트를 처리하는 메서드입니다.
+     * @param event 세션 연결 이벤트 객체
+     */
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
     }
 
+    /**
+     * 웹 소켓 연결 종료 이벤트를 처리하는 메서드입니다.
+     * @param event 세션 연결 종료 이벤트 객체
+     */
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

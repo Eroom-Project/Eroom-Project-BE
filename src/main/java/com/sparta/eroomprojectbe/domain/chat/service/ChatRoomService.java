@@ -22,6 +22,13 @@ public class ChatRoomService {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
+    /**
+     * 사용자가 채팅방에 입장했을 때 실행되는 메서드
+     * @param challengeId 채팅방의 고유 식별자
+     * @param memberId 사용자의 고유 식별자
+     * @param senderNickname 사용자의 닉네임
+     * @param profileImageUrl 사용자의 프로필 이미지 URL
+     */
     public void userJoinedRoom(String challengeId, String memberId, String senderNickname, String profileImageUrl) {
 
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
@@ -44,7 +51,11 @@ public class ChatRoomService {
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), currentMemberList);
     }
 
-
+    /**
+     * 사용자가 채팅방을 나갔을 때 실행되는 메서드
+     * @param challengeId 채팅방의 고유 식별자
+     * @param senderNickname 사용자의 닉네임
+     */
     public void userLeftRoom(String challengeId, String senderNickname) {
         List<MemberInfo> currentMemberList = challengeRoomMemberLists.get(challengeId);
         if (currentMemberList != null) {
@@ -53,15 +64,3 @@ public class ChatRoomService {
         }
     }
 }
-
-
-//참여 리스트에서 중복 제거 시 코드
-//        // senderNickname이 이미 존재하는지 확인
-//        boolean isExisting = currentMemberList.stream()
-//                .anyMatch(memberInfo -> memberInfo.getNickname().equals(senderNickname));
-//
-//        // senderNickname이 이미 존재하지 않는 경우에만 추가
-//        if (!isExisting) {
-//            MemberInfo memberInfo = new MemberInfo(memberId, senderNickname, profileImageUrl);
-//            currentMemberList.add(memberInfo);
-//        }
