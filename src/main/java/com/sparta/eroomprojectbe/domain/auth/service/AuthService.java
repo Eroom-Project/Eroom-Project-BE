@@ -69,13 +69,10 @@ public class AuthService {
                 challenge.incrementAttendance();
 
                 // 알림 전송 로직
-                NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
-                        .receiver(member) // 알림을 받을 멤버
-                        .notificationType(NotificationType.REGISTER) // 알림 유형
-                        .content(member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.") // 알림 내용
-                        .challengeId(challengeId) // 챌린지 ID
-                        .build();
-                notificationService.send(notificationRequest); // 알림 전송
+                Member creator = challengerRepository.findCreatorMemberByChallengeId(challengeId)
+                        .orElseThrow(()-> new IllegalArgumentException("챌린지 생성자를 찾을 수 없습니다."));
+                String content = member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.";
+                sendNotification(creator, NotificationType.REGISTER, content, challengeId, null);
 
                 return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
@@ -189,6 +186,15 @@ public class AuthService {
                     auth.leaderUpdate(auth,requestDto);
                     auth.getChallenger().getMember().incrementBricksCount();
                     AuthResponseDto responseDto = new AuthResponseDto(auth);
+
+                    // 알림 전송 로직
+                    if (requestDto.getAuthStatus().equals("APPROVED")){
+                        String content = auth.getChallenger().getMember() + "님의 인증글이 승인되었습니다.";
+                        sendNotification(auth.getChallenger().getMember(), NotificationType.APPROVE, content, challengeId, authId);
+                    } else if(requestDto.getAuthStatus().equals("DENIED")){
+                        String content = auth.getChallenger().getMember() + "님의 인증글이 인증 조건을 만족시키지 못하였습니다. 인증글을 수정하여 주세요.";
+                        sendNotification(auth.getChallenger().getMember(), NotificationType.DENY, content, challengeId, authId);
+                    }
                     return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
                 }else {
                     return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
@@ -285,5 +291,16 @@ public class AuthService {
         }catch (Exception e){
             return new CreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void sendNotification(Member receiver, NotificationType type, String content, Long challengeId, Long authId) {
+        NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
+                .receiver(receiver)
+                .notificationType(type)
+                .content(content)
+                .challengeId(challengeId)
+                .authId(authId)
+                .build();
+        notificationService.send(notificationRequest);
     }
 }

@@ -214,9 +214,9 @@ public class MemberService {
     @Transactional
     public String sendCodeToEmail(String toEmail) {
         boolean memberIsPresent = memberRepository.existsByEmail(toEmail);
-//        if (memberIsPresent) {
-//            return "이미 가입된 아이디입니다.";
-//        }
+        if (memberIsPresent) {
+            return "이미 가입된 아이디입니다.";
+        }
         String authCode = this.createCode();
 
         // 이메일 내용 정의

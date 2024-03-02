@@ -42,6 +42,14 @@ public class Auth extends Timestamped{
         this.challenger=challenger;
     }
 
+    public Auth(long authId, AuthRequestDto authRequestDto, String originalFilename, Challenger challenger) {
+        this.authId = authId;
+        this.authImageUrl = originalFilename;
+        this.authVideoUrl = authRequestDto.getAuthVideoUrl();
+        this.authStatus = authRequestDto.getAuthStatus();
+        this.challenger = challenger;
+    }
+
     public void update(AuthRequestDto requestDto, String updateFile, Challenger challenger) {
         this.authContents = (requestDto.getAuthContents()!= null)?requestDto.getAuthContents():"비어있음";
         this.authImageUrl = updateFile;

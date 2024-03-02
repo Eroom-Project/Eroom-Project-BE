@@ -152,7 +152,7 @@ class ChallengeServiceTest {
 
         List<ChallengeResponseDto> challengeResponseDtoList = (List<ChallengeResponseDto>) responseDto.getData();
         assertEquals(1, challengeResponseDtoList.size());  // Adjust this based on the number of challenges
-
+        // Verify
         verify(challengeRepository, times(1)).findByCategory("IT");
     }
     @Test
@@ -292,7 +292,7 @@ class ChallengeServiceTest {
         assertEquals("챌린지 이룸 삭제 성공", responseDto.getMessage());
         assertEquals(HttpStatus.OK, responseDto.getStatus());
 
-        // Verify that delete method is called with correct challenge
+        // Verify
         verify(challengeRepository, times(1)).delete(Challenge);
         verify(imageS3Service, times(1)).deleteFile(anyString());
     }
