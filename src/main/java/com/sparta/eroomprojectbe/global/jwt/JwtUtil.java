@@ -109,7 +109,7 @@ public class JwtUtil {
 
         int maxAgeInSeconds = 3600; // 1시간
         if (tokenName.equals(JwtUtil.AUTHORIZATION_HEADER)) {
-            cookie.setMaxAge(maxAgeInSeconds);
+            cookie.setMaxAge(7 * 24 * maxAgeInSeconds);
         }
 
         if (tokenName.equals(JwtUtil.REFRESH_TOKEN_HEADER)) {

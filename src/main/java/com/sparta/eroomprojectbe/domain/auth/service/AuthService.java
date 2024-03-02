@@ -10,6 +10,9 @@ import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.domain.notification.dto.NotificationRequestDto;
+import com.sparta.eroomprojectbe.domain.notification.entity.NotificationType;
+import com.sparta.eroomprojectbe.domain.notification.service.NotificationService;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,14 +30,15 @@ public class AuthService {
     private final ChallengerRepository challengerRepository;
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
-
+    private final NotificationService notificationService;
     private final ImageS3Service imageS3Service;
 
-    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ImageS3Service imageS3Service) {
+    public AuthService(AuthRepository authRepository, ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, NotificationService notificationService, ImageS3Service imageS3Service) {
         this.authRepository = authRepository;
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
+        this.notificationService = notificationService;
         this.imageS3Service = imageS3Service;
     }
     /**
@@ -63,6 +67,13 @@ public class AuthService {
             Challenger savedChallenger = challengerRepository.save(challenger);
             if (savedChallenger.getChallengerId() != null) {
                 challenge.incrementAttendance();
+
+                // 알림 전송 로직
+                Member creator = challengerRepository.findCreatorMemberByChallengeId(challengeId)
+                        .orElseThrow(()-> new IllegalArgumentException("챌린지 생성자를 찾을 수 없습니다."));
+                String content = member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.";
+                sendNotification(creator, NotificationType.REGISTER, content, challengeId, null);
+
                 return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
                 return new CreateResponseDto("챌린지가 존재하지 않아 신청에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -175,6 +186,15 @@ public class AuthService {
                     auth.leaderUpdate(auth,requestDto);
                     auth.getChallenger().getMember().incrementBricksCount();
                     AuthResponseDto responseDto = new AuthResponseDto(auth);
+
+                    // 알림 전송 로직
+                    if (requestDto.getAuthStatus().equals("APPROVED")){
+                        String content = auth.getChallenger().getMember() + "님의 인증글이 승인되었습니다.";
+                        sendNotification(auth.getChallenger().getMember(), NotificationType.APPROVE, content, challengeId, authId);
+                    } else if(requestDto.getAuthStatus().equals("DENIED")){
+                        String content = auth.getChallenger().getMember() + "님의 인증글이 인증 조건을 만족시키지 못하였습니다. 인증글을 수정하여 주세요.";
+                        sendNotification(auth.getChallenger().getMember(), NotificationType.DENY, content, challengeId, authId);
+                    }
                     return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
                 }else {
                     return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
@@ -271,5 +291,16 @@ public class AuthService {
         }catch (Exception e){
             return new CreateResponseDto("에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void sendNotification(Member receiver, NotificationType type, String content, Long challengeId, Long authId) {
+        NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
+                .receiver(receiver)
+                .notificationType(type)
+                .content(content)
+                .challengeId(challengeId)
+                .authId(authId)
+                .build();
+        notificationService.send(notificationRequest);
     }
 }

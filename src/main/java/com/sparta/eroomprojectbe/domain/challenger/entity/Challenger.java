@@ -45,4 +45,11 @@ public class Challenger {
         this.challenge = challenge;
         this.role = challengerRole;
     }
+
+    public Challenger(long challengerId, Challenge challenge, Member member, ChallengerRole challengerRole) {
+        this.challengerId = challengerId;
+        this.challenge = challenge;
+        this.member = member;
+        this.role = challengerRole;
+    }
 }

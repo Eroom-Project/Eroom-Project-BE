@@ -16,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTimeUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -236,7 +237,7 @@ public class MemberService {
         String sendMail = "eroom.challenge@gmail.com";
         emailService.sendEmail(sendMail, toEmail, title, content);
 
-        LocalDateTime expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusMinutes(5);
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5);
 
         EmailVerification verification = emailVerificationRepository.findByEmail(toEmail)
                 .orElse(new EmailVerification(toEmail, authCode, expirationTime));
@@ -268,7 +269,7 @@ public class MemberService {
         if (!verification.isPresent()) {
             return "인증 메일이 정상적으로 전송되지 않았습니다.";
         }
-        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        LocalDateTime now = LocalDateTime.now();
 
         if (verification.get().getExpirationTime().isAfter(now)) {
             emailVerificationRepository.deleteByEmail(email);
