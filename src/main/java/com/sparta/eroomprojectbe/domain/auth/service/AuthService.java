@@ -189,7 +189,7 @@ public class AuthService {
                     auth.leaderUpdate(auth,requestDto);
                     auth.getChallenger().getMember().incrementBricksCount();
                     AuthResponseDto responseDto = new AuthResponseDto(auth);
-                    return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.CREATED);
+                    return new AuthDataResponseDto(responseDto,"챌린지 상태 수정 성공", HttpStatus.OK);
                 }else {
                     return new AuthDataResponseDto(null,"해당 권한이 없습니다.", HttpStatus.BAD_REQUEST);
                 }
