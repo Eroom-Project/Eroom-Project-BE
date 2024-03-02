@@ -129,7 +129,6 @@ public class NotificationService {
                 .content(requestDto.getContent())
                 .challengeId(requestDto.getChallengeId())
                 .authId(requestDto.getAuthId())
-                .isRead(false)
                 .build();
         return notificationRepository.save(notification);
     }
