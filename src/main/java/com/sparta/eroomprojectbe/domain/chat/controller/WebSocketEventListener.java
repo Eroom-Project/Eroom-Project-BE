@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.UUID;
+
 /**
  * WebSocket 이벤트를 처리하는 리스너 클래스입니다.
  */
@@ -49,6 +51,7 @@ public class WebSocketEventListener {
 
         String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
         String challengeId = (String) headerAccessor.getSessionAttributes().get("challengeId");
+        String messageId = UUID.randomUUID().toString();
 
         if (nickname != null && challengeId != null) {
             logger.info("User Disconnected : " + nickname);
@@ -61,6 +64,7 @@ public class WebSocketEventListener {
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setChallengeId(challengeId);
+            chatMessage.setMessageId(messageId);
 
             // Redis에 채팅 메시지 저장
             chatRoomRepository.saveChatMessage(challengeId, chatMessage);
