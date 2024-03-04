@@ -7,9 +7,9 @@
 
 ## GItHub
 
-FE: https://github.com/Eroom-Project/Eroom-Project-FE
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">FE: https://github.com/Eroom-Project/Eroom-Project-FE
 
-BE: https://github.com/Eroom-Project/Eroom-Project-BE
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">BE: https://github.com/Eroom-Project/Eroom-Project-BE
 ______________________________________
 
 ## 팀원 구성 
@@ -39,6 +39,7 @@ ______________________________________
 <img src ="https://private-user-images.githubusercontent.com/148944859/309774672-7154f9dd-7f77-4720-bb21-907fc118d0fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjAyODEsIm5iZiI6MTcwOTU1OTk4MSwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzc0NjcyLTcxNTRmOWRkLTdmNzctNDcyMC1iYjIxLTkwN2ZjMTE4ZDBmZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxMzQ2MjFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02NmNlNzEwYmI3NGFhMTQ3MWUxZjc1N2FjNmI4NTFmNjZkNWE1YzYwY2JkNWUyYTYwYWFiZjc5M2I1MjgzNDBlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Nca15zN9W7H08LErSOKoFAhD_W0f8-NCFVmC3KVOJj0">
 
 <img src ="https://private-user-images.githubusercontent.com/148944859/309784647-df5a7f68-3556-41dd-a8cd-45efc4b32a40.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjIxNzMsIm5iZiI6MTcwOTU2MTg3MywicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzg0NjQ3LWRmNWE3ZjY4LTM1NTYtNDFkZC1hOGNkLTQ1ZWZjNGIzMmE0MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNDE3NTNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05NmYzODAwNGFkZDdkODcwMzlkZWNiOTE1ZmE3MzZkOTljMDVmNzJiZmVlNDQyZjA0OTBhNDZlZmU1M2ZlMjc5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.V9h-TgFCDAKkCZF45KDKs4Y4R45Gfz0LnVNOggqtnwM">
+
 ### 2.목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스
 
 유저들이 만든 다양한 챌린지를 확인해요
@@ -127,7 +128,7 @@ ______________________________________
 ______________________________________
 
 ## 기술스택
-[적절한 이미지 삽입]
+ <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"><img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
 
 eroom-challenge.comeroom-challenge.com
 함께하는 즐거움 이룸
