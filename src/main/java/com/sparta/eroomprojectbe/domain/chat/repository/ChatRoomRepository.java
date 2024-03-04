@@ -8,20 +8,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
 @Component
 public class ChatRoomRepository {
 
-    private final RedisTemplate<String, ChatMessage> redisTemplate;
-    private final ListOperations<String, ChatMessage> listOperations;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ListOperations<String, Object> listOperations;
 
     private static final String CHAT_ROOM_PREFIX = "chat_room:";
 
-    public ChatRoomRepository(RedisTemplate<String, ChatMessage> redisTemplate) {
+    public ChatRoomRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.listOperations = redisTemplate.opsForList();
     }
@@ -29,7 +31,15 @@ public class ChatRoomRepository {
     // challengeId에 해당하는 채팅방의 채팅 내역을 불러오는 메서드
     public List<ChatMessage> getChatHistory(String challengeId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
-        return listOperations.range(key, 0, -1);
+        // 타입 변환 처리 - redis에서 조회한 객체 목록을 ChatMessage 타입의 객체 목록으로 변환
+        List<Object> objects = listOperations.range(key, 0, -1);
+        if (objects != null) {
+            return objects.stream()
+                    .filter(ChatMessage.class::isInstance) // ChatMessage 타입이면
+                    .map(ChatMessage.class::cast) // cast 변환 수행
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     // challengeId에 해당하는 채팅방에 채팅 메시지를 저장하는 메서드
