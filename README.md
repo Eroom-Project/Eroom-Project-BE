@@ -1,7 +1,7 @@
 # 📌📕📚시험 공부부터 자기 계발까지, 학습 챌린지 웹사이트, 이룸
 
 혼자 해내지 못했던 일도 함께라면 이룰 수 있어요. 친구들과 소통하며 즐겁고 재미있게 도전하도록 만들어 주는 학습 챌린지 웹사이트, 이룸(E-ROOM)에서 친구들과 함께 꿈을 이뤄 보세요.
-<img src="https://private-user-images.githubusercontent.com/148944859/309681736-dae6276b-268a-47af-a33f-f2de228bf717.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NDEwMjYsIm5iZiI6MTcwOTU0MDcyNiwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5NjgxNzM2LWRhZTYyNzZiLTI2OGEtNDdhZi1hMzNmLWYyZGUyMjhiZjcxNy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQwODI1MjZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jNTY2N2JlZjdkYWYzNzhhMzJlODM2YTE4NDAyYTg3OGMzN2ZmYTcwZjdlMjE5ZDU1ZTJkYjhkYTQ1MWRkYjcwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.BxAc31x2sWlSk8V8zHLZgdKmcAh1z4GJln1FVW4dBTk">
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb9Mxxb%2FbtsFzeXBd4G%2FEI5ByAgDq76hkb2VuBaWJk%2Fimg.png">
 
 ### 이룸 둘러보기: https://eroom-challenge.com
 
@@ -19,7 +19,7 @@ ______________________________________
       <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : 인재현 </b></sub></a><br /></td>
       <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀장 : 이신지 </b></sub></a><br /></td>
       <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 류은채 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="https://private-user-images.githubusercontent.com/148944859/309679516-0139a9b9-0047-414c-b98e-8def0bfbeef2.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NDA1NDEsIm5iZiI6MTcwOTU0MDI0MSwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Njc5NTE2LTAxMzlhOWI5LTAwNDctNDE0Yy1iOThlLThkZWYwYmZiZWVmMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQwODE3MjFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zMGQ4ZTM1NWEyZWQ2NTMzYjBlNjVmNDgwYWU3MDdlMTU4N2RkMDYyZWJjMjRiYzRkMzk5N2I4M2U2NjgyOGYwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.JqyRZBPCcJzTUv2prpaP6uMOOuuX25VyStAb3H0jTEU" width="100px;" alt=""/>
+      <td align="center"><a href=""><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdjCMuZ%2FbtsFpPS6ViI%2FdmOqQIuCi3lDDOXGzhYzRk%2Fimg.png" width="100px;" alt=""/>
         <br /><sub><b>BE 팀원 : 민경현 </b></sub></a><br /></td>
     </tr>
   </tbody>
@@ -37,7 +37,7 @@ ______________________________________
 
 <img src ="https://private-user-images.githubusercontent.com/148944859/309774672-7154f9dd-7f77-4720-bb21-907fc118d0fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjAyODEsIm5iZiI6MTcwOTU1OTk4MSwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzc0NjcyLTcxNTRmOWRkLTdmNzctNDcyMC1iYjIxLTkwN2ZjMTE4ZDBmZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxMzQ2MjFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02NmNlNzEwYmI3NGFhMTQ3MWUxZjc1N2FjNmI4NTFmNjZkNWE1YzYwY2JkNWUyYTYwYWFiZjc5M2I1MjgzNDBlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Nca15zN9W7H08LErSOKoFAhD_W0f8-NCFVmC3KVOJj0">
 
-<img src ="https://private-user-images.githubusercontent.com/148944859/309784647-df5a7f68-3556-41dd-a8cd-45efc4b32a40.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjIxNzMsIm5iZiI6MTcwOTU2MTg3MywicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzg0NjQ3LWRmNWE3ZjY4LTM1NTYtNDFkZC1hOGNkLTQ1ZWZjNGIzMmE0MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNDE3NTNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05NmYzODAwNGFkZDdkODcwMzlkZWNiOTE1ZmE3MzZkOTljMDVmNzJiZmVlNDQyZjA0OTBhNDZlZmU1M2ZlMjc5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.V9h-TgFCDAKkCZF45KDKs4Y4R45Gfz0LnVNOggqtnwM">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png">
 
 ### 2.😉😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉😉
 
