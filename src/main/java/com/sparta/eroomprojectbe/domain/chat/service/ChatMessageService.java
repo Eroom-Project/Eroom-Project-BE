@@ -105,11 +105,11 @@ public class ChatMessageService {
     /**
      * 채팅 메시지를 삭제하는 메서드
      * @param challengeId 챌린지 식별자
-     * @param messageNumber 삭제할 메시지 번호
+     * @param messageId 삭제할 메시지 번호
      * @return 삭제 성공 여부
      */
-    public boolean deleteChatMessage(String challengeId, Long messageNumber) {
+    public boolean deleteChatMessage(String challengeId, String messageId) {
         // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
-        return chatRoomRepository.deleteMessageByNumber(challengeId, messageNumber);
+        return chatRoomRepository.deleteMessageById(challengeId, messageId);
     }
 }

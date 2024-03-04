@@ -38,16 +38,11 @@ public class ChatController {
         chatMessageService.saveMessage(challengeId, chatMessage, message);
     }
 
-    /**
-     * 선택한 채팅 메시지 삭제하는 메서드
-     * @param challengeId 접속한 챌린지 방 id
-     * @param messageNumber 선택한 메시지 번호
-     * @return 삭제 성공 여부 메세지, httpStatus
-     */
+
     @DeleteMapping("/api/chat/{challengeId}/{messageNumber}")
     public ResponseEntity<BaseResponseDto<String>> deleteChatMessage(@PathVariable String challengeId,
-                                                                     @PathVariable Long messageNumber) {
-        boolean deleteSuccess = chatMessageService.deleteChatMessage(challengeId, messageNumber);
+                                                                     @PathVariable String messageId) {
+        boolean deleteSuccess = chatMessageService.deleteChatMessage(challengeId, messageId);
         if (deleteSuccess) {
             return ResponseEntity.ok().body(new BaseResponseDto<>(null, "채팅 메시지가 성공적으로 삭제되었습니다.", HttpStatus.OK));
         } else {
