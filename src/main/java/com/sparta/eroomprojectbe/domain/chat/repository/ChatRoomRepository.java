@@ -54,16 +54,15 @@ public class ChatRoomRepository {
     }
 
     /**
-     * 특정 챌린지방에서 메시지 번호를 사용하여 메시지를 삭제하는 메서드
-     * @param challengeId 메시지를 삭제할 채팅방의 고유 식별자
-     * @param messageNumber 삭제할 메시지의 번호
+     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
+     * @param messageId 삭제할 메시지의 UUID 식별자
      * @return 삭제가 성공하면 true, 실패하면 false 반환
      */
-    public boolean deleteMessageByNumber(String challengeId, Long messageNumber) {
+    public boolean deleteMessageById(String challengeId, String messageId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
         try {
-            // Redis 리스트에서 해당 번호의 메시지를 제거합니다.
-            listOperations.trim(key, messageNumber, messageNumber);
+            // Redis 리스트에서 해당 메시지를 제거합니다.
+            listOperations.remove(key, 0, messageId);
             return true; // 삭제 성공
         } catch (Exception e) {
             e.printStackTrace();
