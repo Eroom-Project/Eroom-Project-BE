@@ -35,7 +35,7 @@ ______________________________________
 
 소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요
 
-<img src ="https://private-user-images.githubusercontent.com/148944859/309774672-7154f9dd-7f77-4720-bb21-907fc118d0fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjAyODEsIm5iZiI6MTcwOTU1OTk4MSwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzc0NjcyLTcxNTRmOWRkLTdmNzctNDcyMC1iYjIxLTkwN2ZjMTE4ZDBmZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxMzQ2MjFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02NmNlNzEwYmI3NGFhMTQ3MWUxZjc1N2FjNmI4NTFmNjZkNWE1YzYwY2JkNWUyYTYwYWFiZjc5M2I1MjgzNDBlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Nca15zN9W7H08LErSOKoFAhD_W0f8-NCFVmC3KVOJj0">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcVc0BK%2FbtsFxXaZPBD%2FMKkjZhUcj6clk1gjuhQkTK%2Fimg.png">
 
 <img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png">
 
@@ -120,7 +120,7 @@ ______________________________________
 ______________________________________
 
 ## 📌서비스 아키텍처
-<img src ="https://private-user-images.githubusercontent.com/148944859/309804937-5767bbe1-f814-42f4-b597-9d33729ab25f.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjU3ODYsIm5iZiI6MTcwOTU2NTQ4NiwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5ODA0OTM3LTU3NjdiYmUxLWY4MTQtNDJmNC1iNTk3LTlkMzM3MjlhYjI1Zi5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNTE4MDZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01YmE5NjMxNTFiMzBiMjk3OTUwYTU5ZDBhOTY4ZWVjZDY2ZjRjYmFhMGY2OGEwNzI3Y2VkOGEzODE2OTkzODkzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.IgECvbMpBuNI9Wx4XuEuJQcXdEOUcOkeRWh7tjNNUdE">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcgLQpr%2FbtsFyfo9LS9%2FN3lOoJOOw4NXeLPQgoppHk%2Fimg.png">
 
 ______________________________________
 
