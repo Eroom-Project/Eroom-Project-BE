@@ -1,18 +1,17 @@
-# 📕📚시험 공부부터 자기 계발까지, 학습 챌린지 웹사이트, 이룸
+# 📌📕📚시험 공부부터 자기 계발까지, 학습 챌린지 웹사이트, 이룸
 
 혼자 해내지 못했던 일도 함께라면 이룰 수 있어요. 친구들과 소통하며 즐겁고 재미있게 도전하도록 만들어 주는 학습 챌린지 웹사이트, 이룸(E-ROOM)에서 친구들과 함께 꿈을 이뤄 보세요.
 <img src="https://private-user-images.githubusercontent.com/148944859/309681736-dae6276b-268a-47af-a33f-f2de228bf717.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NDEwMjYsIm5iZiI6MTcwOTU0MDcyNiwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5NjgxNzM2LWRhZTYyNzZiLTI2OGEtNDdhZi1hMzNmLWYyZGUyMjhiZjcxNy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQwODI1MjZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jNTY2N2JlZjdkYWYzNzhhMzJlODM2YTE4NDAyYTg3OGMzN2ZmYTcwZjdlMjE5ZDU1ZTJkYjhkYTQ1MWRkYjcwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.BxAc31x2sWlSk8V8zHLZgdKmcAh1z4GJln1FVW4dBTk">
 
 ### 이룸 둘러보기: https://eroom-challenge.com
 
-## GItHub
+## 📌<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+FE: https://github.com/Eroom-Project/Eroom-Project-FE
 
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">FE: https://github.com/Eroom-Project/Eroom-Project-FE
-
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">BE: https://github.com/Eroom-Project/Eroom-Project-BE
+BE: https://github.com/Eroom-Project/Eroom-Project-BE
 ______________________________________
 
-## 팀원 구성 
+## 📌👪팀원 구성 
 <table>
   <tbody>
     <tr>
@@ -28,9 +27,9 @@ ______________________________________
 
 ______________________________________
 
-## 🌠주요 기능
+## 📌🌠주요 기능
 
-### 1.회원가입은 간편하고 빠르게
+### 1.회원가입은 간편하고 빠르게😮
 
 가입하기 전 인증 메일을 보내 멤버 여부를 확인해요
 
@@ -40,7 +39,7 @@ ______________________________________
 
 <img src ="https://private-user-images.githubusercontent.com/148944859/309784647-df5a7f68-3556-41dd-a8cd-45efc4b32a40.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjIxNzMsIm5iZiI6MTcwOTU2MTg3MywicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzg0NjQ3LWRmNWE3ZjY4LTM1NTYtNDFkZC1hOGNkLTQ1ZWZjNGIzMmE0MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNDE3NTNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05NmYzODAwNGFkZDdkODcwMzlkZWNiOTE1ZmE3MzZkOTljMDVmNzJiZmVlNDQyZjA0OTBhNDZlZmU1M2ZlMjc5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.V9h-TgFCDAKkCZF45KDKs4Y4R45Gfz0LnVNOggqtnwM">
 
-### 2.목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스
+### 2.😉😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉😉
 
 유저들이 만든 다양한 챌린지를 확인해요
 
@@ -52,14 +51,14 @@ ______________________________________
 
 <img src ="">
 
-### 3.배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능
+### 3.😍😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍😍
 
   친구들에게 어떤 재미있는 이야기를 들려줄까요?
 
   어려움이 생기면 즉각적으로 해결해요
 ![채팅](https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/6836018b-ee2d-47a6-aa9b-6b05c35448eb)
 
-### 4.프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지
+### 4.😎😎😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎😎😎
 
 나를 보여줄 개성 있는 프로필 이미지는 이곳에서 설정해요
 
@@ -68,7 +67,7 @@ ______________________________________
 <img src ="">
 
 
-### 5.목표에 다가가는 여정을 보여 줄 인증 페이지
+### 5.😛😛😛목표에 다가가는 여정을 보여 줄 인증 페이지😛😛😛
 
 멤버는 인증 조건에 맞춰 오늘의 목표 달성을 인증해요
 
@@ -84,51 +83,54 @@ ______________________________________
 
 ####
 
-## BE 적용 기술
+## 📌BE 적용 기술
 
-### Github Actions
+### <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
 
 빌드, 테스트, 배포 등의 작업을 자동화 즉, 지속적 통합(CI)과 지속적 배포(CD)를 구축하는 데 유용하여 도입하였습니다.
 
-### Docker
+### <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
 일관적 배포 환경을 구축하고 정기적으로 실행되는 이미지 관리 기능을 활용하여 불필요한 리소스 낭비를 줄이기 위해 도입하였습니다.
 
-### Nginx
+### <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 
 리버스 프록시로 blue/ green 두 개의 서버 트래픽을 분산시켜 응답 시간을 최적화하기 위해 도입하였습니다.
 
-### Redis
+### <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 
 채팅 내용 및 Refresh token을 효율적으로 관리하는 데 적절하여 도입하였습니다.
 
-### Websocket/Stomp
+### 🚀🚀🚀Websocket/Stomp
 
 여러 사람이 함께 실시간으로 사용하는 채팅 기능을 구현하기 위해 도입하였습니다.
 
-### SSE
+### 📃📃📃SSE
 
 적절한 알림과 동기 부여 메시지 전송으로 사용자 편의성과 체류 시간을 늘리기 위해 도입하였습니다.
 
-### S3
+### <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
 정적 파일 및 이미지를 대용량으로 저장 및 관리하기 위해 도입하였습니다.
 
-####
-
-## 트러블 슈팅
-트러블 슈팅 보러가기 [링크 삽입. 노션 > 백엔드 > 트러블 슈팅 페이지]
 ______________________________________
 
-## 서비스 아키텍처
-[적절한 이미지 삽입]
+## 📌트러블 슈팅
+[트러블 슈팅 보러가기](https://www.notion.so/fac7c2d391b94c11ba2a38ee06156a92)
+
 ______________________________________
 
-## ERD
+## 📌서비스 아키텍처
+<img src ="https://private-user-images.githubusercontent.com/148944859/309804937-5767bbe1-f814-42f4-b597-9d33729ab25f.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjU3ODYsIm5iZiI6MTcwOTU2NTQ4NiwicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5ODA0OTM3LTU3NjdiYmUxLWY4MTQtNDJmNC1iNTk3LTlkMzM3MjlhYjI1Zi5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNTE4MDZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01YmE5NjMxNTFiMzBiMjk3OTUwYTU5ZDBhOTY4ZWVjZDY2ZjRjYmFhMGY2OGEwNzI3Y2VkOGEzODE2OTkzODkzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.IgECvbMpBuNI9Wx4XuEuJQcXdEOUcOkeRWh7tjNNUdE">
+
+______________________________________
+
+## 📌ERD
 <img src ="https://private-user-images.githubusercontent.com/148944859/309784977-8adcbaef-894d-4d2d-9b22-fdaebdcad8f5.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk1NjIyMjcsIm5iZiI6MTcwOTU2MTkyNywicGF0aCI6Ii8xNDg5NDQ4NTkvMzA5Nzg0OTc3LThhZGNiYWVmLTg5NGQtNGQyZC05YjIyLWZkYWViZGNhZDhmNS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNFQxNDE4NDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jNThhOGViMzhiNjUyNTM0ZGQwZTEzNDg0NGEzY2EwNTEzMmRjYjAwNjYwNDI0ZGVhYjYwMmE2ZDg0MDE5YmEzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.He9LtEpb-gDsyjHRKyG8vF0beJHObCoKNJQTHQvTINc">
+
 ______________________________________
 
-## 기술스택
- <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"><img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
+## 📌기술스택
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"><img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"><img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"><img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"><img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 
 eroom-challenge.comeroom-challenge.com
 함께하는 즐거움 이룸
