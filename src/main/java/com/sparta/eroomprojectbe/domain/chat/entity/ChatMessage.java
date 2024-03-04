@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatMessage {
+    private String messageId;
     private MessageType type;
     private String message;
     private String sender;

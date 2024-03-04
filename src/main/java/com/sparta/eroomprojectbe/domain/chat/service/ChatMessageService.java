@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatMessageService {
@@ -45,6 +46,10 @@ public class ChatMessageService {
      * @param message WebSocket 메시지
      */
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
+        // 메시지 ID 생성
+        String messageId = UUID.randomUUID().toString();
+        chatMessage.setMessageId(messageId);
+
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
