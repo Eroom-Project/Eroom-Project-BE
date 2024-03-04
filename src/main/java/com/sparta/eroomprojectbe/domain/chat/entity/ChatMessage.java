@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -18,14 +17,15 @@ public class ChatMessage {
     private MessageType type;
     private String message;
     private String sender;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time;
+
     private String memberId;
     private String challengeId;
     private String profileImageUrl;
-    private List<MemberInfo> currentMemberList;
 
     public enum MessageType {
         CHAT,
