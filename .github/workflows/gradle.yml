@@ -108,14 +108,13 @@ jobs:
       - name: Prune unused Docker images
         run: sudo docker image prune -a
 
-      - name: Check Target Group Health
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Describe Target Health
+      - name: Install AWS CLI
         run: |
-          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7
-          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup8081/e8aee20a88230553 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Check Target Group Health
+        run: |
+          TARGET_GROUP_ARN="arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7"
+          STATUS=$(aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN | jq -r '.TargetHealthDescriptions[].TargetHealth.State')
+          echo "Target Group Health Status: $STATUS"
