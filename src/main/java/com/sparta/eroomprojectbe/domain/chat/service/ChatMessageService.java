@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatMessageService {
@@ -38,7 +39,17 @@ public class ChatMessageService {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
+    /**
+     * 채팅 메시지를 저장하고 처리하는 메서드
+     * @param challengeId 챌린지 식별자
+     * @param chatMessage 저장할 채팅 메시지
+     * @param message WebSocket 메시지
+     */
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
+        // 메시지 ID 생성
+        String messageId = UUID.randomUUID().toString();
+        chatMessage.setMessageId(messageId);
+
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
@@ -91,8 +102,14 @@ public class ChatMessageService {
         }
     }
 
-    public boolean deleteChatMessage(String challengeId, Long messageNumber) {
+    /**
+     * 채팅 메시지를 삭제하는 메서드
+     * @param challengeId 챌린지 식별자
+     * @param messageId 삭제할 메시지 번호
+     * @return 삭제 성공 여부
+     */
+    public boolean deleteChatMessage(String challengeId, String messageId) {
         // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
-        return chatRoomRepository.deleteMessageByNumber(challengeId, messageNumber);
+        return chatRoomRepository.deleteMessageById(challengeId, messageId);
     }
 }
