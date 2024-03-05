@@ -115,7 +115,7 @@ ______________________________________
 
 여러 사람이 함께 실시간으로 사용하는 채팅 기능을 구현하기 위해 도입하였습니다.
 
-### 📃📃📃SSE
+### <img src="https://img.shields.io/badge/SSE-DC382D?style=for-the-badge&logo=SSE&logoColor=white">
 
 적절한 알림과 동기 부여 메시지 전송으로 사용자 편의성과 체류 시간을 늘리기 위해 도입하였습니다.
 
