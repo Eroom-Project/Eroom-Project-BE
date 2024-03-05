@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.KakaoUserInfoDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.global.RefreshToken;
-import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
+import com.sparta.eroomprojectbe.global.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,11 +34,10 @@ import java.net.URI;
 @Transactional
 public class KakaoService {
 
-    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${kakao.client-id}")
     private String kakaoClientId;
@@ -51,12 +48,11 @@ public class KakaoService {
     @Value("${kakao.client-secret}")
     private String kakaoClientSecret;
 
-    public KakaoService(PasswordEncoder passwordEncoder, MemberRepository memberRepository, RestTemplate restTemplate, JwtUtil jwtUtil,  RefreshTokenRepository refreshTokenRepository) {
-        this.passwordEncoder = passwordEncoder;
+    public KakaoService(MemberRepository memberRepository, RestTemplate restTemplate, JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.memberRepository = memberRepository;
         this.restTemplate = restTemplate;
         this.jwtUtil = jwtUtil;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
@@ -71,6 +67,7 @@ public class KakaoService {
         String refreshToken = jwtUtil.createRefreshToken(kakaoUserInfo.getEmail());
         jwtUtil.addJwtToCookie(refreshToken, response, JwtUtil.REFRESH_TOKEN_HEADER);
 
+        refreshTokenService.saveRefreshToken(kakaoUser.getEmail());
         return kakaoUser.getNickname();
     }
 
