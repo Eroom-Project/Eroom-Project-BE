@@ -1,6 +1,8 @@
 # 📌📕📚시험 공부부터 자기 계발까지, 학습 챌린지 웹사이트, 이룸
 
-혼자 해내지 못했던 일도 함께라면 이룰 수 있어요. 친구들과 소통하며 즐겁고 재미있게 도전하도록 만들어 주는 학습 챌린지 웹사이트, 이룸(E-ROOM)에서 친구들과 함께 꿈을 이뤄 보세요.
+혼자 해내지 못했던 일도 함께라면 이룰 수 있어요.     
+친구들과 소통하며 즐겁고 재미있게 도전하도록 만들어 주는 학습 챌린지 웹사이트,     
+이룸(E-ROOM)에서 친구들과 함께 꿈을 이뤄 보세요.    
 <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb9Mxxb%2FbtsFzeXBd4G%2FEI5ByAgDq76hkb2VuBaWJk%2Fimg.png">
 
 ### 이룸 둘러보기: https://eroom-challenge.com
