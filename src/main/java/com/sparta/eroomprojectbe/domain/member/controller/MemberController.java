@@ -48,7 +48,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/api/login")
     public ResponseEntity<BaseDto<LoginResponseDto>> login(@RequestBody LoginRequestDto request, HttpServletResponse response){
         LoginResponseDto loginResponseDto = memberService.login(request, response);
         return ResponseEntity.ok(new BaseDto<>(loginResponseDto, "로그인 성공", HttpStatus.OK));
