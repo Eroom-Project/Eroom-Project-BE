@@ -15,7 +15,7 @@ BE: https://github.com/Eroom-Project/Eroom-Project-BE
 ______________________________________
 
 ## 📌👪팀원 구성 
-<table>
+<table width="1000">>
   <tbody>
     <tr>
       <td align="center"><a href="https://github.com/W00SIK"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FXT3W0%2FbtsFz8wc2zk%2F2pGtOsJLicWbHbYM5j0cvK%2Fimg.jpg" width="100px;" height = "100px" alt=""/><br /><sub><b>FE 부팀장 : 최우식 </b></sub></a><br />
