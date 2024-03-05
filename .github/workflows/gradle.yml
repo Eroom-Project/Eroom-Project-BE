@@ -117,5 +117,4 @@ jobs:
 
       - name: Describe Target Health
         run: |
-          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7
-          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup8081/e8aee20a88230553 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
+          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
