@@ -8,8 +8,5 @@ import java.util.Optional;
 
 @EnableRedisRepositories
 @Configuration
-public interface RefreshTokenRepository extends CrudRepository<RefreshToken,String> {
-    Optional<RefreshToken> findByKeyEmail(String userEmail);
-    boolean existsByKeyEmail(String email);
-
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 }

@@ -57,12 +57,15 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
+    public String addBearer(String token){
+        return BEARER_PREFIX + token;
+    }
+
     // Access Token 생성
     public String createAccessToken(String email, MemberRoleEnum role) {
         Date now = new Date();
 
-        return BEARER_PREFIX +
-                Jwts.builder()
+        return Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, role) // 사용자 권한
                         .setExpiration(new Date(now.getTime() + TOKEN_TIME)) // 만료 시간
@@ -75,8 +78,7 @@ public class JwtUtil {
     public String createRefreshToken(String email) {
         Date now = new Date();
 
-        return BEARER_PREFIX +
-                Jwts.builder()
+        return Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
                         .setExpiration(new Date(now.getTime() + (7 * 24 * TOKEN_TIME))) // 만료 시간
                         .setIssuedAt(now) // 발급일
@@ -86,6 +88,7 @@ public class JwtUtil {
 
     //생성된 JWT를 Cookie에 저장
     public void addJwtToCookie(String token, HttpServletResponse res, String tokenName) throws UnsupportedEncodingException {
+        token = addBearer(token);
         token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
         Cookie cookie = new Cookie(tokenName, token);
 
