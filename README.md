@@ -15,9 +15,9 @@ ______________________________________
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/W00SIK"><img src="" width="100px;" alt=""/><br /><sub><b>FE 부팀장 : 최우식 </b></sub></a><br />
+      <td align="center"><a href="https://github.com/W00SIK"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FXT3W0%2FbtsFz8wc2zk%2F2pGtOsJLicWbHbYM5j0cvK%2Fimg.jpg" width="100px;" alt=""/><br /><sub><b>FE 부팀장 : 최우식 </b></sub></a><br />
       <sub><b><a href = "https://w00sik.github.io/">기술 블로그</a></b></sub></td>
-      <td align="center"><a href="https://github.com/injaehyun"><img src="" width="100px;" alt=""/><br />
+      <td align="center"><a href="https://github.com/injaehyun"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsId6q%2FbtsFpTnJjNa%2FZk9AjKnVCMkQu1VgH2zNY1%2Fimg.png" width="100px;" alt=""/><br />
         <sub><b>FE 팀원 : 인재현 </b></sub></a><br />
         <sub><b><a href = "https://url.kr/qvs56w">기술 블로그</a></b></sub></td>
       <td align="center"><a href="https://github.com/kuma0112"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fss156%2FbtsFzcZSKmT%2FHR43k0fwDMpbeBjR7xaTr1%2Fimg.jpg" width="100px;" alt=""/><br />
@@ -29,6 +29,9 @@ ______________________________________
       <td align="center"><a href="https://github.com/mingang211"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdjCMuZ%2FbtsFpPS6ViI%2FdmOqQIuCi3lDDOXGzhYzRk%2Fimg.png" width="100px;" alt=""/>
         <br /><sub><b>BE 팀원 : 민경현 </b></sub></a><br />
         <sub><b><a href = "https://a989977.tistory.com/">기술 블로그</a></b></sub></td></td>
+        <td align="center"><a href=""><img src="" width="100px;" alt=""/><br />
+        <sub><b>FE 팀원 : 이주원 </b></sub></a><br />
+        <sub><b><a href = "">기술 블로그</a></b></sub></td>
     </tr>
   </tbody>
 </table>
