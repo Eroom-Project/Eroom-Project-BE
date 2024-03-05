@@ -46,8 +46,9 @@ ______________________________________
 
 소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요
 
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcVc0BK%2FbtsFxXaZPBD%2FMKkjZhUcj6clk1gjuhQkTK%2Fimg.png">    
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png">    
+<img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/74c6b0cc-2bcb-4126-a31d-0b986073ccd2" width="1000">
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png" width="1000">
+
 
 ### 2.😉😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉😉
 
@@ -59,25 +60,30 @@ ______________________________________
 
 직접 챌린지를 만들면 신청자가 생길 때마다 알림이 날아가요
 
-<img src ="">
+<img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/0b4851fd-867c-435c-ab00-a4c2acdb8697" width="1000">
 
-### 3.😍😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍😍
+### 3.😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍
 
   친구들에게 어떤 재미있는 이야기를 들려줄까요?
 
   어려움이 생기면 즉각적으로 해결해요
-![채팅](https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/6836018b-ee2d-47a6-aa9b-6b05c35448eb)
+<img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F56851448-83a1-471b-9a68-6a4cbe1668fb%2FUntitled.png?table=block&id=3d9a98a6-ed33-4dc4-90a3-39c845211c90&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
-### 4.😎😎😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎😎😎
+https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509-411c-b67f-8edc303c812b
+
+
+### 4.😎😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎😎
 
 나를 보여줄 개성 있는 프로필 이미지는 이곳에서 설정해요
 
 완주 여부, 생성 여부에 따라 챌린지를 관리해요
 
-<img src ="">
+<img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F9b41b1c0-7edc-414a-b025-3d9180046d02%2FUntitled.png?table=block&id=f620ec9c-02aa-4a25-a8a8-db75ef4c8402&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
+
+https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/d20079f8-719e-47aa-b380-4c609cbbd8b7
 
 
-### 5.😛😛😛목표에 다가가는 여정을 보여 줄 인증 페이지😛😛😛
+### 5.😛😛목표에 다가가는 여정을 보여 줄 인증 페이지😛😛
 
 멤버는 인증 조건에 맞춰 오늘의 목표 달성을 인증해요
 
@@ -89,7 +95,9 @@ ______________________________________
 
 아직 승인받지 못한 다른 멤버의 글은 조회할 수 없어요
 
-<img src ="">
+<img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F195db3db-78b2-4d07-ad0a-166a29d257fd%2FUntitled.png?table=block&id=00c4fec2-cfc7-4f88-ac46-2b1e5a0d567c&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
+<img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fe098404f-04bb-4229-aa2b-ceb465d6a56a%2FUntitled.png?table=block&id=46422739-552e-480d-88b0-ceaecb82d149&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
+<img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fd10af3df-6af6-44c0-bde8-799d96153b4e%2FUntitled.png?table=block&id=d17314a0-1caf-4272-8871-d8978e52fc6f&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
 ####
 
@@ -130,12 +138,12 @@ ______________________________________
 ______________________________________
 
 ## 📌서비스 아키텍처
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcgLQpr%2FbtsFyfo9LS9%2FN3lOoJOOw4NXeLPQgoppHk%2Fimg.png">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcgLQpr%2FbtsFyfo9LS9%2FN3lOoJOOw4NXeLPQgoppHk%2Fimg.png" width="1000">
 
 ______________________________________
 
 ## 📌ERD
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fpxwbh%2FbtsFocns5l3%2F6MEqrCdrzewENq656qgKRK%2Fimg.png">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fpxwbh%2FbtsFocns5l3%2F6MEqrCdrzewENq656qgKRK%2Fimg.png" width="1000">
 
 ______________________________________
 
