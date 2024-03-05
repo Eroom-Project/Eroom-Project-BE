@@ -1,5 +1,6 @@
 package com.sparta.eroomprojectbe.global.config;
 
+import com.sparta.eroomprojectbe.global.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtAuthenticationFilter;
 import com.sparta.eroomprojectbe.global.jwt.JwtAuthorizationFilter;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
@@ -33,10 +34,12 @@ import java.util.List;
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenService refreshTokenService;
 
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenService refreshTokenService, AuthenticationConfiguration authenticationConfiguration) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.refreshTokenService = refreshTokenService;
         this.authenticationConfiguration = authenticationConfiguration;
     }
 
@@ -54,7 +57,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenService);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
