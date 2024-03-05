@@ -60,10 +60,13 @@ ______________________________________
 
 <img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/0b4851fd-867c-435c-ab00-a4c2acdb8697" width="1000">
 
+
 ### 3.😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍
 
-- 친구들에게 어떤 재미있는 이야기를 들려줄까요?    
-- 어려움이 생기면 즉각적으로 해결해요  
+- 도란도란 채팅으로 배움의 즐거움과 어려움을 실시간으로 나눠요    
+- 저장된 채팅내역을 불러올 수 있어요    
+- 현재 참여하고 있는 챌린지원들을 확인할 수 있어요
+  
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F56851448-83a1-471b-9a68-6a4cbe1668fb%2FUntitled.png?table=block&id=3d9a98a6-ed33-4dc4-90a3-39c845211c90&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
 https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509-411c-b67f-8edc303c812b
