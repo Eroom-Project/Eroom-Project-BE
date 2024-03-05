@@ -45,31 +45,25 @@ ______________________________________
 
 ### 1.😮😮회원가입은 간편하고 빠르게😮😮
 
-가입하기 전 인증 메일을 보내 멤버 여부를 확인해요
+- 가입하기 전 인증 메일을 보내 멤버 여부를 확인해요    
+- 소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요    
 
-소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요
-
-<img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/74c6b0cc-2bcb-4126-a31d-0b986073ccd2" width="1000">
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png" width="1000">
+<img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/74c6b0cc-2bcb-4126-a31d-0b986073ccd2" width="400"  height = "300px"> <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png" width="280"  height = "300px">
 
 
 ### 2.😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉
 
-유저들이 만든 다양한 챌린지를 확인해요
-
-다양한 조건의 필터링 기능으로 원하는 챌린지를 찾아요
-
-나와 같은 목표인 챌린지에 신청할 때는 인원 제한을 확인하세요
-
-직접 챌린지를 만들면 신청자가 생길 때마다 알림이 날아가요
+- 유저들이 만든 다양한 챌린지를 확인해요    
+- 다양한 조건의 필터링 기능으로 원하는 챌린지를 찾아요    
+- 나와 같은 목표인 챌린지에 신청할 때는 인원 제한을 확인하세요    
+- 직접 챌린지를 만들면 신청자가 생길 때마다 알림이 날아가요    
 
 <img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/0b4851fd-867c-435c-ab00-a4c2acdb8697" width="1000">
 
 ### 3.😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍
 
-  친구들에게 어떤 재미있는 이야기를 들려줄까요?
-
-  어려움이 생기면 즉각적으로 해결해요
+- 친구들에게 어떤 재미있는 이야기를 들려줄까요?    
+- 어려움이 생기면 즉각적으로 해결해요  
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F56851448-83a1-471b-9a68-6a4cbe1668fb%2FUntitled.png?table=block&id=3d9a98a6-ed33-4dc4-90a3-39c845211c90&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
 https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509-411c-b67f-8edc303c812b
@@ -77,9 +71,8 @@ https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509
 
 ### 4.😎😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎😎
 
-나를 보여줄 개성 있는 프로필 이미지는 이곳에서 설정해요
-
-완주 여부, 생성 여부에 따라 챌린지를 관리해요
+- 나를 보여줄 개성 있는 프로필 이미지는 이곳에서 설정해요    
+- 완주 여부, 생성 여부에 따라 챌린지를 관리해요    
 
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F9b41b1c0-7edc-414a-b025-3d9180046d02%2FUntitled.png?table=block&id=f620ec9c-02aa-4a25-a8a8-db75ef4c8402&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
@@ -88,15 +81,11 @@ https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/d20079f8-719e
 
 ### 5.😛😛목표에 다가가는 여정을 보여 줄 인증 페이지😛😛
 
-멤버는 인증 조건에 맞춰 오늘의 목표 달성을 인증해요
-
-리더는 멤버의 인증글을 승인 혹은 거부해요
-
-인증글이 승인 및 거부되면 해당 작성자에게 알림이 날아가요
-
-알림이 날아오면 이곳에서 자신의 글을 수정, 삭제해요
-
-아직 승인받지 못한 다른 멤버의 글은 조회할 수 없어요
+- 멤버는 인증 조건에 맞춰 오늘의 목표 달성을 인증해요    
+- 리더는 멤버의 인증글을 승인 혹은 거부해요    
+- 인증글이 승인 및 거부되면 해당 작성자에게 알림이 날아가요    
+- 알림이 날아오면 이곳에서 자신의 글을 수정, 삭제해요    
+- 아직 승인받지 못한 다른 멤버의 글은 조회할 수 없어요    
 
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F195db3db-78b2-4d07-ad0a-166a29d257fd%2FUntitled.png?table=block&id=00c4fec2-cfc7-4f88-ac46-2b1e5a0d567c&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fe098404f-04bb-4229-aa2b-ceb465d6a56a%2FUntitled.png?table=block&id=46422739-552e-480d-88b0-ceaecb82d149&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
@@ -108,30 +97,30 @@ https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/d20079f8-719e
 
 ### <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
 
-빌드, 테스트, 배포 등의 작업을 자동화 즉, 지속적 통합(CI)과 지속적 배포(CD)를 구축하는 데 유용하여 도입하였습니다.
+빌드, 테스트, 배포 등의 작업을 자동화 즉, 지속적 통합(CI)과 지속적 배포(CD)를 구축하는 데 유용하여 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
-일관적 배포 환경을 구축하고 정기적으로 실행되는 이미지 관리 기능을 활용하여 불필요한 리소스 낭비를 줄이기 위해 도입하였습니다.
+일관적 배포 환경을 구축하고 정기적으로 실행되는 이미지 관리 기능을 활용하여 불필요한 리소스 낭비를 줄이기 위해 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 
-리버스 프록시로 blue/ green 두 개의 서버 트래픽을 분산시켜 응답 시간을 최적화하기 위해 도입하였습니다.
+리버스 프록시로 blue/ green 두 개의 서버 트래픽을 분산시켜 응답 시간을 최적화하기 위해 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 
-채팅 내용 및 Refresh token을 효율적으로 관리하는 데 적절하여 도입하였습니다.
+채팅 내용 및 Refresh token을 효율적으로 관리하는 데 적절하여 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/websocket-25A162?style=for-the-badge&logo=websocket&logoColor=white"> , <img src="https://img.shields.io/badge/stomp-001E59?style=for-the-badge&logo=websocket&logoColor=stomp">
 
-여러 사람이 함께 실시간으로 사용하는 채팅 기능을 구현하기 위해 도입하였습니다.
+여러 사람이 함께 실시간으로 사용하는 채팅 기능을 구현하기 위해 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/SSE-FFCD00?style=for-the-badge&logo=SSE&logoColor=white">
 
-적절한 알림과 동기 부여 메시지 전송으로 사용자 편의성과 체류 시간을 늘리기 위해 도입하였습니다.
+적절한 알림과 동기 부여 메시지 전송으로 사용자 편의성과 체류 시간을 늘리기 위해 도입하였습니다.    
 
 ### <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
-정적 파일 및 이미지를 대용량으로 저장 및 관리하기 위해 도입하였습니다.
+정적 파일 및 이미지를 대용량으로 저장 및 관리하기 위해 도입하였습니다.    
 
 ______________________________________
 
@@ -164,5 +153,5 @@ ______________________________________
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"><img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
 
 
-eroom-challenge.comeroom-challenge.com
-함께하는 즐거움 이룸
+eroom-challenge.comeroom-challenge.com      
+함께하는 즐거움 이룸      
