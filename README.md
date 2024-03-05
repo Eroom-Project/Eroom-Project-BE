@@ -111,11 +111,11 @@ ______________________________________
 
 채팅 내용 및 Refresh token을 효율적으로 관리하는 데 적절하여 도입하였습니다.
 
-### <img src="https://img.shields.io/badge/websocket-25A162?style=for-the-badge&logo=websocket&logoColor=white"> / <img src="https://img.shields.io/badge/stomp-25A162?style=for-the-badge&logo=websocket&logoColor=stomp">
+### <img src="https://img.shields.io/badge/websocket-25A162?style=for-the-badge&logo=websocket&logoColor=white"> , <img src="https://img.shields.io/badge/stomp-001E59?style=for-the-badge&logo=websocket&logoColor=stomp">
 
 여러 사람이 함께 실시간으로 사용하는 채팅 기능을 구현하기 위해 도입하였습니다.
 
-### <img src="https://img.shields.io/badge/SSE-DC382D?style=for-the-badge&logo=SSE&logoColor=white">
+### <img src="https://img.shields.io/badge/SSE-FFCD00?style=for-the-badge&logo=SSE&logoColor=white">
 
 적절한 알림과 동기 부여 메시지 전송으로 사용자 편의성과 체류 시간을 늘리기 위해 도입하였습니다.
 
