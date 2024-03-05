@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -37,17 +34,9 @@ public class ChatRoomRepository {
      * @param challengeId 채팅 내역을 가져올 채팅방의 고유 식별자
      * @return 채팅 내역을 담은 리스트
      */
-    public List<ChatMessage> getChatHistory(String challengeId) {
+    public List<Object> getChatHistory(String challengeId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
-        // 타입 변환 처리 - redis에서 조회한 객체 목록을 ChatMessage 타입의 객체 목록으로 변환
-        List<Object> objects = listOperations.range(key, 0, -1);
-        if (objects != null) {
-            return objects.stream()
-                    .filter(ChatMessage.class::isInstance) // ChatMessage 타입이면
-                    .map(ChatMessage.class::cast) // cast 변환 수행
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+        return listOperations.range(key, 0, -1);
     }
 
     /**
