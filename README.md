@@ -28,7 +28,7 @@ ______________________________________
         <sub><b><a href = "https://eunchaelyu.github.io/">기술 블로그</a></b></sub></td></td>
       <td align="center"><a href="https://github.com/mingang211"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdjCMuZ%2FbtsFpPS6ViI%2FdmOqQIuCi3lDDOXGzhYzRk%2Fimg.png" width="100px;" alt=""/>
         <br /><sub><b>BE 팀원 : 민경현 </b></sub></a><br />
-        <sub><b><a href = "https://eunchaelyu.github.io/">기술 블로그</a></b></sub></td></td>
+        <sub><b><a href = "https://a989977.tistory.com/">기술 블로그</a></b></sub></td></td>
     </tr>
   </tbody>
 </table>
