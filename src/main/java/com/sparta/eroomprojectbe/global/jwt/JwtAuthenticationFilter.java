@@ -2,6 +2,7 @@ package com.sparta.eroomprojectbe.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
+import com.sparta.eroomprojectbe.global.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,9 +20,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
         setFilterProcessesUrl("/api/login");
     }
 
@@ -49,11 +52,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         MemberRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getMember().getRole();
         String accessToken = jwtUtil.createAccessToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(username);
+        String refreshToken = refreshTokenService.saveRefreshToken(username);
 
-
-
-        jwtUtil.addJwtToCookie(accessToken, response, JwtUtil.AUTHORIZATION_HEADER);
+        jwtUtil.addJwtToCookie( accessToken, response, JwtUtil.AUTHORIZATION_HEADER);
         jwtUtil.addJwtToCookie(refreshToken, response, JwtUtil.REFRESH_TOKEN_HEADER);
 
         log.info("사용자 '{}'의 로그인 성공 및 JWT 생성", username);

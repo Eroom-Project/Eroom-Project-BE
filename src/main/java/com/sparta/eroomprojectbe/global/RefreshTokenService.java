@@ -2,35 +2,37 @@ package com.sparta.eroomprojectbe.global;
 
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
-    public void saveRefreshToken(String keyEmail) {
+    public String saveRefreshToken(String keyEmail) {
         String refreshToken = jwtUtil.createRefreshToken(keyEmail);
-        Optional<RefreshToken> findToken = refreshTokenRepository.findByKeyEmail(keyEmail);
+        Optional<RefreshToken> findToken = refreshTokenRepository.findById(keyEmail);
         if (findToken.isPresent()){
             findToken.get().updateToken(refreshToken);
+            refreshTokenRepository.save(findToken.get());
         } else {
             refreshTokenRepository.save(new RefreshToken(keyEmail, refreshToken));
         }
+        return refreshToken;
     }
 
-    @Transactional
     public void removeRefreshToken(String keyEmail) {
-        refreshTokenRepository.findByKeyEmail(keyEmail)
+        refreshTokenRepository.findById(keyEmail)
                 .ifPresent(refreshTokenRepository::delete);
     }
 
     public Optional<RefreshToken> getRefreshToken(String keyEmail) {
-        return refreshTokenRepository.findByKeyEmail(keyEmail);
+        return refreshTokenRepository.findById(keyEmail);
     }
 }
