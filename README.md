@@ -43,8 +43,8 @@ ______________________________________
 
 소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요
 
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcVc0BK%2FbtsFxXaZPBD%2FMKkjZhUcj6clk1gjuhQkTK%2Fimg.png">
-<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png">
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcVc0BK%2FbtsFxXaZPBD%2FMKkjZhUcj6clk1gjuhQkTK%2Fimg.png">    
+<img src ="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png">    
 
 ### 2.😉😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉😉
 
