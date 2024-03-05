@@ -20,7 +20,7 @@ ______________________________________
       <td align="center"><a href="https://github.com/injaehyun"><img src="" width="100px;" alt=""/><br />
         <sub><b>FE 팀원 : 인재현 </b></sub></a><br />
         <sub><b><a href = "https://url.kr/qvs56w">기술 블로그</a></b></sub></td>
-      <td align="center"><a href="https://github.com/kuma0112"><img src="" width="100px;" alt=""/><br />
+      <td align="center"><a href="https://github.com/kuma0112"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fss156%2FbtsFzcZSKmT%2FHR43k0fwDMpbeBjR7xaTr1%2Fimg.jpg" width="100px;" alt=""/><br />
         <sub><b>BE 팀장 : 이신지 </b></sub></a><br />
         <sub><b><a href = "https://kmcp.tistory.com/">기술 블로그</a></b></sub></td>
       <td align="center"><a href="https://github.com/eunchaelyu"><img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/40ca57e2-5227-43dc-ac78-d91f231eb93e" width="100px;" alt=""/><br />
