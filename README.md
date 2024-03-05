@@ -15,12 +15,20 @@ ______________________________________
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>FE 부팀장 : 최우식 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : 인재현 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀장 : 이신지 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 류은채 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdjCMuZ%2FbtsFpPS6ViI%2FdmOqQIuCi3lDDOXGzhYzRk%2Fimg.png" width="100px;" alt=""/>
-        <br /><sub><b>BE 팀원 : 민경현 </b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/W00SIK"><img src="" width="100px;" alt=""/><br /><sub><b>FE 부팀장 : 최우식 </b></sub></a><br />
+      <sub><b><a href = "https://w00sik.github.io/">기술 블로그</a></b></sub></td>
+      <td align="center"><a href="https://github.com/injaehyun"><img src="" width="100px;" alt=""/><br />
+        <sub><b>FE 팀원 : 인재현 </b></sub></a><br />
+        <sub><b><a href = "https://url.kr/qvs56w">기술 블로그</a></b></sub></td>
+      <td align="center"><a href="https://github.com/kuma0112"><img src="" width="100px;" alt=""/><br />
+        <sub><b>BE 팀장 : 이신지 </b></sub></a><br />
+        <sub><b><a href = "https://kmcp.tistory.com/">기술 블로그</a></b></sub></td>
+      <td align="center"><a href="https://github.com/eunchaelyu"><img src="" width="100px;" alt=""/><br />
+        <sub><b>BE 팀원 : 류은채 </b></sub></a><br />
+        <sub><b><a href = "https://eunchaelyu.github.io/">기술 블로그</a></b></sub></td></td>
+      <td align="center"><a href="https://github.com/mingang211"><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdjCMuZ%2FbtsFpPS6ViI%2FdmOqQIuCi3lDDOXGzhYzRk%2Fimg.png" width="100px;" alt=""/>
+        <br /><sub><b>BE 팀원 : 민경현 </b></sub></a><br />
+        <sub><b><a href = "https://eunchaelyu.github.io/">기술 블로그</a></b></sub></td></td>
     </tr>
   </tbody>
 </table>
