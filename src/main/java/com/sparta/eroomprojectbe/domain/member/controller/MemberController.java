@@ -1,10 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.eroomprojectbe.domain.member.dto.BaseDto;
-import com.sparta.eroomprojectbe.domain.member.dto.MypageResponseDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupRequestDto;
-import com.sparta.eroomprojectbe.domain.member.dto.SignupResponseDto;
+import com.sparta.eroomprojectbe.domain.member.dto.*;
 import com.sparta.eroomprojectbe.domain.member.service.KakaoService;
 import com.sparta.eroomprojectbe.domain.member.service.MemberService;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
@@ -49,6 +46,12 @@ public class MemberController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseDto<>(null, e.getMessage(), HttpStatus.BAD_REQUEST));
         }
+    }
+
+    @PostMapping("/api/login")
+    public ResponseEntity<BaseDto<LoginResponseDto>> login(@RequestBody LoginRequestDto request, HttpServletResponse response){
+        LoginResponseDto loginResponseDto = memberService.login(request, response);
+        return ResponseEntity.ok(new BaseDto<>(loginResponseDto, "로그인 성공", HttpStatus.OK));
     }
 
     @PostMapping("/api/logout")

@@ -8,7 +8,7 @@ import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.RefreshToken;
-import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
+import com.sparta.eroomprojectbe.global.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
@@ -16,9 +16,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTimeUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +26,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -46,17 +41,18 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
     private final ChallengerRepository challengerRepository;
     private final ImageS3Service imageS3Service;
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, ChallengerRepository challengerRepository, ImageS3Service imageS3Service, EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
+
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenService refreshTokenService, ChallengerRepository challengerRepository, ImageS3Service imageS3Service, EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.refreshTokenService = refreshTokenService;
         this.challengerRepository = challengerRepository;
         this.imageS3Service = imageS3Service;
         this.emailService = emailService;
@@ -83,6 +79,16 @@ public class MemberService {
         return new SignupResponseDto(memberRepository.save(member));
     }
 
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto request, HttpServletResponse response) {
+        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new EntityNotFoundException("해당 회원을 찾을 수 없습니다."));
+        String email = member.getEmail();
+
+        refreshTokenService.saveRefreshToken(email);
+        return new LoginResponseDto(email);
+    }
+
     // 이메일 중복 확인
     public String checkEmail(String email) {
         Matcher matcher = pattern.matcher(email);
@@ -105,7 +111,7 @@ public class MemberService {
         refreshToken = jwtUtil.substringToken(refreshToken);
         String userEmail = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
 
-        Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
+        Optional<RefreshToken> storedRefreshToken = refreshTokenService.getRefreshToken(userEmail);
 
         if (storedRefreshToken.isPresent()) {
             String storedToken = storedRefreshToken.get().getRefreshToken();
@@ -118,7 +124,7 @@ public class MemberService {
 
                 return "토큰 재발급 성공";
             } else {
-                refreshTokenRepository.delete(storedRefreshToken.get());
+                refreshTokenService.removeRefreshToken(userEmail);
             }
         }
 
@@ -135,10 +141,10 @@ public class MemberService {
             Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
             String userEmail = claims.getSubject();
 
-            Optional<RefreshToken> storedRefreshToken = refreshTokenRepository.findByKeyEmail(userEmail);
+            Optional<RefreshToken> storedRefreshToken = refreshTokenService.getRefreshToken(userEmail);
 
             if (storedRefreshToken.isPresent() && storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
-                refreshTokenRepository.delete(storedRefreshToken.get());
+                refreshTokenService.removeRefreshToken(userEmail);
 
                 deleteJwtCookie(response, JwtUtil.AUTHORIZATION_HEADER);
                 deleteJwtCookie(response, JwtUtil.REFRESH_TOKEN_HEADER);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatMessageService {
@@ -24,10 +25,10 @@ public class ChatMessageService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
-    private final RedisTemplate<String, ChatMessage> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ChatRoomRepository chatRoomRepository;
 
-    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService, RedisTemplate<String, ChatMessage> redisTemplate, ChatRoomRepository chatRoomRepository) {
+    public ChatMessageService(ChallengerRepository challengerRepository, ChallengeRepository challengeRepository, MemberRepository memberRepository, ChatRoomService chatRoomService, RedisTemplate<String, Object> redisTemplate, ChatRoomRepository chatRoomRepository) {
         this.challengerRepository = challengerRepository;
         this.challengeRepository = challengeRepository;
         this.memberRepository = memberRepository;
@@ -45,6 +46,10 @@ public class ChatMessageService {
      * @param message WebSocket 메시지
      */
     public void saveMessage(String challengeId, ChatMessage chatMessage, Message<?> message) {
+        // 메시지 ID 생성
+        String messageId = UUID.randomUUID().toString();
+        chatMessage.setMessageId(messageId);
+
         // 회원 ID 가져오기
         String challengeIdString = chatMessage.getChallengeId();
         String memberIdString = chatMessage.getMemberId();
@@ -100,11 +105,11 @@ public class ChatMessageService {
     /**
      * 채팅 메시지를 삭제하는 메서드
      * @param challengeId 챌린지 식별자
-     * @param messageNumber 삭제할 메시지 번호
+     * @param messageId 삭제할 메시지 번호
      * @return 삭제 성공 여부
      */
-    public boolean deleteChatMessage(String challengeId, Long messageNumber) {
+    public boolean deleteChatMessage(String challengeId, String messageId) {
         // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
-        return chatRoomRepository.deleteMessageByNumber(challengeId, messageNumber);
+        return chatRoomRepository.deleteMessageById(challengeId, messageId);
     }
 }

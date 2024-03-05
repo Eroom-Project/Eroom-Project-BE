@@ -42,11 +42,6 @@ public class JwtUtil {
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 1시간
 
-    private final RefreshTokenRepository refreshTokenRepository;
-
-    public JwtUtil(RefreshTokenRepository refreshTokenRepository) {
-        this.refreshTokenRepository = refreshTokenRepository;
-    }
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -77,24 +72,16 @@ public class JwtUtil {
     }
 
     // Refresh Token 생성
-    @Transactional
     public String createRefreshToken(String email) {
         Date now = new Date();
 
-        String refreshToken = Jwts.builder()
+        return BEARER_PREFIX +
+                Jwts.builder()
                         .setSubject(email) // 사용자 식별자값(ID)
                         .setExpiration(new Date(now.getTime() + (7 * 24 * TOKEN_TIME))) // 만료 시간
                         .setIssuedAt(now) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
-
-        Optional<RefreshToken> findToken = refreshTokenRepository.findByKeyEmail(email);
-        if (findToken.isPresent()){
-            findToken.get().updateToken(refreshToken);
-        } else {
-            refreshTokenRepository.save(new RefreshToken(email, refreshToken));
-        }
-        return BEARER_PREFIX + refreshToken;
     }
 
     //생성된 JWT를 Cookie에 저장
