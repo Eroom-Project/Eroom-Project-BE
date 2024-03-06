@@ -39,7 +39,7 @@ public class ChatController {
     }
 
 
-    @DeleteMapping("/api/chat/{challengeId}/{messageNumber}")
+    @DeleteMapping("/api/chat/{challengeId}/{messageId}")
     public ResponseEntity<BaseResponseDto<String>> deleteChatMessage(@PathVariable String challengeId,
                                                                      @PathVariable String messageId) {
         boolean deleteSuccess = chatMessageService.deleteChatMessage(challengeId, messageId);
