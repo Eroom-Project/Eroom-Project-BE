@@ -41,28 +41,43 @@ ______________________________________
 
 ______________________________________
 
-## 📌🌠주요 기능
+## 📌주요 기능
 
-### 1.😮😮회원가입은 간편하고 빠르게😮😮
-
+## 1.😮회원가입은 간편하고 빠르게😮
+<details>
+<summary>회원가입/로그인/카카오 로그인 기능</summary>
+<div markdown="1">
+  <h3></h3>      
+  
 - 가입하기 전 인증 메일을 보내 멤버 여부를 확인해요    
+  
 - 소셜 로그인으로 간편하게 이룸의 멤버가 될 수 있어요    
 
 <img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/74c6b0cc-2bcb-4126-a31d-0b986073ccd2" width="400"  height = "300px"> <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl6Bnt%2FbtsFydx6MYb%2FlaD6Sm5ywO9w8gyH7zYNd0%2Fimg.png" width="280"  height = "300px">
+</div>
+</details>
 
-
-### 2.😉😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉😉
-
-- 유저들이 만든 다양한 챌린지를 확인해요    
-- 다양한 조건의 필터링 기능으로 원하는 챌린지를 찾아요    
-- 나와 같은 목표인 챌린지에 신청할 때는 인원 제한을 확인하세요    
-- 직접 챌린지를 만들면 신청자가 생길 때마다 알림이 날아가요    
+## 2.😉목표가 같은 이들과 함께하고 싶은 당신을 위해 준비한 서비스😉
+<details>
+<summary>챌린지 생성/조회/검색 기능</summary>
+<div markdown="1">
+    <h3></h3>      
+  
+- 유저들이 만든 다양한 챌린지를 확인해요        
+- 다양한 조건의 필터링 기능으로 원하는 챌린지를 찾아요        
+- 나와 같은 목표인 챌린지에 신청할 때는 인원 제한을 확인하세요        
+- 직접 챌린지를 만들면 신청자가 생길 때마다 알림이 날아가요        
 
 <img src="https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/0b4851fd-867c-435c-ab00-a4c2acdb8697" width="1000">
+</div>
+</details>
 
-
-### 3.😍😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍😍
-
+## 3.😍배움의 즐거움과 어려움을 나눌 수 있는 채팅 기능😍
+<details>
+<summary>실시간 채팅 기능</summary>
+<div markdown="1">
+    <h3></h3>      
+  
 - 도란도란 채팅으로 배움의 즐거움과 어려움을 실시간으로 나눠요    
 - 저장된 채팅내역을 불러올 수 있어요    
 - 현재 참여하고 있는 챌린지원들을 확인할 수 있어요
@@ -71,9 +86,15 @@ ______________________________________
 
 https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509-411c-b67f-8edc303c812b
 
+</div>
+</details>
 
-### 4.😎😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎😎
-
+## 4.😎프로필과 챌린지를 한꺼번에 관리할 수 있는 마이페이지😎
+<details>
+<summary>프로필 수정/참여 챌린지 조회 기능</summary>
+<div markdown="1">
+    <h3></h3>      
+  
 - 나를 보여줄 개성 있는 프로필 이미지는 이곳에서 설정해요    
 - 완주 여부, 생성 여부에 따라 챌린지를 관리해요    
 
@@ -81,9 +102,15 @@ https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/17319eb6-2509
 
 https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/d20079f8-719e-47aa-b380-4c609cbbd8b7
 
+</div>
+</details>
 
-### 5.😛😛목표에 다가가는 여정을 보여 줄 인증 페이지😛😛
-
+## 5.😛목표에 다가가는 여정을 보여 줄 인증 페이지😛
+<details>
+<summary>챌린지 인증/리더의 승인/거절 기능</summary>
+<div markdown="1">
+    <h3></h3>      
+  
 - 멤버는 인증 조건에 맞춰 오늘의 목표 달성을 인증해요    
 - 리더는 멤버의 인증글을 승인 혹은 거부해요    
 - 인증글이 승인 및 거부되면 해당 작성자에게 알림이 날아가요    
@@ -94,7 +121,12 @@ https://github.com/Eroom-Project/Eroom-Project-BE/assets/119996957/d20079f8-719e
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fe098404f-04bb-4229-aa2b-ceb465d6a56a%2FUntitled.png?table=block&id=46422739-552e-480d-88b0-ceaecb82d149&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 <img src ="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fd10af3df-6af6-44c0-bde8-799d96153b4e%2FUntitled.png?table=block&id=d17314a0-1caf-4272-8871-d8978e52fc6f&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1740&userId=58ed5a4b-1cf9-4f1b-9566-5ae5a8ec917d&cache=v2" width="1000">
 
-####
+</div>
+</details>
+     
+
+______________________________________
+    
 
 ## 📌BE 적용 기술
 
