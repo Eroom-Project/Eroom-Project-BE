@@ -52,20 +52,32 @@ public class ChatRoomRepository {
         redisTemplate.expire(key, Duration.ofDays(30));
     }
 
-    /**
-     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
-     * @param messageId 삭제할 메시지의 UUID 식별자
-     * @return 삭제가 성공하면 true, 실패하면 false 반환
-     */
     public boolean deleteMessageById(String challengeId, String messageId) {
-        String key = CHAT_ROOM_PREFIX + challengeId;
+        String key = CHAT_ROOM_PREFIX + challengeId + ":" + messageId; // 메시지를 식별하는 고유한 키 생성
         try {
-            // Redis 리스트에서 해당 메시지를 제거합니다.
-            listOperations.remove(key, 0, messageId);
+            // Redis에서 메시지 직접 삭제
+            redisTemplate.delete(key);
             return true; // 삭제 성공
         } catch (Exception e) {
             e.printStackTrace();
             return false; // 삭제 실패
         }
     }
+
+    /**
+     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
+     * @param messageId 삭제할 메시지의 UUID 식별자
+     * @return 삭제가 성공하면 true, 실패하면 false 반환
+     */
+//    public boolean deleteMessageById(String challengeId, String messageId) {
+//        String key = CHAT_ROOM_PREFIX + challengeId;
+//        try {
+//            // Redis 리스트에서 해당 메시지를 제거합니다.
+//            listOperations.remove(key, 0, messageId);
+//            return true; // 삭제 성공
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false; // 삭제 실패
+//        }
+//    }
 }
