@@ -2,6 +2,8 @@ package com.sparta.eroomprojectbe.domain.chat.repository;
 
 import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -52,29 +54,60 @@ public class ChatRoomRepository {
         redisTemplate.expire(key, Duration.ofDays(30));
     }
 
+    /**
+     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
+     * @param messageId   삭제할 메시지의 UUID 식별자
+     * @param challengeId 챌린지 식별자
+     * @return 삭제가 성공하면 true, 실패하면 false 반환
+     */
     public boolean deleteMessageById(String challengeId, String messageId) {
-        String key = CHAT_ROOM_PREFIX + challengeId + ":" + messageId; // 메시지를 식별하는 고유한 키 생성
+        String key = CHAT_ROOM_PREFIX + challengeId;
         try {
-            // Redis에서 메시지 직접 삭제
-            redisTemplate.delete(key);
-            return true; // 삭제 성공
+            // Redis 리스트에서 해당 메시지의 인덱스 조회
+            Long index = findMessageIndex(key, messageId);
+
+            // 인덱스를 찾은 경우에만 해당 요소를 삭제
+            if (index != null) {
+                // 인덱스를 사용하여 해당 요소를 삭제
+                redisTemplate.opsForList().remove(key, 1, index);
+                return true; // 삭제 성공
+            } else {
+                return false; // 삭제 실패
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false; // 삭제 실패
         }
     }
 
-    /**
-     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
-     * @param messageId 삭제할 메시지의 UUID 식별자
-     * @return 삭제가 성공하면 true, 실패하면 false 반환
-     */
+    // messageId를 사용하여 메시지의 인덱스를 찾는 메서드
+    private Long findMessageIndex(String key, String messageId) throws JSONException {
+        List<Object> messages = listOperations.range(key, 0, -1);
+        for (int i = 0; i < messages.size(); i++) {
+            String jsonMessage = (String) messages.get(i);
+            JSONObject jsonObject = new JSONObject(jsonMessage);
+            String storedMessageId = jsonObject.getString("messageId");
+            if (messageId.equals(storedMessageId)) {
+                return Long.valueOf(i); // 메시지의 인덱스를 반환
+            }
+        }
+        return null; // messageId와 일치하는 메시지를 찾지 못한 경우
+    }
+
+
+//    /**
+//     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
+//     * @param messageId 삭제할 메시지의 UUID 식별자
+//     * @return 삭제가 성공하면 true, 실패하면 false 반환
+//     */
 //    public boolean deleteMessageById(String challengeId, String messageId) {
 //        String key = CHAT_ROOM_PREFIX + challengeId;
 //        try {
 //            // Redis 리스트에서 해당 메시지를 제거합니다.
 //            listOperations.remove(key, 0, messageId);
-//            return true; // 삭제 성공
+//            // Redis에서 삭제 후 리스트 가져오기
+//            List<Object> afterDeletion = listOperations.range(key, 0, -1);
+//            return !afterDeletion.contains(messageId); // 삭제 성공
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            return false; // 삭제 실패
