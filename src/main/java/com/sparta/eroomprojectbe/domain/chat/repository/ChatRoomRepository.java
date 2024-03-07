@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -66,10 +67,10 @@ public class ChatRoomRepository {
         String key = CHAT_ROOM_PREFIX + challengeId;
         List<Object> messages = listOperations.range(key, 0, -1);
         for (Object message : messages) {
-            ChatMessage chatMessage = (ChatMessage) message;
-            if (chatMessage.getMessageId().equals(messageId)) {
-                listOperations.remove(key, 1, message); // 전체 메시지 객체를 제공하여 삭제
-                return true; // 삭제 성공
+            Map<String, Object> messageMap = (Map<String, Object>) message;
+            if (messageMap.get("messageId").equals(messageId)) {
+                listOperations.remove(key, 1, message);
+                return true;
             }
         }
         return false; // 삭제 실패
