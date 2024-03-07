@@ -11,6 +11,10 @@ import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
 import com.sparta.eroomprojectbe.global.rollenum.ChallengerRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,75 +103,75 @@ public class ChallengeService {
         return challengeLoginResponseDto;
     }
 
-    /**
-     * 인기순으로 조회하는 서비스 명령어
-     *
-     * @return 인기순으로 정렬된 챌린지 리스트, 조회성공여부 메세지, httpStatus
-     */
-    public AllResponseDto getPopularChallenge() {
-        try {
-            List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
-            List<ChallengeResponseDto> popularChallengeResponseDtoList = popularChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
-                    .collect(Collectors.toList());
-            return new AllResponseDto(popularChallengeResponseDtoList, "인기순으로 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new AllResponseDto(null, "인기순으로 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * 카테고리별로 조회하는 서비스 메서드
-     *
-     * @param category IT, 외국어, 수학, 과학, 인문, 예체능, 기타
-     * @return param값과 일치하는 카테고리를 가진 챌린지 리스트, 조회 성공 여부 메세지, httpStatus
-     */
-    public AllResponseDto getCategoryChallenge(CategoryRole category) {
-        try {
-            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category.name());
-            List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
-                    .collect(Collectors.toList());
-            return new AllResponseDto(categoryChallengeResponseDtoList, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new AllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * 검색어로 조회하는 서비스 명령어
-     *
-     * @param query 검색하려는 키워드
-     * @return title, category, description에 query값을 포함하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
-     */
-    public AllResponseDto getQueryChallenge(String query) {
-        try {
-            List<Challenge> queryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query);
-            List<ChallengeResponseDto> queryChallengeResponseDtoList = queryChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
-                    .collect(Collectors.toList());
-            return new AllResponseDto(queryChallengeResponseDtoList, "키워드로 챌린지 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new AllResponseDto(null, "키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * 최신순으로 조회하는 서비스 메서드
-     *
-     * @return 최신순을 기준으로 하여 정렬하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
-     */
-    public AllResponseDto getLatestChallenge() {
-        try {
-            List<Challenge> latestChallenges = challengeRepository.findByOrderByCreatedAtDesc();
-            List<ChallengeResponseDto> latestChallengeResponseDtoList = latestChallenges.stream()
-                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
-                    .collect(Collectors.toList());
-            return new AllResponseDto(latestChallengeResponseDtoList, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            return new AllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    /**
+//     * 인기순으로 조회하는 서비스 명령어
+//     *
+//     * @return 인기순으로 정렬된 챌린지 리스트, 조회성공여부 메세지, httpStatus
+//     */
+//    public AllResponseDto getPopularChallenge() {
+//        try {
+//            List<Challenge> popularChallenges = challengeRepository.findChallengesOrderedByPopularity();
+//            List<ChallengeResponseDto> popularChallengeResponseDtoList = popularChallenges.stream()
+//                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+//                    .collect(Collectors.toList());
+//            return new AllResponseDto(popularChallengeResponseDtoList, "인기순으로 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new AllResponseDto(null, "인기순으로 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    /**
+//     * 카테고리별로 조회하는 서비스 메서드
+//     *
+//     * @param category IT, 외국어, 수학, 과학, 인문, 예체능, 기타
+//     * @return param값과 일치하는 카테고리를 가진 챌린지 리스트, 조회 성공 여부 메세지, httpStatus
+//     */
+//    public AllResponseDto getCategoryChallenge(CategoryRole category) {
+//        try {
+//            List<Challenge> categoryChallenges = challengeRepository.findByCategory(category.name());
+//            List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallenges.stream()
+//                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+//                    .collect(Collectors.toList());
+//            return new AllResponseDto(categoryChallengeResponseDtoList, "카테고리별로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new AllResponseDto(null, "카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    /**
+//     * 검색어로 조회하는 서비스 명령어
+//     *
+//     * @param query 검색하려는 키워드
+//     * @return title, category, description에 query값을 포함하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
+//     */
+//    public AllResponseDto getQueryChallenge(String query) {
+//        try {
+//            List<Challenge> queryChallenges = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query);
+//            List<ChallengeResponseDto> queryChallengeResponseDtoList = queryChallenges.stream()
+//                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+//                    .collect(Collectors.toList());
+//            return new AllResponseDto(queryChallengeResponseDtoList, "키워드로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new AllResponseDto(null, "키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    /**
+//     * 최신순으로 조회하는 서비스 메서드
+//     *
+//     * @return 최신순을 기준으로 하여 정렬하는 챌린지 리스트, 조회성공여부 메세지, httpStatus
+//     */
+//    public AllResponseDto getLatestChallenge() {
+//        try {
+//            List<Challenge> latestChallenges = challengeRepository.findByOrderByCreatedAtDesc();
+//            List<ChallengeResponseDto> latestChallengeResponseDtoList = latestChallenges.stream()
+//                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+//                    .collect(Collectors.toList());
+//            return new AllResponseDto(latestChallengeResponseDtoList, "최신순으로 챌린지 조회 성공", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new AllResponseDto(null, "최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * 선택한 챌린지를 수정하는 서비스 메서드
@@ -238,5 +242,88 @@ public class ChallengeService {
 
     private List<Long> findCurrentMemberIds(Challenge challenge) {
         return challengerRepository.findMemberIdsByChallenge(challenge);
+    }
+
+    public AllResponseDto getPopularChallenge(int page, int size) {
+        try {
+            // Pageable 객체를 생성하여 페이징 처리
+            Pageable pageable = PageRequest.of(page, size);
+
+            // JPA Repository를 사용하여 페이징된 데이터를 가져옴
+            Page<Challenge> popularChallengesPage = challengeRepository.findChallengesOrderedByPopularity(pageable);
+
+            // 가져온 페이지에서 ChallengeResponseDto로 변환
+            List<ChallengeResponseDto> popularChallengeResponseDtoList = popularChallengesPage.getContent().stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+                    .collect(Collectors.toList());
+
+            // 페이징된 데이터와 메시지를 포함한 응답 생성
+            Page<ChallengeResponseDto> challengeResponseDtoPage = new PageImpl<>(popularChallengeResponseDtoList, pageable, popularChallengesPage.getTotalElements());
+            return new AllResponseDto(challengeResponseDtoPage,"챌린지 인기순으로 조회 성공",HttpStatus.OK);
+        } catch (Exception e) {
+            return new AllResponseDto(null,"인기순으로 챌린지 조회 중 오류 발생: " + e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public AllResponseDto getLatestChallenge(int page, int size) {
+        try {
+            // Pageable 객체를 생성하여 페이징 처리
+            Pageable pageable = PageRequest.of(page, size);
+
+            // JPA Repository를 사용하여 페이징된 데이터를 가져옴
+            Page<Challenge> latestChallengesPage = challengeRepository.findByOrderByCreatedAtDesc(pageable);
+
+            // 가져온 페이지에서 ChallengeResponseDto로 변환
+            List<ChallengeResponseDto> latestChallengeResponseDtoList = latestChallengesPage.getContent().stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+                    .collect(Collectors.toList());
+
+            // 페이징된 데이터와 메시지를 포함한 응답 생성
+            Page<ChallengeResponseDto> challengeResponseDtoPage = new PageImpl<>(latestChallengeResponseDtoList, pageable, latestChallengesPage.getTotalElements());
+            return new AllResponseDto(challengeResponseDtoPage,"챌린지 최신순으로 조회 성공",HttpStatus.OK);
+        } catch (Exception e) {
+            return new AllResponseDto(null,"최신순으로 챌린지 조회 중 오류 발생: " + e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public AllResponseDto getCategoryChallenge(CategoryRole category, int page, int size) {
+        try {
+            // Pageable 객체를 생성하여 페이징 처리
+            Pageable pageable = PageRequest.of(page, size);
+
+            // JPA Repository를 사용하여 페이징된 데이터를 가져옴
+            Page<Challenge> categoryChallengesPage = challengeRepository.findByCategory(category.name(), pageable);
+
+            // 가져온 페이지에서 ChallengeResponseDto로 변환
+            List<ChallengeResponseDto> categoryChallengeResponseDtoList = categoryChallengesPage.getContent().stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+                    .collect(Collectors.toList());
+
+            // 페이징된 데이터와 메시지를 포함한 응답 생성
+            Page<ChallengeResponseDto> challengeResponseDtoPage = new PageImpl<>(categoryChallengeResponseDtoList, pageable, categoryChallengesPage.getTotalElements());
+            return new AllResponseDto(challengeResponseDtoPage,"카테고리별로 조회 성공",HttpStatus.OK);
+        } catch (Exception e) {
+            return new AllResponseDto(null,"카테고리별로 챌린지 조회 중 오류 발생: " + e.getMessage(),HttpStatus.OK);
+        }
+    }
+    public AllResponseDto getQueryChallenge(String query, int page, int size) {
+        try {
+            // Pageable 객체를 생성하여 페이징 처리
+            Pageable pageable = PageRequest.of(page, size);
+
+            // JPA Repository를 사용하여 페이징된 데이터를 가져옴
+            Page<Challenge> queryChallengesPage = challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(query, query, query, pageable);
+
+            // 가져온 페이지에서 ChallengeResponseDto로 변환
+            List<ChallengeResponseDto> queryChallengeResponseDtoList = queryChallengesPage.getContent().stream()
+                    .map(challenge -> new ChallengeResponseDto(challenge, findLeaderId(challenge), findCurrentMemberIds(challenge)))
+                    .collect(Collectors.toList());
+
+            // 페이징된 데이터와 메시지를 포함한 응답 생성
+            Page<ChallengeResponseDto> challengeResponseDtos = new PageImpl<>(queryChallengeResponseDtoList, pageable, queryChallengesPage.getTotalElements());
+            return new AllResponseDto(challengeResponseDtos,"키워드로 챌린지 조회 성공",HttpStatus.OK);
+        } catch (Exception e) {
+            return new AllResponseDto(null,"키워드로 챌린지 조회 중 오류 발생: " + e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
