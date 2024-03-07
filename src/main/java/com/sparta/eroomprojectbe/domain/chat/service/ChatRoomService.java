@@ -43,7 +43,7 @@ public class ChatRoomService {
         currentMemberList.add(memberInfo);
 
         // 해당 채팅방의 이전 대화 내용 불러오기
-        List<ChatMessage> chatHistory = chatRoomRepository.getChatHistory(challengeId);
+        List<Object> chatHistory = chatRoomRepository.getChatHistory(challengeId);
 
         // 채팅방의 구독자들에게 이전 대화 내용 전송
         messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s/history/%s", challengeId, memberId), chatHistory);

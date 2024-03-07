@@ -109,5 +109,12 @@ jobs:
         run: sudo docker image prune -a
 
       - name: Check Target Group Health
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Describe Target Health
         run: |
-            docker run --rm -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} amazon/aws-cli elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
+          aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'

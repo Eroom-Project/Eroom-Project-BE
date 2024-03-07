@@ -5,6 +5,7 @@ import com.sparta.eroomprojectbe.domain.challenge.service.ChallengeService;
 import com.sparta.eroomprojectbe.domain.challenger.Role.CategoryRole;
 import com.sparta.eroomprojectbe.domain.challenger.Role.SortRole;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -72,37 +73,70 @@ public class ChallengeController {
                     .body(new BaseResponseDto<>(null, "오류 발생: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
-    /**
-     * 전체 챌린지를 조회하는 컨트롤러 메서드
-     * @param sortBy 최신수, 인기순
-     * @param category IT, FOREIGN_LANGUAGE, MATH, SCIENCE, HUMANITIES, ARTS_AND_PHYSICAL_EDUCATION, ETC
-     * @param query 검색하려는 단어
-     * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
-     */
+//    /**
+//     * 전체 챌린지를 조회하는 컨트롤러 메서드
+//     * @param sortBy 최신수, 인기순
+//     * @param category IT, FOREIGN_LANGUAGE, MATH, SCIENCE, HUMANITIES, ARTS_AND_PHYSICAL_EDUCATION, ETC
+//     * @param query 검색하려는 단어
+//     * @return 전체 챌린지 list, 조회 성공여부 메세지, httpStatus
+//     */
+//    @GetMapping("/challenge")
+//    public ResponseEntity<BaseResponseDto<List<ChallengeResponseDto>>> getAllChallenge(@RequestParam(required = false) SortRole sortBy,
+//                                                                                       @RequestParam(required = false) CategoryRole category,
+//                                                                                       @RequestParam(required = false) String query) {
+//
+//        AllResponseDto responseDto;
+//        try {
+//            if (sortBy != null) {
+//                responseDto = switch (sortBy) {
+//                    case POPULAR -> challengeService.getPopularChallenge();
+//                    case LATEST -> challengeService.getLatestChallenge();
+//                    default -> challengeService.getLatestChallenge();
+//                };
+//            } else if (category != null) {
+//                responseDto = challengeService.getCategoryChallenge(category);
+//            } else if (query != null && !query.isEmpty()) {
+//                responseDto = challengeService.getQueryChallenge(query);
+//            } else {
+//                responseDto = challengeService.getLatestChallenge();
+//            }
+//            return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new AllResponseDto(null, "발생된 오류: " + e.getMessage(),
+//                            HttpStatus.INTERNAL_SERVER_ERROR));
+//        }
+//    }
+
     @GetMapping("/challenge")
-    public ResponseEntity<BaseResponseDto<List<ChallengeResponseDto>>> getAllChallenge(@RequestParam(required = false) SortRole sortBy,
-                                                                                       @RequestParam(required = false) CategoryRole category,
-                                                                                       @RequestParam(required = false) String query) {
+    public ResponseEntity<BaseResponseDto<Page<ChallengeResponseDto>>> getAllChallenge(
+            @RequestParam(required = false) SortRole sortBy,
+            @RequestParam(required = false) CategoryRole category,
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
 
         AllResponseDto responseDto;
         try {
             if (sortBy != null) {
                 responseDto = switch (sortBy) {
-                    case POPULAR -> challengeService.getPopularChallenge();
-                    case LATEST -> challengeService.getLatestChallenge();
-                    default -> challengeService.getLatestChallenge();
+                    case POPULAR -> challengeService.getPopularChallenge(page, size);
+                    case LATEST -> challengeService.getLatestChallenge(page, size);
+                    default -> challengeService.getLatestChallenge(page, size);
                 };
             } else if (category != null) {
-                responseDto = challengeService.getCategoryChallenge(category);
+                responseDto = challengeService.getCategoryChallenge(category, page, size);
             } else if (query != null && !query.isEmpty()) {
-                responseDto = challengeService.getQueryChallenge(query);
+                responseDto = challengeService.getQueryChallenge(query, page, size);
             } else {
-                responseDto = challengeService.getLatestChallenge();
+                responseDto = challengeService.getLatestChallenge(page, size);
             }
-            return ResponseEntity.status(responseDto.getStatus()).body(new BaseResponseDto<>(responseDto.getData(),responseDto.getMessage(),responseDto.getStatus()));
+
+            return ResponseEntity.status(responseDto.getStatus())
+                    .body(new BaseResponseDto<>(responseDto.getData(), responseDto.getMessage(), responseDto.getStatus()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AllResponseDto(null, "발생된 오류: " + e.getMessage(),
+                    .body(new BaseResponseDto<>(null, "발생된 오류: " + e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

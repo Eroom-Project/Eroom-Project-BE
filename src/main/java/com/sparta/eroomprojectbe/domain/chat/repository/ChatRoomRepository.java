@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -25,6 +23,7 @@ public class ChatRoomRepository {
 
     /**
      * ChatRoomRepository의 생성자
+     *
      * @param redisTemplate Redis 연동을 위한 RedisTemplate 객체
      */
     public ChatRoomRepository(RedisTemplate<String, Object> redisTemplate) {
@@ -34,24 +33,18 @@ public class ChatRoomRepository {
 
     /**
      * challengeId에 해당하는 채팅방의 채팅 내역을 불러오는 메서드
+     *
      * @param challengeId 채팅 내역을 가져올 채팅방의 고유 식별자
      * @return 채팅 내역을 담은 리스트
      */
-    public List<ChatMessage> getChatHistory(String challengeId) {
+    public List<Object> getChatHistory(String challengeId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
-        // 타입 변환 처리 - redis에서 조회한 객체 목록을 ChatMessage 타입의 객체 목록으로 변환
-        List<Object> objects = listOperations.range(key, 0, -1);
-        if (objects != null) {
-            return objects.stream()
-                    .filter(ChatMessage.class::isInstance) // ChatMessage 타입이면
-                    .map(ChatMessage.class::cast) // cast 변환 수행
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+        return listOperations.range(key, 0, -1);
     }
 
     /**
      * challengeId에 해당하는 채팅방에 채팅 메시지를 저장하는 메서드
+     *
      * @param challengeId 채팅 메시지를 저장할 채팅방의 고유 식별자
      * @param chatMessage 저장할 채팅 메시지 객체
      */
@@ -65,18 +58,40 @@ public class ChatRoomRepository {
 
     /**
      * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
-     * @param messageId 삭제할 메시지의 UUID 식별자
+     *
+     * @param messageId   삭제할 메시지의 UUID 식별자
+     * @param challengeId 챌린지 식별자
      * @return 삭제가 성공하면 true, 실패하면 false 반환
      */
     public boolean deleteMessageById(String challengeId, String messageId) {
         String key = CHAT_ROOM_PREFIX + challengeId;
-        try {
-            // Redis 리스트에서 해당 메시지를 제거합니다.
-            listOperations.remove(key, 0, messageId);
-            return true; // 삭제 성공
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false; // 삭제 실패
+        List<Object> messages = listOperations.range(key, 0, -1);
+        for (Object message : messages) {
+            Map<String, Object> messageMap = (Map<String, Object>) message;
+            if (messageMap.get("messageId").equals(messageId)) {
+                listOperations.remove(key, 1, message);
+                return true;
+            }
         }
+        return false; // 삭제 실패
     }
 }
+
+//    /**
+//     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
+//     * @param messageId 삭제할 메시지의 UUID 식별자
+//     * @return 삭제가 성공하면 true, 실패하면 false 반환
+//     */
+//    public boolean deleteMessageById(String challengeId, String messageId) {
+//        String key = CHAT_ROOM_PREFIX + challengeId;
+//        try {
+//            // Redis 리스트에서 해당 메시지를 제거합니다.
+//            listOperations.remove(key, 0, messageId);
+//            // Redis에서 삭제 후 리스트 가져오기
+//            List<Object> afterDeletion = listOperations.range(key, 0, -1);
+//            return !afterDeletion.contains(messageId); // 삭제 성공
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false; // 삭제 실패
+//        }
+//    }
