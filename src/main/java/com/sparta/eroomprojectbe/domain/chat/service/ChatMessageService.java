@@ -109,7 +109,17 @@ public class ChatMessageService {
      * @return 삭제 성공 여부
      */
     public boolean deleteChatMessage(String challengeId, String messageId) {
-        // 채팅 메시지를 삭제하고 성공 여부를 반환합니다.
-        return chatRoomRepository.deleteMessageById(challengeId, messageId);
+        boolean deleteSuccess = chatRoomRepository.deleteMessageById(challengeId, messageId);
+
+        // 삭제 성공 시 삭제된 메시지 정보를 해당 채팅방의 모든 구독자에게 전송
+        if (deleteSuccess) {
+            ChatMessage deletedMessage = new ChatMessage();
+            deletedMessage.setMessageId(messageId);
+            deletedMessage.setType(ChatMessage.MessageType.DELETE);
+
+            // 해당 채팅방의 모든 구독자에게 삭제된 메시지 정보 전송
+            messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challengeId), deletedMessage);
+        }
+        return deleteSuccess;
     }
 }

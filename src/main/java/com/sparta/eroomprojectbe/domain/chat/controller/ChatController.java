@@ -38,7 +38,12 @@ public class ChatController {
         chatMessageService.saveMessage(challengeId, chatMessage, message);
     }
 
-
+    /**
+     * 특정 challenge와 연관된 메시지 ID를 사용하여 채팅 메시지를 삭제
+     * @param challengeId 삭제할 챌린지의 ID
+     * @param messageId   삭제할 메시지의 ID
+     * @return 삭제 작업 결과를 포함하는 BaseResponseDto를 담은 ResponseEntity
+     */
     @DeleteMapping("/api/chat/{challengeId}/{messageId}")
     public ResponseEntity<BaseResponseDto<String>> deleteChatMessage(@PathVariable String challengeId,
                                                                      @PathVariable String messageId) {
