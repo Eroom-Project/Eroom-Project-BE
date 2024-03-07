@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.eroomprojectbe.domain.auth.entity.Timestamped;
 import com.sparta.eroomprojectbe.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
-import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Challenge extends Timestamped{
+public class Challenge extends Timestamped {
 
 
     @Id
@@ -67,6 +66,7 @@ public class Challenge extends Timestamped{
         this.limitAttendance = requestDto.getLimitAttendance();
         this.thumbnailImageUrl = file;
     }
+
     //테스트 코드
     public Challenge(long l, ChallengeRequestDto requestDto, String file) {
         this.challengeId = l;

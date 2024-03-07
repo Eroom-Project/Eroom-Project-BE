@@ -18,10 +18,11 @@ public class ChallengeRequestDto {
     private short limitAttendance;
     private String authExplanation;
     private MultipartFile file;
+
     // 테스트 코드를 위한 생성자
-    public ChallengeRequestDto(String title, String category,String description,
+    public ChallengeRequestDto(String title, String category, String description,
                                String startDate, String dueDate, String frequency,
-                               short limitAttendance, String authExplanation){
+                               short limitAttendance, String authExplanation) {
         this.title = title;
         this.category = category;
         this.description = description;

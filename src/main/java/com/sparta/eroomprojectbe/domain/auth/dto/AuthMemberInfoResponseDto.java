@@ -12,7 +12,7 @@ public class AuthMemberInfoResponseDto {
     private List<AuthResponseDto> authResponseDtoList;
     private MemberInfoResponseDto memberInfoResponseDto;
 
-    public AuthMemberInfoResponseDto(List<AuthResponseDto> authResponseDtoList, MemberInfoResponseDto memberInfoResponseDto){
+    public AuthMemberInfoResponseDto(List<AuthResponseDto> authResponseDtoList, MemberInfoResponseDto memberInfoResponseDto) {
         this.authResponseDtoList = authResponseDtoList;
         this.memberInfoResponseDto = memberInfoResponseDto;
     }

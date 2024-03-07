@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Auth extends Timestamped{
+public class Auth extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authId;
@@ -23,7 +23,7 @@ public class Auth extends Timestamped{
     @Column
     private String authImageUrl;
 
-    @Column (length = 500)
+    @Column(length = 500)
     private String authVideoUrl;
 
     @Column
@@ -35,11 +35,11 @@ public class Auth extends Timestamped{
 
 
     public Auth(AuthRequestDto requestDto, String saveFile, Challenger challenger) {
-        this.authContents= (requestDto.getAuthContents()!= null)?requestDto.getAuthContents():"비어있음";
-        this.authImageUrl= saveFile;
-        this.authVideoUrl= (requestDto.getAuthVideoUrl()!=null)?requestDto.getAuthVideoUrl():"비디오 Url 없음";
-        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : String.valueOf(AuthRole.WAITING);
-        this.challenger=challenger;
+        this.authContents = (requestDto.getAuthContents() != null) ? requestDto.getAuthContents() : "비어있음";
+        this.authImageUrl = saveFile;
+        this.authVideoUrl = (requestDto.getAuthVideoUrl() != null) ? requestDto.getAuthVideoUrl() : "비디오 Url 없음";
+        this.authStatus = (challenger.getRole() == ChallengerRole.LEADER) ? String.valueOf(AuthRole.APPROVED) : String.valueOf(AuthRole.WAITING);
+        this.challenger = challenger;
     }
 
     public Auth(long authId, AuthRequestDto authRequestDto, String originalFilename, Challenger challenger) {
@@ -51,12 +51,13 @@ public class Auth extends Timestamped{
     }
 
     public void update(AuthRequestDto requestDto, String updateFile, Challenger challenger) {
-        this.authContents = (requestDto.getAuthContents()!= null)?requestDto.getAuthContents():"비어있음";
+        this.authContents = (requestDto.getAuthContents() != null) ? requestDto.getAuthContents() : "비어있음";
         this.authImageUrl = updateFile;
-        this.authVideoUrl = (requestDto.getAuthVideoUrl()!=null)?requestDto.getAuthVideoUrl():"비디오 Url 없음";
-        this.authStatus= (challenger.getRole()== ChallengerRole.LEADER)? String.valueOf(AuthRole.APPROVED) : "WAITING";
-        this.challenger= challenger;
+        this.authVideoUrl = (requestDto.getAuthVideoUrl() != null) ? requestDto.getAuthVideoUrl() : "비디오 Url 없음";
+        this.authStatus = (challenger.getRole() == ChallengerRole.LEADER) ? String.valueOf(AuthRole.APPROVED) : "WAITING";
+        this.challenger = challenger;
     }
+
     public void leaderUpdate(Auth auth, AuthLeaderRequestDto requestDto) {
         this.authContents = auth.authContents;
         this.authImageUrl = auth.authImageUrl;

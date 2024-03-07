@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class AuthLeaderRequestDto {
     private String authStatus;
 
-    public AuthLeaderRequestDto(String authStatus){
+    public AuthLeaderRequestDto(String authStatus) {
         this.authStatus = authStatus;
     }
 }

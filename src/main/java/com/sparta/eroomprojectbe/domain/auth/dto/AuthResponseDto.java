@@ -21,7 +21,7 @@ public class AuthResponseDto {
     private Long challengeId;
     private Long memberId;
 
-    public AuthResponseDto(Auth auth){
+    public AuthResponseDto(Auth auth) {
         this.authId = auth.getAuthId();
         this.nickname = auth.getChallenger().getMember().getNickname();
         this.authContents = auth.getAuthContents();

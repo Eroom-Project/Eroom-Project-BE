@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 컨트롤러단에서 사용되는 Dto
+ *
  * @param <T> 전달하고자 하는 Dto의 타입
  */
 @Getter
