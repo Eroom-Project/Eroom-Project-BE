@@ -5,6 +5,9 @@ import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 회원가입 response dto
+ */
 @Getter
 @NoArgsConstructor
 public class SignupResponseDto {

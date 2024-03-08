@@ -1,9 +1,7 @@
 package com.sparta.eroomprojectbe.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sparta.eroomprojectbe.domain.auth.entity.Auth;
 import com.sparta.eroomprojectbe.domain.challenger.entity.Challenger;
-import com.sparta.eroomprojectbe.domain.member.dto.ProfileRequestDto;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

@@ -11,10 +11,19 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
 
+
     public EmailService(JavaMailSender emailSender) {
         this.emailSender = emailSender;
     }
 
+    /**
+     * 이메일 전송 서비스 메서드
+     *
+     * @param sendEmail 보내는 사람
+     * @param toEmail 받는 사람
+     * @param title 메일 제목
+     * @param content 메일 내용
+     */
     public void sendEmail(String sendEmail, String toEmail, String title, String content) {
 
         // HTML 형식의 이메일 전송하기 위한 설정
@@ -25,7 +34,7 @@ public class EmailService {
             helper.setFrom(sendEmail);
             helper.setTo(toEmail);
             helper.setSubject(title);
-            // true로 전달해야 html형식으로 전송. 그렇지 않으면 단순 텍스트로 전송
+            // true로 설정해야 html을 읽어내 전송. 그렇지 않으면 html도 단순 텍스트로 전송
             helper.setText(content, true);
             emailSender.send(message);
         } catch (MessagingException | jakarta.mail.MessagingException e) {
