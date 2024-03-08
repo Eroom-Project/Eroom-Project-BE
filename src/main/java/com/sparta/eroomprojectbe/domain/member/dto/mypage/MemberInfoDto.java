@@ -4,6 +4,9 @@ import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 유저의 정보를 담은 dto
+ */
 @Getter
 @AllArgsConstructor
 public class MemberInfoDto {

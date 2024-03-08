@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+/**
+ * 유저와 관련되어 있는 모든 챌린지 정보를 담은 dto
+ */
 @Getter
 public class MypageChallengeDto {
     private Long challengeId;
