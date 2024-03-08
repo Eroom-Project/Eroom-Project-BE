@@ -1,4 +1,4 @@
-package com.sparta.eroomprojectbe.domain.member.dto;
+package com.sparta.eroomprojectbe.domain.member.dto.mypage;
 
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import lombok.Getter;

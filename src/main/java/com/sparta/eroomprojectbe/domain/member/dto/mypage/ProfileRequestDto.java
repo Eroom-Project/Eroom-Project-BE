@@ -1,4 +1,4 @@
-package com.sparta.eroomprojectbe.domain.member.dto;
+package com.sparta.eroomprojectbe.domain.member.dto.mypage;
 
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
