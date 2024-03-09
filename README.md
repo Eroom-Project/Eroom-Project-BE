@@ -169,10 +169,7 @@ ______________________________________
 <div markdown="1">
     <h3></h3>      
   
-로그인 유무에 따라 다른 동작을 해야하고 FE에서 로그인한 member의 Id를 불러와주었으면 한다는 부탁을 받고 어떻게 구현하면 좋을지 고민을 했다.    
-한 가지 방법은  @AuthenticationPrincipal UserDetailsImpl userDetails을 이용하여 서로 다른 상황을 구별하려고 했는데    
-로그인한 멤버가 없을 경우 NPE가 터져 해당 방법을 사용할 수 없었다. 다른 한가지는 header에 쿠키 유무에 따라 로그인 여부를 파악하려고 했다.    
-일단은 cookie 유무를 판단하여 구현하려고 하다가 userDetails에 null 값이 와도 따로 처리만 한다면 괜찮다는 글을 보아서 바로 해보았다.  
+로그인 유무에 따라 다른 동작을 해야하고 FE에서 로그인한 member의 Id를 불러와주었으면 한다는 부탁을 받고 어떻게 구현하면 좋을지 고민을 했다. 한 가지 방법은  @AuthenticationPrincipal UserDetailsImpl userDetails을 이용하여 서로 다른 상황을 구별하려고 했는데 로그인한 멤버가 없을 경우 NPE가 터져 해당 방법을 사용할 수 없었다. 다른 한가지는 header에 쿠키 유무에 따라 로그인 여부를 파악하려고 했다. 일단은 cookie 유무를 판단하여 구현하려고 하다가 userDetails에 null 값이 와도 따로 처리만 한다면 괜찮다는 글을 보아서 바로 해보았다.  
 
 ```java
 @GetMapping("/challenge/{challengeId}")
@@ -197,10 +194,14 @@ public ResponseEntity<ChallengeDataResponseDto> getChallenge(@PathVariable Long 
 }
 ```
 이런 식으로 null 값을 처리해주면 오류가 발생하지 않는다는걸 알았다. 이 트러블 슈팅을 계기로 너무 어렵게 생각하지 말고 일단은 해봐야겠다는 생각을 했다.    
+
+
 - 로그인한 회원에 대한 정보를 포함
+
 ![스크린샷 2024-02-19 190512](https://github.com/Eroom-Project/Eroom-Project-BE/assets/153038259/7f9ce88f-a92e-45d9-8f17-c55ff22a10e6)
 
 - 로그인하지 않은 회원에 대한 정보를 포함
+
 ![스크린샷 2024-02-19 190533](https://github.com/Eroom-Project/Eroom-Project-BE/assets/153038259/8407fce5-38cb-4600-9987-5a0b5803ce5d)
 
 </div>
@@ -222,8 +223,7 @@ public ResponseEntity<ChallengeDataResponseDto> getChallenge(@PathVariable Long 
 **첫번째 시도 방식**    
 
 클라이언트가 WebSocket을 통해 서버에 연결 할 때!    
-클라이언트가 요청하는 **CONNECT 메시지**와 서버의 응답으로 받는 **CONNECTED 메시지**는    
-**WebSocket 연결의 핸드셰이크(handshake)** 과정에서 교환된다.
+클라이언트가 요청하는 **CONNECT 메시지**와 서버의 응답으로 받는 **CONNECTED 메시지**는 **WebSocket 연결의 핸드셰이크(handshake)** 과정에서 교환된다.
 
 이 점을 활용해 웹소켓 연결 시 클라이언트로부터 challengeId를 받아 이전 채팅내역을 불러오자.     
 
@@ -255,8 +255,7 @@ public void handleWebSocketConnectListener(SessionConnectedEvent event) {
     }
 }
 ```
-하지만 웹소켓이 연결되면서 challengeId를 받고 있지만 서버에서 처리하지 못하여    
-이전 채팅내역을 프론트단에 전송하지 못하고 있다.    
+하지만 웹소켓이 연결되면서 challengeId를 받고 있지만 서버에서 처리하지 못하여 이전 채팅내역을 프론트단에 전송하지 못하고 있다.    
 
 <br/>
 <br/>
@@ -317,16 +316,14 @@ public void userJoinedRoom(String challengeId, String memberId, String senderNic
 
 - JOIN type일 때 현 참여 리스트와 이전 채팅 내역을 프론트단에 전송하는 것까지 성공했다!!    
 
-- 하지만 n번 채팅방을 신청한 챌린지원들에게 같은 구독 주소로 응답하다보니     
-구독자 중 1명만 새로고침하거나 다시 웹소켓에 재접속 해도 모든 챌린지원들에게 매번 이전 채팅 내역이 불러와지는 것이다.    
+- 하지만 n번 채팅방을 신청한 챌린지원들에게 같은 구독 주소로 응답하다보니 구독자 중 1명만 새로고침하거나 다시 웹소켓에 재접속 해도 모든 챌린지원들에게 매번 이전 채팅 내역이 불러와지는 것이다.    
 
 <br/>
 <br/>
 
 **해결!**    
 
-- 이전 채팅 내역을 전송할 때는 구독 주소를 다르게 하고 memeberId를 추가하여     
-채팅방에 웹소켓 연결 시도한 그 member에게만 이전 채팅 내역이 전송되도록 변경하면서 해결했다.    
+- 이전 채팅 내역을 전송할 때는 구독 주소를 다르게 하고 memeberId를 추가하여 채팅방에 웹소켓 연결 시도한 그 member에게만 이전 채팅 내역이 전송되도록 변경하면서 해결했다.    
 
 ```java
 // 채팅방의 구독자들에게 이전 대화 내용 전송
@@ -342,21 +339,26 @@ messagingTemplate.convertAndSend(String.format("/sub/chat/challenge/%s", challen
 <div markdown="1">
     <h3></h3>      
   
-같은 이메일로 카카오 로그인과 일반 로그인을 실행했을 때 500 에러가 터졌다. 원인은 카카오 로그인의 refresh-token은 Bearer이 붙어서 저장되고,     
-아닌 경우 Bearer이 떨어져서 저장되었기 때문. 따라서 같은 이메일이 두 개의 refresh-token을 가지게 되어 500에러로 이어졌다.     
+같은 이메일로 카카오 로그인과 일반 로그인을 실행했을 때 500 에러가 터졌다. 원인은 카카오 로그인의 refresh-token은 Bearer이 붙어서 저장되고, 아닌 경우 Bearer이 떨어져서 저장되었기 때문. 따라서 같은 이메일이 두 개의 refresh-token을 가지게 되어 500에러로 이어졌다.     
+
+<br/>
+<br/>
 
 **문제 해결**   
 
-1. 먼저, 왜 카카오 refresh token에는 bearer prefix가 붙는지 확인하였다. refresh token은 JwtUtil 클래스의 createRefreshToken 메서드에서 
-  만들고 저장한다.이후 KakaoService 클래스의 kakaoLogin 메서드에서 refresh token을 한번 더! 저장하는 중복되는 로직이 있는 것을 발견하였다.     
-    - 여기서 ‘refreshTokenRepository.save’ 할 때는 Bearer이 없었다. 이후 Bearer이 붙은 토큰값을 반환한다.
-![스크린샷 2024-02-19 오후 2 48 51](https://github.com/Eroom-Project/Eroom-Project-BE/assets/153038259/a67cdbcf-bd8c-4f82-bd70-4cb932766a7d)
+1. 먼저, 왜 카카오 refresh token에는 bearer prefix가 붙는지 확인하였다. refresh token은 JwtUtil 클래스의 createRefreshToken 메서드에서 만들고 저장한다.이후 KakaoService 클래스의 kakaoLogin 메서드에서 refresh token을 한번 더! 저장하는 중복되는 로직이 있는 것을 발견하였다.     
+- 여기서 ‘refreshTokenRepository.save’ 할 때는 Bearer이 없었다. 이후 Bearer이 붙은 토큰값을 반환한다.
 
-    - 그런데 여기서 existingToken이 없으면, 즉 카카오 로그인을 시도하면 위에 Bearer이 붙은 String refreshToken을 사용하여 다시 한번 RefreshToken을 만든다.     
+![스크린샷 2024-02-19 오후 2 48 51](https://github.com/Eroom-Project/Eroom-Project-BE/assets/153038259/a67cdbcf-bd8c-4f82-bd70-4cb932766a7d)
+    
+- 그런데 여기서 existingToken이 없으면, 즉 카카오 로그인을 시도하면 위에 Bearer이 붙은 String refreshToken을 사용하여 다시 한번 RefreshToken을 만든다.   
+
 ![스크린샷 2024-02-19 오후 2 49 24](https://github.com/Eroom-Project/Eroom-Project-BE/assets/153038259/195bf491-17fb-4ef5-8ab1-88e47367f5bf)
 
-2. 따라서, 중복으로 refresh token을 저장하는 부분을 지워 주었다. 그러자 같은 로그인으로 일반 로그인을 하든,    
-   카카오 로그인을 하든 refresh token이 중복 저장되지 않고 새로 토큰이 발급되어 날아갔다.     
+2. 따라서, 중복으로 refresh token을 저장하는 부분을 지워 주었다. 그러자 같은 로그인으로 일반 로그인을 하든, 카카오 로그인을 하든 refresh token이 중복 저장되지 않고 새로 토큰이 발급되어 날아갔다.     
+
+<br/>
+<br/>
 
 **문제의 진짜 원인** 
 - 본래 3-layer 아키텍처를 선택했을 때는, controller와 service, repository의 목적을 명확히하기 위함이었다. 따라서 repository의 의존성은 service 단에서만 가지는 게 맞다. 
