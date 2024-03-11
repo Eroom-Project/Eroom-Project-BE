@@ -57,24 +57,26 @@ public class NotificationService {
     }
 
     /**
-     * 알림 전송 서비스 메서드. sendNotification으로 연결됨.
+     * 알림 전송 기능을 세 개의 메서드로 나누어 설계.
+     * send() : 알림 전송 프로세스를 시작하는 공개 메서드
+     * sendNotification() : 저장됨 알림 객체와 함께 클라이언트에게 알림을 전송
+     * sendToClient() : 실제로 클라이언트에게 SseEmitter를 통해 알림을 전송
      *
      * @param requestDto 알림에 필요한 정보들을 담은 request dto
      */
     public void send(NotificationRequestDto requestDto) {
         Notification notification = saveNotification(requestDto);
-        sendNotification(requestDto, notification);
+        sendNotification(notification);
     }
 
     /**
-     * 알림 전송 서비스 메서드. 주어진 정보를 바탕으로 특정 클라이언트에게 알림을 전송.
+     * 특정 수신자에게 등록된 모든 SseEmitter를 조회하고, 각각에 대해 알림 응답 객체를 생성하여 전송하는 메서드
      * 전송 실패 시, 연결된 emitter 객체 삭제
      *
-     * @param request 알림에 필요한 정보들을 담은 request dto
      * @param notification 알림 객체
      */
-    private void sendNotification(NotificationRequestDto request, Notification notification) {
-        String receiverId = String.valueOf(request.getReceiver().getMemberId());
+    private void sendNotification(Notification notification) {
+        String receiverId = String.valueOf(notification.getMember().getMemberId());
         // 유저의 모든 SseEmitter 가져옴
         Map<String, SseEmitter> emitters = emitterRepository
                 .findAllEmitterStartWithByMemberId(receiverId);
@@ -88,7 +90,7 @@ public class NotificationService {
     }
 
     /**
-     * 특정 클라이언트에게 알림 전송하는 서비스 메서드.
+     * 실제로 클라이언트에게 SseEmitter를 통해 알림을 전송하는 메서드
      * emitter를 사용하여 실시간으로 알림 전송
      *
      * @param emitterId 해당 클라이언트와 연결시켜주는 emitter 식별자

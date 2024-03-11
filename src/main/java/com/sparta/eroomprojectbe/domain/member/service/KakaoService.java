@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.KakaoUserInfoDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.global.RefreshTokenService;
+import com.sparta.eroomprojectbe.global.refreshToken.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;

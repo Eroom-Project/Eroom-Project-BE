@@ -1,4 +1,4 @@
-package com.sparta.eroomprojectbe.global;
+package com.sparta.eroomprojectbe.global.refreshToken;
 
 import jakarta.persistence.*;
 import lombok.Getter;

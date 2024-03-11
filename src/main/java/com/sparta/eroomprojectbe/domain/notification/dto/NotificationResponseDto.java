@@ -20,7 +20,6 @@ public class NotificationResponseDto {
         this.content = notification.getContent();
     }
 
-    // 정적 팩토리 메서드 추가
     public static NotificationResponseDto of(Notification notification) {
         return new NotificationResponseDto(notification);
     }
