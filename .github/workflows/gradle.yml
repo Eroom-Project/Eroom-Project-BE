@@ -2,7 +2,7 @@
 name: CI/CD
 
 # event trigger
-# master이나 dev 브랜치에 push가 되었을 때 실행
+# master브랜치에 push가 되었을 때 실행
 on:
   push:
     branches: [ "master" ]

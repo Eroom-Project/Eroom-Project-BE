@@ -22,15 +22,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,8 +91,8 @@ class ChallengeServiceTest {
         // given
         Long challengeId = 1L;
         String loginMemberId = "1L";
-        String loginMemberProfileImageUrl ="No members logged in";
-        String loginMemberNickname="No members logged in";
+        String loginMemberProfileImageUrl = "No members logged in";
+        String loginMemberNickname = "No members logged in";
         Member member = new Member(1L, "test@email.com", "admin1234!", "testNickname");
         ChallengeRequestDto requestDto = new ChallengeRequestDto("title", "category", "decription", "2024-02-28",
                 "2024-03-04", "주 1회", (short) 4, "아무거나");
@@ -103,7 +101,7 @@ class ChallengeServiceTest {
         when(challengerRepository.findCreatorMemberByChallengeId(challengeId)).thenReturn(Optional.of(member));
         when(challengerRepository.findMemberIdsByChallenge(challenge)).thenReturn(Arrays.asList(1L, 2L, 3L));
         // when
-        ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId,loginMemberProfileImageUrl,loginMemberNickname);
+        ChallengeLoginResponseDto responseDto = challengeService.getChallenge(challengeId, loginMemberId, loginMemberProfileImageUrl, loginMemberNickname);
         // then
         assertNotNull(responseDto);
         assertNotNull(responseDto.getResponseDto().getChallengeId());
@@ -131,18 +129,20 @@ class ChallengeServiceTest {
         when(challengerRepository.findCreatorMemberByChallengeId(anyLong())).thenReturn(Optional.of(member));
         when(challengerRepository.findMemberIdsByChallenge(any(Challenge.class))).thenReturn(Arrays.asList(1L, 2L, 3L));
         // when
-        AllResponseDto responseDto = challengeService.getPopularChallenge(page,size);
+        AllResponseDto responseDto = challengeService.getPopularChallenge(page, size);
         // then
         assertEquals("챌린지 인기순으로 조회 성공", responseDto.getMessage());
         assertEquals(HttpStatus.OK, responseDto.getStatus());
         assertNotNull(responseDto.getData());
     }
+
     @Test
     @DisplayName("카테고리별 챌린지 조회 성공 테스트")
     void getCategoryChallenge_successful() {
         // given
         int page = 0;
         int size = 12;
+        CategoryRole categoryRole = CategoryRole.IT;
         Member member = new Member(1L, "test@email.com", "admin1234!", "testNickname");
         ChallengeRequestDto requestDto1 = new ChallengeRequestDto("title1", "IT", "decription", "2024-02-28",
                 "2024-03-04", "주 1회", (short) 4, "아무거나");
@@ -150,7 +150,13 @@ class ChallengeServiceTest {
                 "2024-03-04", "주 1회", (short) 4, "아무거나");
         Challenge challenge1 = new Challenge(1L, requestDto1, "https://example.com/image1.jpg");
         Challenge challenge2 = new Challenge(2L, requestDto2, "https://example.com/image2.jpg");
-        List<Challenge> categoryChallenges = List.of(challenge1, challenge2);
+        List<Challenge> categoryChallenges = new ArrayList<>();
+        if (challenge1.getCategory().equals("IT")) {
+            categoryChallenges.add(challenge1);
+        }
+        if (challenge2.getCategory().equals("IT")) {
+            categoryChallenges.add(challenge2);
+        }
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Challenge> pageDto = new PageImpl<>(categoryChallenges);
@@ -159,17 +165,18 @@ class ChallengeServiceTest {
         when(challengerRepository.findCreatorMemberByChallengeId(anyLong())).thenReturn(Optional.of(member));
 
         // when
-        AllResponseDto responseDto = challengeService.getCategoryChallenge(CategoryRole.IT, page, size);
+        AllResponseDto responseDto = challengeService.getCategoryChallenge(categoryRole, page, size);
 
         // then
         assertEquals("카테고리별로 조회 성공", responseDto.getMessage());
         assertEquals(HttpStatus.OK, responseDto.getStatus());
 
         Page<ChallengeResponseDto> challengeResponseDtoList = responseDto.getData();
-        assertEquals(2, challengeResponseDtoList.getContent().size());
+        assertEquals(1, challengeResponseDtoList.getContent().size());
         // Verify
         verify(challengeRepository, times(1)).findByCategory("IT", pageable);
     }
+
     @Test
     @DisplayName("키워드로 챌린지 조회 성공 테스트")
     void getQueryChallenge_successful() {
@@ -198,13 +205,13 @@ class ChallengeServiceTest {
         Page<Challenge> pageDto = new PageImpl<>(queryChallenges);
 
         // Stubbing
-        when(challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(keyword, keyword, keyword,pageable))
+        when(challengeRepository.findByCategoryContainingOrTitleContainingOrDescriptionContaining(keyword, keyword, keyword, pageable))
                 .thenReturn(pageDto);
         when(challengerRepository.findCreatorMemberByChallengeId(anyLong())).thenReturn(Optional.of(member));
         when(challengerRepository.findMemberIdsByChallenge(any(Challenge.class))).thenReturn(Arrays.asList(1L, 2L, 3L));
 
         // when
-        AllResponseDto responseDto = challengeService.getQueryChallenge(keyword,page,size);
+        AllResponseDto responseDto = challengeService.getQueryChallenge(keyword, page, size);
 
         // then
         assertEquals("키워드로 챌린지 조회 성공", responseDto.getMessage());
@@ -233,7 +240,10 @@ class ChallengeServiceTest {
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
         challenge2.setCreatedAt(yesterday);
 
-        List<Challenge> latestChallenges = Arrays.asList(challenge1, challenge2);
+        List<Challenge> latestChallenges = new ArrayList<>();
+        latestChallenges.add(challenge1);
+        latestChallenges.add(challenge2);
+        latestChallenges.sort(Comparator.comparing(Challenge::getCreatedAt).reversed());
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Challenge> pageDto = new PageImpl<>(latestChallenges);
@@ -243,19 +253,20 @@ class ChallengeServiceTest {
         when(challengerRepository.findMemberIdsByChallenge(any(Challenge.class))).thenReturn(Arrays.asList(1L, 2L, 3L));
 
         // when
-        AllResponseDto responseDto = challengeService.getLatestChallenge(page,size);
+        AllResponseDto responseDto = challengeService.getLatestChallenge(page, size);
 
         // then
         assertEquals("챌린지 최신순으로 조회 성공", responseDto.getMessage());
         assertEquals(HttpStatus.OK, responseDto.getStatus());
 
-        Page<ChallengeResponseDto> challengeResponseDtoList =  responseDto.getData();
+        Page<ChallengeResponseDto> challengeResponseDtoList = responseDto.getData();
         assertEquals(latestChallenges.size(), challengeResponseDtoList.getContent().size());
         // 최신순으로 정렬되어있는지 확인
         for (int i = 0; i < latestChallenges.size(); i++) {
             assertEquals(latestChallenges.get(i).getChallengeId(), challengeResponseDtoList.getContent().get(i).getChallengeId());
         }
     }
+
     @Test
     @DisplayName("챌린지 수정 성공 테스트")
     void updateChallenge_successful() throws IOException {
