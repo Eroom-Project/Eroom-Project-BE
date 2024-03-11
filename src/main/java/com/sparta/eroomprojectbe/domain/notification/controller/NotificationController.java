@@ -16,12 +16,15 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 @RestController
 @RequestMapping("/api/notifications")
-@RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
 
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
     /**
-     * 클라이언트의 알림 구독 요청을 처리하고 Server-Sent Events(SSE) 스트림 반환.
+     * 클라이언트의 실시간 알림 구독 요청을 처리하고 Server-Sent Events(SSE) 스트림 반환.
      *
      * @param userDetails 현재 사용자의 인증된 정보를 포함하는 UserDetailsImpl 객체
      * @param lastEventId 클라이언트가 마지막으로 수신한 이벤트의 ID

@@ -12,7 +12,7 @@ import javax.net.ssl.SSLSession;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // 왜 protected인가?
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
