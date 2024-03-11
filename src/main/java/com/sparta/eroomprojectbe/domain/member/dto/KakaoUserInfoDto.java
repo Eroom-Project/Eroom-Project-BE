@@ -3,6 +3,9 @@ package com.sparta.eroomprojectbe.domain.member.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 카카오 유저 정보를 담은 dto
+ */
 @Getter
 @NoArgsConstructor
 public class KakaoUserInfoDto {

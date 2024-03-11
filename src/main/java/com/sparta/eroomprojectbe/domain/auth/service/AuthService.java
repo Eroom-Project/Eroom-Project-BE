@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -69,7 +70,7 @@ public class AuthService {
                 Member creator = challengerRepository.findCreatorMemberByChallengeId(challengeId)
                         .orElseThrow(() -> new IllegalArgumentException("챌린지 생성자를 찾을 수 없습니다."));
                 String content = member.getNickname() + "님이 " + challenge.getTitle() + "에 신청하셨습니다.";
-                sendNotification(creator, NotificationType.REGISTER, content, challengeId, null);
+                notify(creator, NotificationType.REGISTER, content, challengeId, null);
 
                 return new CreateResponseDto("챌린지 신청 성공", HttpStatus.CREATED);
             } else {
@@ -170,10 +171,10 @@ public class AuthService {
                 // 알림 전송 로직
                 if (requestDto.getAuthStatus().equals("APPROVED")) {
                     String content = auth.getChallenger().getMember() + "님의 인증글이 승인되었습니다.";
-                    sendNotification(auth.getChallenger().getMember(), NotificationType.APPROVE, content, challengeId, authId);
+                    notify(auth.getChallenger().getMember(), NotificationType.APPROVE, content, challengeId, authId);
                 } else if (requestDto.getAuthStatus().equals("DENIED")) {
                     String content = auth.getChallenger().getMember() + "님의 인증글이 인증 조건을 만족시키지 못하였습니다. 인증글을 수정하여 주세요.";
-                    sendNotification(auth.getChallenger().getMember(), NotificationType.DENY, content, challengeId, authId);
+                    notify(auth.getChallenger().getMember(), NotificationType.DENY, content, challengeId, authId);
                 }
                 return new AuthDataResponseDto(responseDto, "챌린지 상태 수정 성공", HttpStatus.CREATED);
             } else {
@@ -220,7 +221,6 @@ public class AuthService {
             } else {
                 return new AuthDataResponseDto(null, "챌린지 인증 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
         } catch (Exception e) {
             return new AuthDataResponseDto(null, "에러: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -258,7 +258,7 @@ public class AuthService {
         }
     }
 
-    private void sendNotification(Member receiver, NotificationType type, String content, Long challengeId, Long authId) {
+    private void notify(Member receiver, NotificationType type, String content, Long challengeId, Long authId) {
         NotificationRequestDto notificationRequest = NotificationRequestDto.builder()
                 .receiver(receiver)
                 .notificationType(type)

@@ -24,11 +24,11 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     /**
      * 카테고리별 정렬을 위한 명령어
      *
-     * @param name     IT, 외국어, 수학, 과학, 인문, 예체능
+     * @param category     IT, 외국어, 수학, 과학, 인문, 예체능
      * @param pageable
      * @return param으로 받은 값과 일치하는 카테고리를 가진 챌린지
      */
-    Page<Challenge> findByCategory(String name, Pageable pageable);
+    Page<Challenge> findByCategory(String category, Pageable pageable);
 
 
     /**

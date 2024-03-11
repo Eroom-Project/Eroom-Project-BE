@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.KakaoUserInfoDto;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.global.RefreshTokenService;
+import com.sparta.eroomprojectbe.global.refreshToken.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.jwt.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,6 +55,15 @@ public class KakaoService {
         this.refreshTokenService = refreshTokenService;
     }
 
+    /**
+     * 카카오 로그인 서비스 메서드
+     *
+     * @param code 카카오에서 발급한 인증 코드
+     * @param response http 응답 객체
+     * @return 로그인한 유저의 닉네임
+     * @throws JsonProcessingException
+     * @throws UnsupportedEncodingException
+     */
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
         String kakaoAccessToken = getToken(code);
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(kakaoAccessToken);
@@ -71,6 +80,13 @@ public class KakaoService {
         return kakaoUser.getNickname();
     }
 
+    /**
+     * 발급된 인증코드를 인자로 받아 토큰을 추출하는 메서드
+     *
+     * @param code 카카오 발급 인증코드
+     * @return 카카오 access token
+     * @throws JsonProcessingException
+     */
     private String getToken(String code) throws JsonProcessingException {
         log.info("인가코드: " + code);
         // 요청 URL 만들기
@@ -109,6 +125,13 @@ public class KakaoService {
         return jsonNode.get("access_token").asText();
     }
 
+    /**
+     * access token을 인자로 받아 유저 정보를 요청하는 메서드
+     *
+     * @param accessToken 카카오 발급 access token
+     * @return kakaoUserInfoDto
+     * @throws JsonProcessingException
+     */
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
         log.info("accessToken: " + accessToken);
 
@@ -148,6 +171,12 @@ public class KakaoService {
         return new KakaoUserInfoDto(id, nickname, email, profileImageUrl);
     }
 
+    /**
+     * 카카오 유저 등록 메서드
+     *
+     * @param kakaoUserInfo 카카오로 로그인한 유저의 정보
+     * @return 등록된 유저 객체
+     */
     private Member registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
@@ -172,6 +201,11 @@ public class KakaoService {
         return kakaoUser;
     }
 
+    /**
+     * 카카오 로그인 유저의 정보를 스프링 시큐리티에 담는 메서드
+     * @param kakaoUser 카카오 로그인 유저 객체
+     * @return 해당 유저의 Authentication 객체
+     */
     private Authentication forceLogin(Member kakaoUser) {
         UserDetails userDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

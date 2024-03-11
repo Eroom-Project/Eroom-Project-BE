@@ -1,10 +1,8 @@
-package com.sparta.eroomprojectbe.global;
+package com.sparta.eroomprojectbe.global.refreshToken;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.Optional;
 
 @EnableRedisRepositories
 @Configuration
