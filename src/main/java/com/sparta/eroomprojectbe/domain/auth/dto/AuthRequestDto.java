@@ -15,7 +15,7 @@ public class AuthRequestDto {
     private MultipartFile file;
     private String authStatus;
 
-    public AuthRequestDto(String authContents, String authVideoUrl,String authStatus){
+    public AuthRequestDto(String authContents, String authVideoUrl, String authStatus) {
         this.authContents = authContents;
         this.authVideoUrl = authVideoUrl;
         this.authStatus = authStatus;

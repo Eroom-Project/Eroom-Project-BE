@@ -1,18 +1,17 @@
 package com.sparta.eroomprojectbe.domain.notification.repository;
 
-import com.amazonaws.services.s3.transfer.Copy;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Repository
 public class EmitterRepositoryImpl implements EmitterRepository {
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new HashMap<>();
+    private final Map<String, Object> eventCache = new HashMap<>();
 
     @Override
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {

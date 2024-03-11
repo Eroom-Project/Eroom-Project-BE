@@ -8,9 +8,10 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 public class CreateResponseDto {
-    private  String message;
+    private String message;
     private HttpStatus status;
-    public CreateResponseDto(String message, HttpStatus status){
+
+    public CreateResponseDto(String message, HttpStatus status) {
         this.message = message;
         this.status = status;
     }

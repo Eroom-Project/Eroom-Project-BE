@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 컨트롤러에서 정보를 주고받는 기본 Dto
+ *
  * @param <T> 주고받을 정보의 dto
  */
 @Getter

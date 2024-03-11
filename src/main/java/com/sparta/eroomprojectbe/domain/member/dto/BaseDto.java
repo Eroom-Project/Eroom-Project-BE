@@ -3,6 +3,10 @@ package com.sparta.eroomprojectbe.domain.member.dto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 일관성 있는 응답을 위한 base dto
+ * @param <T>
+ */
 @Getter
 public class BaseDto<T> {
     private T data;

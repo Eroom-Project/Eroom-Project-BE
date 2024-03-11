@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 public class AuthAllResponseDto extends BaseResponseDto<AuthMemberInfoResponseDto> {
-    public AuthAllResponseDto(AuthMemberInfoResponseDto data, String message, HttpStatus status){
-        super(data,message,status);
+    public AuthAllResponseDto(AuthMemberInfoResponseDto data, String message, HttpStatus status) {
+        super(data, message, status);
     }
 }

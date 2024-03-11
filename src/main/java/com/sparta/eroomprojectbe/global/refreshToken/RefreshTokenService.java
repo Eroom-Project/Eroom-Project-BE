@@ -1,10 +1,9 @@
-package com.sparta.eroomprojectbe.global;
+package com.sparta.eroomprojectbe.global.refreshToken;
 
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

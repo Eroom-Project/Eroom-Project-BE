@@ -25,6 +25,16 @@ public class NotificationService {
     private final EmitterRepositoryImpl emitterRepository;
     private final NotificationRepository notificationRepository;
 
+    /**
+     * 클라이언트가 SSE를 구독하는 서비스 메서드.
+     * 새로운 SseEmitter를 생성하고 Nginx 버퍼링 방지를 위해 필요한 Http 헤서를 설정.
+     * 클라이언트가 놓친 이벤트도 함께 전송
+     *
+     * @param member 로그인한 유저 객체
+     * @param lastEventId 유저가 마지막으로 수신한 이벤트의 id
+     * @param response http 응답 객체
+     * @return 구독한 클라이언트와 연결된 emitter 객체
+     */
     public SseEmitter subscribe(Member member, String lastEventId, HttpServletResponse response) {
         String emitterId = makeTimeIncludeId(member);
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
@@ -46,14 +56,27 @@ public class NotificationService {
         return emitter;
     }
 
+    /**
+     * 알림 전송 기능을 세 개의 메서드로 나누어 설계.
+     * send() : 알림 전송 프로세스를 시작하는 공개 메서드
+     * sendNotification() : 저장됨 알림 객체와 함께 클라이언트에게 알림을 전송
+     * sendToClient() : 실제로 클라이언트에게 SseEmitter를 통해 알림을 전송
+     *
+     * @param requestDto 알림에 필요한 정보들을 담은 request dto
+     */
     public void send(NotificationRequestDto requestDto) {
         Notification notification = saveNotification(requestDto);
-        sendNotification(requestDto, notification);
+        sendNotification(notification);
     }
 
-    // 알림 보내기
-    private void sendNotification(NotificationRequestDto request, Notification notification) {
-        String receiverId = String.valueOf(request.getReceiver().getMemberId());
+    /**
+     * 특정 수신자에게 등록된 모든 SseEmitter를 조회하고, 각각에 대해 알림 응답 객체를 생성하여 전송하는 메서드
+     * 전송 실패 시, 연결된 emitter 객체 삭제
+     *
+     * @param notification 알림 객체
+     */
+    private void sendNotification(Notification notification) {
+        String receiverId = String.valueOf(notification.getMember().getMemberId());
         // 유저의 모든 SseEmitter 가져옴
         Map<String, SseEmitter> emitters = emitterRepository
                 .findAllEmitterStartWithByMemberId(receiverId);
@@ -66,13 +89,19 @@ public class NotificationService {
         });
     }
 
-    // 데이터 전송 로직 수정 (오버로딩 또는 기존 메서드 수정)
-    private void sendToClient(String emitterId, NotificationResponseDto data) {
+    /**
+     * 실제로 클라이언트에게 SseEmitter를 통해 알림을 전송하는 메서드
+     * emitter를 사용하여 실시간으로 알림 전송
+     *
+     * @param emitterId 해당 클라이언트와 연결시켜주는 emitter 식별자
+     * @param responseDto 알림 응답 객체
+     */
+    private void sendToClient(String emitterId, NotificationResponseDto responseDto) {
         SseEmitter emitter = emitterRepository.findByEmitterId(emitterId);
         if (emitter != null) {
             try {
-                log.info("Sending notification to client: {}", data);
-                emitter.send(SseEmitter.event().id(emitterId).name("sse").data(data));
+                log.info("Sending notification to client: {}", responseDto);
+                emitter.send(SseEmitter.event().id(emitterId).name("sse").data(responseDto));
                 log.info("Notification sent successfully");
             } catch (IOException e) {
                 emitterRepository.deleteById(emitterId);
@@ -84,11 +113,24 @@ public class NotificationService {
         }
     }
 
-
+    /**
+     * 회원 ID와 현재 시간을 조합하여 고유한 식별자를 생성하는 메서드
+     * 각 회원을 특정 이벤트와 연결시킴
+     *
+     * @param member 알림을 수신할 회원 객체
+     * @return 생성된 고유 식별자 문자열
+     */
     private String makeTimeIncludeId(Member member) {
         return member.getMemberId() + "_" + System.currentTimeMillis();
     }
 
+    /**
+     * 회원이 놓친 이벤트를 전송하는 메서드
+     *
+     * @param lastEventId 회원이 마지막으로 수신한 이벤트 id
+     * @param member
+     * @param emitter
+     */
     private void resendLostData(String lastEventId, Member member, SseEmitter emitter) {
         // 놓친 이벤트가 있다면
         if (!lastEventId.isEmpty()) {
@@ -110,6 +152,15 @@ public class NotificationService {
         }
     }
 
+    /**
+     * 클라이언트 연결 초기에 503 에러가 뜨지 않도록 더미 데이터를 전송하는 메서드
+     * 연결이 성공적으로 이루어졌는지 확인
+     *
+     * @param emitterId 해당 클라이언트와 고유하게 연결된 emitter id
+     * @param emitter
+     * @param eventId
+     * @param data 더미 데이터
+     */
     private void sendDummyData(String emitterId, SseEmitter emitter, String eventId, Object data) {
         try {
             emitter.send(SseEmitter.event()
@@ -120,7 +171,12 @@ public class NotificationService {
         }
     }
 
-    // 알람 저장
+    /**
+     * 새 알림 생성하고 저장하는 서비스 메서드
+     *
+     * @param requestDto 알림 생성에 필요한 정보를 담고 있는 dto
+     * @return 알림 객체
+     */
     @Transactional
     protected Notification saveNotification(NotificationRequestDto requestDto) {
         Notification notification = Notification.builder()

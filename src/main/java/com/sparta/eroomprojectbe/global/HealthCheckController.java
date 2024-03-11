@@ -1,4 +1,4 @@
-package com.sparta.eroomprojectbe.domain.member.controller;
+package com.sparta.eroomprojectbe.global;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

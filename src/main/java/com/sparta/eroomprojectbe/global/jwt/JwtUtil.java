@@ -1,7 +1,5 @@
 package com.sparta.eroomprojectbe.global.jwt;
 
-import com.sparta.eroomprojectbe.global.RefreshToken;
-import com.sparta.eroomprojectbe.global.RefreshTokenRepository;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j(topic = "JwtUtil")
 @Component

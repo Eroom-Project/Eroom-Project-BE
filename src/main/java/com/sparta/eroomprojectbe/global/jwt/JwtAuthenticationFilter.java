@@ -2,7 +2,7 @@ package com.sparta.eroomprojectbe.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.eroomprojectbe.domain.member.dto.LoginRequestDto;
-import com.sparta.eroomprojectbe.global.RefreshTokenService;
+import com.sparta.eroomprojectbe.global.refreshToken.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

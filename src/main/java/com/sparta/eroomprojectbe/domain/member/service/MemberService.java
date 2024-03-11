@@ -3,12 +3,16 @@ package com.sparta.eroomprojectbe.domain.member.service;
 import com.sparta.eroomprojectbe.domain.challenge.service.ImageS3Service;
 import com.sparta.eroomprojectbe.domain.challenger.repository.ChallengerRepository;
 import com.sparta.eroomprojectbe.domain.member.dto.*;
+import com.sparta.eroomprojectbe.domain.member.dto.mypage.ChallengeWithRoleDto;
+import com.sparta.eroomprojectbe.domain.member.dto.mypage.MemberInfoDto;
+import com.sparta.eroomprojectbe.domain.member.dto.mypage.MypageChallengeDto;
+import com.sparta.eroomprojectbe.domain.member.dto.mypage.MypageResponseDto;
 import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
-import com.sparta.eroomprojectbe.global.RefreshToken;
-import com.sparta.eroomprojectbe.global.RefreshTokenService;
+import com.sparta.eroomprojectbe.global.refreshToken.RefreshToken;
+import com.sparta.eroomprojectbe.global.refreshToken.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
 import com.sparta.eroomprojectbe.global.rollenum.MemberRoleEnum;
 import io.jsonwebtoken.Claims;
@@ -64,6 +68,12 @@ public class MemberService {
 
     private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
+    /**
+     * 회원가입 서비스 메서드
+     *
+     * @param requestDto 회원가입 시 필요한 정보를 담은 dto
+     * @return 이메일 중복 여부 및 회원가입한 유저의 정보를 담은 response dto
+     */
     @Transactional
     public SignupResponseDto signup(SignupRequestDto requestDto) {
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -79,8 +89,14 @@ public class MemberService {
         return new SignupResponseDto(memberRepository.save(member));
     }
 
+    /**
+     * 로그인 서비스 메서드
+     *
+     * @param request 아이디와 비밀번호를 담은 dto
+     * @return 로그인한 유저의 이메일을 담은 dto
+     */
     @Transactional
-    public LoginResponseDto login(LoginRequestDto request, HttpServletResponse response) {
+    public LoginResponseDto login(LoginRequestDto request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new EntityNotFoundException("해당 회원을 찾을 수 없습니다."));
         String email = member.getEmail();
@@ -89,7 +105,12 @@ public class MemberService {
         return new LoginResponseDto(email);
     }
 
-    // 이메일 중복 확인
+    /**
+     * 이메일 중복 확인 서비스 메서드
+     *
+     * @param email 유저가 사용하려는 이메일
+     * @return 이메일 중복 여부 message
+     */
     public String checkEmail(String email) {
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) {
@@ -98,7 +119,12 @@ public class MemberService {
         return memberRepository.existsByEmail(email) ? "중복된 email입니다." : "사용 가능한 email입니다.";
     }
 
-    // 닉네임 중복 확인
+    /**
+     * 닉네임 중복 확인 서비스 메서드
+     *
+     * @param nickname 유저가 사용하려는 닉네임
+     * @return 닉네임 중복 여부 message
+     */
     public String checkNickname(String nickname) {
         if (nickname.length() < 3 || nickname.length() > 10) {
             return "닉네임은 3자 이상 10자 이하로 입력해 주세요.";
@@ -106,8 +132,16 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname) ? "중복된 닉네임입니다." : "사용 가능한 닉네임입니다.";
     }
 
+    /**
+     * access token 재발급 서비스 메서드
+     *
+     * @param refreshToken 유저 확인을 위한 refresh token
+     * @param response http 응답 객체
+     * @return refresh token 유효 여부 및 토큰 재발급 성공 message
+     * @throws UnsupportedEncodingException
+     */
     @Transactional
-    public String reissueToken(String refreshToken, HttpServletResponse res) throws UnsupportedEncodingException {
+    public String reissueToken(String refreshToken, HttpServletResponse response) throws UnsupportedEncodingException {
         refreshToken = jwtUtil.substringToken(refreshToken);
         String userEmail = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
 
@@ -120,7 +154,7 @@ public class MemberService {
             if (jwtUtil.validateToken(storedToken)) {
                 // 새로운 Access Token 생성
                 String newAccessToken = jwtUtil.createAccessToken(userEmail, MemberRoleEnum.USER);
-                jwtUtil.addJwtToCookie(newAccessToken, res, JwtUtil.AUTHORIZATION_HEADER);
+                jwtUtil.addJwtToCookie(newAccessToken, response, JwtUtil.AUTHORIZATION_HEADER);
 
                 return "토큰 재발급 성공";
             } else {
@@ -131,7 +165,13 @@ public class MemberService {
         throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
     }
 
-
+    /**
+     * 로그아웃 서비스 메서드
+     *
+     * @param response http 응답 객체
+     * @param refreshToken 유저 확인을 위한 refresh token
+     * @return refresh token 유효 여부 및 로그아웃 성공 메서드
+     */
     @Transactional
     public String logout(HttpServletResponse response, String refreshToken) {
 
@@ -155,7 +195,12 @@ public class MemberService {
         return "Refresh Token이 유효하지 않습니다.";
     }
 
-
+    /**
+     * 마이페이지 조회 서비스 메서드
+     *
+     * @param member 로그인한 유저 객체
+     * @return 유저 정보 및 유저와 관련된 챌린지 리스트를 담은 response dto
+     */
     public MypageResponseDto getMypage(Member member) {
         MemberInfoDto memberInfo = new MemberInfoDto(member);
 
@@ -170,6 +215,13 @@ public class MemberService {
         return new MypageResponseDto(memberInfo, challengeList);
     }
 
+    /**
+     * 닉네임 수정 서비스 메서드
+     *
+     * @param nickname 유저가 사용하려는 닉네임
+     * @param member 로그인한 유저 객체
+     * @return 수정된 닉네임
+     */
     @Transactional
     public String updateNickname(String nickname, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
@@ -177,6 +229,13 @@ public class MemberService {
         return findMember.updateNickname(nickname);
     }
 
+    /**
+     * 프로필 이미지 수정 서비스 메서드
+     *
+     * @param file 유저가 사용하려는 프로필 이미지
+     * @param member 로그인한 유저 객체
+     * @return 수정된 프로필 이미지 url
+     */
     @Transactional
     public String updateProfileImage(MultipartFile file, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
@@ -192,6 +251,12 @@ public class MemberService {
         return findMember.updateProfileImage(updateFile);
     }
 
+    /**
+     * 비밀번호 수정 서비스 메서드
+     *
+     * @param password 유저가 사용하려는 비밀번호
+     * @param member 로그인한 유저 객체
+     */
     @Transactional
     public void updatePassword(String password, Member member) {
         if (password == null || password.trim().isEmpty()) {
@@ -204,10 +269,23 @@ public class MemberService {
         memberRepository.save(findMember);
     }
 
+    /**
+     * 비밀번호 확인 서비스 메서드
+     *
+     * @param member 로그인한 유저 객체
+     * @param rawPassword 유저의 현재 비밀번호
+     * @return 비밀번호 일치 여부
+     */
     public boolean checkPassword(Member member, String rawPassword) {
         return passwordEncoder.matches(rawPassword, member.getPassword());
     }
 
+    /**
+     * 쿠키 삭제 메서드 (로그아웃에 사용)
+     *
+     * @param response http 응답 객체
+     * @param tokenName Authorization or Refresh-token
+     */
     private void deleteJwtCookie(HttpServletResponse response, String tokenName) {
         Cookie cookie = new Cookie(tokenName, null); // 쿠키의 이름과 빈 값을 가진 새 쿠키 생성
         cookie.setPath("/");
@@ -217,6 +295,12 @@ public class MemberService {
         response.addCookie(cookie); // 수정된 쿠키를 응답에 추가
     }
 
+    /**
+     * 인증 코드 발송 서비스 메서드
+     *
+     * @param toEmail 받는 사람
+     * @return 가입 여부 및 인증 코드 전송 완료 message
+     */
     @Transactional
     public String sendCodeToEmail(String toEmail) {
         boolean memberIsPresent = memberRepository.existsByEmail(toEmail);
@@ -253,7 +337,11 @@ public class MemberService {
         return "인증 메일을 전송하였습니다.";
     }
 
-
+    /**
+     * 인증 코드를 생성하는 메서드 (send code to email에 사용)
+     *
+     * @return 인증코드 6자리
+     */
     private String createCode() {
         int length = 6;
         try {
@@ -269,6 +357,13 @@ public class MemberService {
         }
     }
 
+    /**
+     * 인증 코드 확인 서비스 메서드
+     *
+     * @param email 인증 코드를 발급받은 이메일
+     * @param authCode 인증 코드
+     * @return 인증 시간 초과여부 및 인증 완료 message
+     */
     public String verifiedCode(String email, String authCode) {
         Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
 
