@@ -44,7 +44,6 @@ public class ChatRoomRepository {
 
     /**
      * challengeId에 해당하는 채팅방에 채팅 메시지를 저장하는 메서드
-     *
      * @param challengeId 채팅 메시지를 저장할 채팅방의 고유 식별자
      * @param chatMessage 저장할 채팅 메시지 객체
      */
@@ -58,7 +57,6 @@ public class ChatRoomRepository {
 
     /**
      * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
-     *
      * @param messageId   삭제할 메시지의 UUID 식별자
      * @param challengeId 챌린지 식별자
      * @return 삭제가 성공하면 true, 실패하면 false 반환
@@ -77,21 +75,3 @@ public class ChatRoomRepository {
     }
 }
 
-//    /**
-//     * 특정 챌린지방에서 messageId를 사용하여 메시지를 삭제하는 메서드
-//     * @param messageId 삭제할 메시지의 UUID 식별자
-//     * @return 삭제가 성공하면 true, 실패하면 false 반환
-//     */
-//    public boolean deleteMessageById(String challengeId, String messageId) {
-//        String key = CHAT_ROOM_PREFIX + challengeId;
-//        try {
-//            // Redis 리스트에서 해당 메시지를 제거합니다.
-//            listOperations.remove(key, 0, messageId);
-//            // Redis에서 삭제 후 리스트 가져오기
-//            List<Object> afterDeletion = listOperations.range(key, 0, -1);
-//            return !afterDeletion.contains(messageId); // 삭제 성공
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false; // 삭제 실패
-//        }
-//    }
