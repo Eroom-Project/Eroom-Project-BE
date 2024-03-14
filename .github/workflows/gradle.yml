@@ -111,6 +111,6 @@ jobs:
       - name: Prune unused Docker images
         run: sudo docker image prune -a
 
-      - name: Describe Target Health
+      - name: Check Target Health
         run: |
           aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
