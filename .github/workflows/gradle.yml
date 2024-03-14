@@ -84,6 +84,9 @@ jobs:
           max-attempts: 5
           retry-delay: 10s
 
+      - name: Wait for Load Balancer to Register Targets
+        run: sleep 60
+
       - name: Change nginx upstream
         uses: appleboy/ssh-action@master
         with:
