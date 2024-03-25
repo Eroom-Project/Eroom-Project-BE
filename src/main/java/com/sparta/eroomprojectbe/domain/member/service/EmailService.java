@@ -1,12 +1,14 @@
 package com.sparta.eroomprojectbe.domain.member.service;
 
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j(topic = "Mail Verification")
 public class EmailService {
 
     private final JavaMailSender emailSender;
@@ -38,7 +40,7 @@ public class EmailService {
             helper.setText(content, true);
             emailSender.send(message);
         } catch (MessagingException | jakarta.mail.MessagingException e) {
-            e.printStackTrace();
+            log.error("이메일 전송 실패: 수신자={}, 제목={}, 에러메시지={}", toEmail, title, e.getMessage());
         }
     }
 }
