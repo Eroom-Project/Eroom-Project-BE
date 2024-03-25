@@ -11,6 +11,8 @@ import com.sparta.eroomprojectbe.domain.member.entity.EmailVerification;
 import com.sparta.eroomprojectbe.domain.member.entity.Member;
 import com.sparta.eroomprojectbe.domain.member.repository.EmailVerificationRepository;
 import com.sparta.eroomprojectbe.domain.member.repository.MemberRepository;
+import com.sparta.eroomprojectbe.global.error.EroomException;
+import com.sparta.eroomprojectbe.global.error.ErrorCode;
 import com.sparta.eroomprojectbe.global.refreshToken.RefreshToken;
 import com.sparta.eroomprojectbe.global.refreshToken.RefreshTokenService;
 import com.sparta.eroomprojectbe.global.jwt.JwtUtil;
@@ -81,28 +83,12 @@ public class MemberService {
         // 회원 중복 확인
         String email = requestDto.getEmail();
         if (memberRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
+            throw new EroomException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         // 사용자 등록
         Member member = new Member(email, password, requestDto.getNickname());
         return new SignupResponseDto(memberRepository.save(member));
-    }
-
-    /**
-     * 로그인 서비스 메서드
-     *
-     * @param request 아이디와 비밀번호를 담은 dto
-     * @return 로그인한 유저의 이메일을 담은 dto
-     */
-    @Transactional
-    public LoginResponseDto login(LoginRequestDto request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new EntityNotFoundException("해당 회원을 찾을 수 없습니다."));
-        String email = member.getEmail();
-
-        refreshTokenService.saveRefreshToken(email);
-        return new LoginResponseDto(email);
     }
 
     /**
@@ -138,7 +124,6 @@ public class MemberService {
      * @param refreshToken 유저 확인을 위한 refresh token
      * @param response http 응답 객체
      * @return refresh token 유효 여부 및 토큰 재발급 성공 message
-     * @throws UnsupportedEncodingException
      */
     @Transactional
     public String reissueToken(String refreshToken, HttpServletResponse response) throws UnsupportedEncodingException {
@@ -147,22 +132,23 @@ public class MemberService {
 
         Optional<RefreshToken> storedRefreshToken = refreshTokenService.getRefreshToken(userEmail);
 
-        if (storedRefreshToken.isPresent()) {
-            String storedToken = storedRefreshToken.get().getRefreshToken();
-
-            // JWT 유효성 검사
-            if (jwtUtil.validateToken(storedToken)) {
-                // 새로운 Access Token 생성
-                String newAccessToken = jwtUtil.createAccessToken(userEmail, MemberRoleEnum.USER);
-                jwtUtil.addJwtToCookie(newAccessToken, response, JwtUtil.AUTHORIZATION_HEADER);
-
-                return "토큰 재발급 성공";
-            } else {
-                refreshTokenService.removeRefreshToken(userEmail);
-            }
+        if (storedRefreshToken.isEmpty()) {
+            throw new EroomException(ErrorCode.REFRESHTOKEN_NOT_FOUND);
         }
 
-        throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
+        String storedToken = storedRefreshToken.get().getRefreshToken();
+
+        // JWT 유효성 검사
+        if (!jwtUtil.validateToken(storedToken)) {
+            refreshTokenService.removeRefreshToken(userEmail);
+            throw new EroomException(ErrorCode.EXPIRATION_REFRESHTOKEN);
+        }
+
+        // 새로운 Access Token 생성
+        String newAccessToken = jwtUtil.createAccessToken(userEmail, MemberRoleEnum.USER);
+        jwtUtil.addJwtToCookie(newAccessToken, response, JwtUtil.AUTHORIZATION_HEADER);
+
+        return "토큰 재발급 성공";
     }
 
     /**
@@ -174,25 +160,26 @@ public class MemberService {
      */
     @Transactional
     public String logout(HttpServletResponse response, String refreshToken) {
-
         refreshToken = refreshToken.substring(7);
 
-        if (jwtUtil.validateToken(refreshToken)) {
-            Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
-            String userEmail = claims.getSubject();
-
-            Optional<RefreshToken> storedRefreshToken = refreshTokenService.getRefreshToken(userEmail);
-
-            if (storedRefreshToken.isPresent() && storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
-                refreshTokenService.removeRefreshToken(userEmail);
-
-                deleteJwtCookie(response, JwtUtil.AUTHORIZATION_HEADER);
-                deleteJwtCookie(response, JwtUtil.REFRESH_TOKEN_HEADER);
-
-                return "로그아웃 성공";
-            }
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new EroomException(ErrorCode.INVALID_REFRESHTOKEN);
         }
-        return "Refresh Token이 유효하지 않습니다.";
+
+        Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
+        String userEmail = claims.getSubject();
+
+        Optional<RefreshToken> storedRefreshToken = refreshTokenService.getRefreshToken(userEmail);
+
+        if (storedRefreshToken.isEmpty() || !storedRefreshToken.get().getRefreshToken().equals(refreshToken)) {
+            throw new EroomException(ErrorCode.REFRESHTOKEN_NOT_FOUND);
+        }
+
+        refreshTokenService.removeRefreshToken(userEmail);
+        deleteJwtCookie(response, JwtUtil.AUTHORIZATION_HEADER);
+        deleteJwtCookie(response, JwtUtil.REFRESH_TOKEN_HEADER);
+
+        return "로그아웃 성공";
     }
 
     /**
@@ -225,7 +212,10 @@ public class MemberService {
     @Transactional
     public String updateNickname(String nickname, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EroomException(ErrorCode.NOT_FOUND_MEMBER));
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new EroomException(ErrorCode.DUPLICATED_NICKNAME);
+        }
         return findMember.updateNickname(nickname);
     }
 
@@ -239,13 +229,13 @@ public class MemberService {
     @Transactional
     public String updateProfileImage(MultipartFile file, Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EroomException(ErrorCode.NOT_FOUND_MEMBER));
         String updateFile = findMember.getProfileImageUrl();
         if (file != null) {
             try {
                 updateFile = imageS3Service.updateFile(findMember.getProfileImageUrl(), file);
             } catch (IOException e) {
-                throw new RuntimeException("프로필 이미지 저장 중 문제가 발생하였습니다", e);
+                throw new EroomException(ErrorCode.INTERNAL_SERVER_ERROR);
             }
         }
         return findMember.updateProfileImage(updateFile);
@@ -260,10 +250,10 @@ public class MemberService {
     @Transactional
     public void updatePassword(String password, Member member) {
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("비밀번호는 빈 값일 수 없습니다.");
+            throw new EroomException(ErrorCode.NOT_VALID_PASSWORD);
         }
         Member findMember = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EroomException(ErrorCode.NOT_FOUND_MEMBER));
         String encodedPassword = passwordEncoder.encode(password);
         findMember.updatePassword(encodedPassword);
         memberRepository.save(findMember);
@@ -277,7 +267,10 @@ public class MemberService {
      * @return 비밀번호 일치 여부
      */
     public boolean checkPassword(Member member, String rawPassword) {
-        return passwordEncoder.matches(rawPassword, member.getPassword());
+        if (!passwordEncoder.matches(rawPassword, member.getPassword())) {
+            throw new EroomException(ErrorCode.NOT_VALID_PASSWORD);
+        }
+        return true;
     }
 
     /**
@@ -368,7 +361,7 @@ public class MemberService {
         Optional<EmailVerification> verification = emailVerificationRepository.findByEmailAndAuthCode(email, authCode);
 
         if (!verification.isPresent()) {
-            return "인증 메일이 정상적으로 전송되지 않았습니다.";
+            throw new EroomException(ErrorCode.VERIFICATION_CODE_NOT_FOUND);
         }
         LocalDateTime now = LocalDateTime.now();
 
@@ -376,7 +369,7 @@ public class MemberService {
             emailVerificationRepository.deleteByEmail(email);
             return "인증이 완료되었습니다.";
         } else {
-            return "인증 시간이 초과되었습니다.";
+            throw new EroomException(ErrorCode.VERIFICATION_CODE_EXPIRED);
         }
     }
 }
