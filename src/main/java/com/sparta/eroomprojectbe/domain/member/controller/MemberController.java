@@ -36,24 +36,13 @@ public class MemberController {
      * 회원가입 컨트롤러 메서드
      *
      * @param requestDto 회원가입 시 필요한 정보들을 담은 dto
-     * @param bindingResult 유효성 검증을 통과하지 못한 오류들
      * @return 회원가입한 유저의 정보, 회원가입 성공여부 message, httpStatus
      */
     @PostMapping("/api/signup")
-    public ResponseEntity<BaseDto<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(new BaseDto<>(null, errorMessage, HttpStatus.BAD_REQUEST));
-        }
-
-        try {
-            SignupResponseDto signupResponseDto = memberService.signup(requestDto);
-            return ResponseEntity.ok(new BaseDto<>(signupResponseDto, "회원가입 성공", HttpStatus.CREATED));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new BaseDto<>(null, e.getMessage(), HttpStatus.BAD_REQUEST));
-        }
+    public ResponseEntity<BaseDto<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+        SignupResponseDto signupResponseDto = memberService.signup(requestDto);
+        BaseDto<SignupResponseDto> response = new BaseDto<>(signupResponseDto, "회원가입 성공", HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -66,7 +55,7 @@ public class MemberController {
     @PostMapping("/api/logout")
     public ResponseEntity<BaseDto<String>> logout(HttpServletResponse response, @CookieValue(name = "Refresh-token") String refreshToken){
         String message = memberService.logout(response, refreshToken);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -78,7 +67,7 @@ public class MemberController {
     @GetMapping("/api/signup/email")
     public ResponseEntity<BaseDto<String>> checkEmail(@RequestParam String email) {
         String message = memberService.checkEmail(email);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -90,7 +79,7 @@ public class MemberController {
     @GetMapping("/api/signup/nickname")
     public ResponseEntity<BaseDto<String>> checkNickname(@RequestParam String nickname) {
         String message = memberService.checkNickname(nickname);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -104,7 +93,7 @@ public class MemberController {
     @PostMapping("/api/token")
     public ResponseEntity<BaseDto<String>> reissueToken(@CookieValue(name = "Refresh-token") String refreshToken, HttpServletResponse response) throws UnsupportedEncodingException {
         String message = memberService.reissueToken(refreshToken, response);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -120,7 +109,7 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> kakaoLogin(@RequestParam String code,
                                              HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
         String message = kakaoService.kakaoLogin(code, response);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -132,7 +121,7 @@ public class MemberController {
     @GetMapping("/api/mypage")
     public ResponseEntity<BaseDto<MypageResponseDto>> getMypage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         MypageResponseDto data = memberService.getMypage(userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(data, "", HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(data, "", HttpStatus.OK));
     }
 
     /**
@@ -146,7 +135,7 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> updateNickname(@RequestParam("profileNickname") String nickname,
                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String updatedNickname = memberService.updateNickname(nickname, userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(updatedNickname, "닉네임 수정 성공", HttpStatus.OK));
     }
 
     /**
@@ -160,7 +149,7 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> updateProfileImage(@RequestParam(value = "profileImageUrl", required = false) MultipartFile file,
                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String updatedProfileImage = memberService.updateProfileImage(file, userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(updatedProfileImage, "프로필 이미지 수정 성공", HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(updatedProfileImage, "프로필 이미지 수정 성공", HttpStatus.OK));
     }
 
     /**
@@ -174,7 +163,7 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> updatePassword(@RequestBody Map<String, String> password,
                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         memberService.updatePassword(password.get("password"), userDetails.getMember());
-        return ResponseEntity.ok(new BaseDto<>(null, "비밀번호 수정 성공", HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, "비밀번호 수정 성공", HttpStatus.OK));
     }
 
     /**
@@ -188,9 +177,9 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String password) {
         boolean isMatch = memberService.checkPassword(userDetails.getMember(), password);
         if (isMatch) {
-            return ResponseEntity.ok(new BaseDto<>(null, "비밀번호가 일치합니다.", HttpStatus.OK));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, "비밀번호가 일치합니다.", HttpStatus.OK));
         } else {
-            return ResponseEntity.badRequest().body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseDto<>(null, "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST));
         }
     }
 
@@ -203,7 +192,7 @@ public class MemberController {
     @PostMapping("/emails/verification-requests")
     public ResponseEntity<BaseDto<String>> sendMessage(@RequestParam("email") @Valid String email) {
         String message = memberService.sendCodeToEmail(email);
-        return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 
     /**
@@ -217,6 +206,7 @@ public class MemberController {
     public ResponseEntity<BaseDto<String>> verificationEmail(@RequestParam("email") @Valid String email,
                                                               @RequestParam("code") String authCode) {
         String message = memberService.verifiedCode(email, authCode);
-            return ResponseEntity.ok(new BaseDto<>(null, message, HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseDto<>(null, message, HttpStatus.OK));
     }
 }
+
