@@ -36,10 +36,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod .
-      - name: Push Docker
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest
+      # 최신 버전 이미지를 빌드
+      - name: Build Current Version Docker Image
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest .
+
+      - name: Push Docker Images
+        run: |
+          # 최신 버전 이미지를 Docker 레지스트리에 푸시
+           docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest
 
   deploy:
     needs: build
@@ -84,6 +88,15 @@ jobs:
           max-attempts: 5
           retry-delay: 10s
 
+      # 웹사이트에 문제가 발생한 경우 롤백 수행
+      - name: Rollback if Site Issue
+        if: steps.check_deploy_server_url.outcome == 'failure'
+        run: |
+          # 이전 버전 이미지를 사용하여 롤백
+          sudo docker-compose -f docker-compose-${{ env.TARGET_UPSTREAM }}.yml down
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/eroom-prod:previous
+          sudo docker-compose -f docker-compose-${{ env.TARGET_UPSTREAM }}.yml up -d
+
       - name: Wait for Load Balancer to Register Targets
         run: sleep 60
 
@@ -114,3 +127,11 @@ jobs:
       - name: Check Target Health
         run: |
           aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:471112860836:targetgroup/eroomTargetGroup/029a9432dd208dc7 | jq -r '.TargetHealthDescriptions[].TargetHealth.State'
+
+      # 배포가 정상적으로 완료 시 현재 버전을 이전 버전으로 푸시
+      - name: Push Docker previous Images
+        if: ${{ github.event_name == 'deployment' && github.event.deployment.status == 'success' }}
+        run: |
+          # 현재 배포된 버전을 이전 버전으로 푸시
+          docker tag ${{ secrets.DOCKER_USERNAME }}/eroom-prod:latest ${{ secrets.DOCKER_USERNAME }}/eroom-prod:previous
+          docker push ${{ secrets.DOCKER_USERNAME }}/eroom-prod:previous
