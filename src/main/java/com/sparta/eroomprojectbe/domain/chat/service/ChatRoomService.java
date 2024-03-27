@@ -1,6 +1,5 @@
 package com.sparta.eroomprojectbe.domain.chat.service;
 
-import com.sparta.eroomprojectbe.domain.chat.entity.ChatMessage;
 import com.sparta.eroomprojectbe.domain.chat.entity.MemberInfo;
 import com.sparta.eroomprojectbe.domain.chat.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
